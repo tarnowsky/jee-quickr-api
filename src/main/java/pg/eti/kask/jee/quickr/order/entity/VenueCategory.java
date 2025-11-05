@@ -1,5 +1,8 @@
 package pg.eti.kask.jee.quickr.order.entity;
 
+import lombok.*;
+
+@ToString
 public enum VenueCategory {
     RESTAURANT,
     CAFE,

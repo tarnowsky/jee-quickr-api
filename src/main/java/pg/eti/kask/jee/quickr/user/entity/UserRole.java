@@ -1,6 +1,9 @@
 package pg.eti.kask.jee.quickr.user.entity;
 
-public enum Role {
+import lombok.ToString;
+
+@ToString
+public enum UserRole {
     USER,
     ADMIN
 }
