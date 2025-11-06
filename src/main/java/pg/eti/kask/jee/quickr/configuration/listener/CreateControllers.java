@@ -1,0 +1,22 @@
+package pg.eti.kask.jee.quickr.configuration.listener;
+
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
+import pg.eti.kask.jee.quickr.component.DtoFunctionFactory;
+import pg.eti.kask.jee.quickr.user.controller.simple.UserSimpleController;
+import pg.eti.kask.jee.quickr.user.service.UserService;
+
+@WebListener
+public class CreateControllers implements ServletContextListener {
+
+    @Override
+    public void contextInitialized(ServletContextEvent event) {
+        UserService userService = (UserService) event.getServletContext().getAttribute("userService");
+
+        event.getServletContext().setAttribute("userController", new UserSimpleController(
+                userService,
+                new DtoFunctionFactory()
+        ));
+    }
+}

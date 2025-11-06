@@ -7,6 +7,7 @@
     <groupId>pg.eti.kask.jee.quickr</groupId>
     <artifactId>QuickrAPI</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <name>Quickr API</name>
     <description>Simple API for the Quickr app</description>
@@ -15,6 +16,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencies>

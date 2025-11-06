@@ -34,6 +34,7 @@ public class UserService {
             throw new IllegalArgumentException("User id cannot be null");
         }
 
+        user.setPassword(passwordHash.generate(user.getPassword().toCharArray()));
         return repository.create(user)
                 .orElseThrow(() -> new UserIdNotUniqueException("User with a given id %s exists in the datastore"
                     .formatted(user.getId())));
