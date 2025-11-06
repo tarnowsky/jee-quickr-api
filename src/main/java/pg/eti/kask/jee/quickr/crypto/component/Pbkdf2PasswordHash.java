@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.crypto.component;
 
+import jakarta.enterprise.context.Dependent;
 import lombok.SneakyThrows;
 
 import javax.crypto.SecretKeyFactory;
@@ -13,6 +14,7 @@ import java.util.Base64;
  * ALL RIGHTS RESERVED TO Michał Wójcik
  * @see <a href="https://shorturl.at/pNz8K">Link to SimpleRPG Code</a>
   */
+@Dependent
 public class Pbkdf2PasswordHash {
 
     private static final String ALGORITHM = "PBKDF2WithHmacSHA256";

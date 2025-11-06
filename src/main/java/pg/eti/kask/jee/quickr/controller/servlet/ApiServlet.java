@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.controller.servlet;
 
+import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
@@ -8,6 +9,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import pg.eti.kask.jee.quickr.order.controller.api.OrderController;
+import pg.eti.kask.jee.quickr.order.controller.api.VenueController;
+import pg.eti.kask.jee.quickr.order.dto.PatchOrderRequest;
+import pg.eti.kask.jee.quickr.order.dto.PutOrderRequest;
 import pg.eti.kask.jee.quickr.user.controller.api.UserController;
 import pg.eti.kask.jee.quickr.user.dto.PatchUserRequest;
 import pg.eti.kask.jee.quickr.user.dto.PutUserRequest;
@@ -21,6 +26,22 @@ import java.util.regex.Pattern;
 @WebServlet(urlPatterns = ApiServlet.Paths.API +  "/*")
 public class ApiServlet extends HttpServlet {
 
+    private final Jsonb jsonb = JsonbBuilder.create();
+
+    private static final String jsonContentType = "application/json";
+    private static final String imageContentType = "image/png";
+
+    private final UserController userController;
+    private final OrderController orderController;
+    private final VenueController venueController;
+
+    @Inject
+    public ApiServlet(UserController userController, OrderController orderController, VenueController venueController) {
+        this.userController = userController;
+        this.orderController = orderController;
+        this.venueController = venueController;
+    }
+
     public static final class Paths {
         public static final String API = "/api";
     }
@@ -28,17 +49,18 @@ public class ApiServlet extends HttpServlet {
     public static final class Patterns {
         private static final Pattern UUID = Pattern.
                 compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+
         private static final Pattern USERS = Pattern.compile("/users/?");
         private static final Pattern USER = Pattern.compile("/users/(%s)".formatted(UUID.pattern()));
         private static final Pattern USER_AVATAR = Pattern.compile("/users/(%s)/avatar".formatted(UUID.pattern()));
+
+        private static final Pattern ORDERS = Pattern.compile("/orders/?");
+        private static final Pattern ORDER = Pattern.compile("/orders/(%s)".formatted(UUID.pattern()));
+
+        private static final Pattern VENUES = Pattern.compile("/venues/?");
+        private static final Pattern VENUE = Pattern.compile("/venues/(%s)".formatted(UUID.pattern()));
+
     }
-
-    private UserController userController;
-
-    private final Jsonb jsonb = JsonbBuilder.create();
-
-    private static final String jsonContentType = "application/json";
-    private static final String imageContentType = "image/png";
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -47,12 +69,6 @@ public class ApiServlet extends HttpServlet {
         } else {
             super.service(req, res);
         }
-    }
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        userController = (UserController) getServletContext().getAttribute("userController");
     }
 
     @Override
@@ -80,6 +96,24 @@ public class ApiServlet extends HttpServlet {
                     res.sendError(HttpServletResponse.SC_NOT_FOUND, "Avatar not found");
                 }
                 return;
+            } else if (path.matches(Patterns.ORDER.pattern())) {
+                res.setContentType(jsonContentType);
+                UUID id = extractUuid(Patterns.ORDER, path);
+                res.getWriter().write(jsonb.toJson(orderController.getOrderResponse(id)));
+                return;
+            } else if (path.matches(Patterns.ORDERS.pattern())) {
+                res.setContentType(jsonContentType);
+                res.getWriter().write(jsonb.toJson(orderController.getOrdersResponse()));
+                return;
+            } else if (path.matches(Patterns.VENUE.pattern())) {
+                res.setContentType(jsonContentType);
+                UUID id = extractUuid(Patterns.VENUE, path);
+                res.getWriter().write(jsonb.toJson(venueController.getVenueResponse(id)));
+                return;
+            } else if (path.matches(Patterns.VENUES.pattern())) {
+                res.setContentType(jsonContentType);
+                res.getWriter().write(jsonb.toJson(venueController.getVenuesResponse()));
+                return;
             }
         }
         res.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -99,11 +133,15 @@ public class ApiServlet extends HttpServlet {
                 UUID id = extractUuid(Patterns.USER_AVATAR, path);
                 userController.putUserAvatar(id, req.getPart("avatar").getInputStream());
                 return;
+            } else if (path.matches(Patterns.ORDER.pattern())) {
+                UUID id = extractUuid(Patterns.ORDER, path);
+                orderController.putOrderRequest(id, jsonb.fromJson(req.getReader(), PutOrderRequest.class));
+                res.addHeader("Location", createUrl(req, Paths.API, "orders", id.toString()));
+                return;
             }
         }
         res.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
-
 
     protected void doPatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String path = parseRequestPath(req);
@@ -112,6 +150,10 @@ public class ApiServlet extends HttpServlet {
             if (path.matches(Patterns.USER.pattern())) {
                 UUID id = extractUuid(Patterns.USER, path);
                 userController.patchUserRequest(id, jsonb.fromJson(req.getReader(), PatchUserRequest.class));
+                return;
+            } else if (path.matches(Patterns.ORDER.pattern())) {
+                UUID id = extractUuid(Patterns.ORDER, path);
+                orderController.patchOrderRequest(id, jsonb.fromJson(req.getReader(), PatchOrderRequest.class));
                 return;
             }
         }
@@ -128,8 +170,16 @@ public class ApiServlet extends HttpServlet {
                 userController.deleteUser(id);
                 return;
             } else if (path.matches(Patterns.USER_AVATAR.pattern())) {
-                UUID uuid = extractUuid(Patterns.USER_AVATAR, path);
-                userController.deleteUserAvatar(uuid);
+                UUID id = extractUuid(Patterns.USER_AVATAR, path);
+                userController.deleteUserAvatar(id);
+                return;
+            } else if (path.matches(Patterns.ORDER.pattern())) {
+                UUID id = extractUuid(Patterns.ORDER, path);
+                orderController.deleteOrderRequest(id);
+                return;
+            } else if (path.matches(Patterns.VENUE.pattern())) {
+                UUID id = extractUuid(Patterns.VENUE, path);
+                venueController.deleteVenueRequest(id);
                 return;
             }
         }

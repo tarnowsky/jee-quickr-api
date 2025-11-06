@@ -5,18 +5,6 @@
          version="6.0"
          metadata-complete="false">
 
-    <listener>
-        <listener-class>pg.eti.kask.jee.quickr.configuration.listener.CreateDataSource</listener-class>
-    </listener>
-
-    <listener>
-        <listener-class>pg.eti.kask.jee.quickr.configuration.listener.CreateServices</listener-class>
-    </listener>
-
-    <listener>
-        <listener-class>pg.eti.kask.jee.quickr.configuration.listener.CreateControllers</listener-class>
-    </listener>
-
     <context-param>
         <param-name>avatar-directory</param-name>
         <param-value>/Users/tarnowsky/quickr-users-avatars</param-value>

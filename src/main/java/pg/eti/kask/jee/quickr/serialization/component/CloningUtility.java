@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.serialization.component;
 
+import jakarta.enterprise.context.Dependent;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 
@@ -10,6 +11,7 @@ import java.io.*;
  * @see <a href="https://url-shortener.me/8SO7">Link to SimpleRPG Code</a>
   */
 @Log
+@Dependent
 public class CloningUtility {
 
     @SneakyThrows

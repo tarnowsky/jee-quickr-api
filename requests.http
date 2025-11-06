@@ -64,4 +64,52 @@ Content-Disposition: form-data; name="avatar"; filename="victor-new-avatar.jpeg"
 ### Usuń avatara victor
 DELETE {{baseUrl}}/users/{{userId}}/avatar
 
-###
+### Zmienne środowiskowe dla Order i Venue
+@orderId = bb31dcb1-6b55-47ec-a06c-be7d5ad76372
+@newOrderId = 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+@venueId = 2ff1b71b-6927-4446-b4e0-1c573b38bc70
+@mikeId = 25ba2834-f92d-4f77-98c3-46355037c624
+
+### Pobierz wszystkie zamówienia
+GET {{baseUrl}}/orders
+Accept: application/json
+
+### Pobierz pojedyncze zamówienie
+GET {{baseUrl}}/orders/{{orderId}}
+Accept: application/json
+
+### Utwórz nowe zamówienie (PUT)
+PUT {{baseUrl}}/orders/{{newOrderId}}
+Content-Type: application/json
+
+{
+  "price": 15.99,
+  "orderDate": "2025-12-24",
+  "userId": "{{mikeId}}",
+  "venueId": "{{venueId}}"
+}
+
+### Zaktualizuj częściowo zamówienie (PATCH)
+PATCH {{baseUrl}}/orders/{{orderId}}
+Content-Type: application/json
+
+{
+  "price": 5.99
+}
+
+### Usuń zamówienie
+DELETE {{baseUrl}}/orders/{{newOrderId}}
+Accept: application/json
+
+
+### Pobierz wszystkie obiekty
+GET {{baseUrl}}/venues
+Accept: application/json
+
+### Pobierz pojedynczy obiekt
+GET {{baseUrl}}/venues/{{venueId}}
+Accept: application/json
+
+### Usuń obiekt
+DELETE {{baseUrl}}/venues/{{venueId}}
+Accept: application/json

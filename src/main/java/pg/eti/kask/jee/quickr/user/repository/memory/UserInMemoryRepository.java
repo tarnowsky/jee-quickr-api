@@ -1,5 +1,7 @@
 package pg.eti.kask.jee.quickr.user.repository.memory;
 
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import pg.eti.kask.jee.quickr.datastore.component.DataStore;
 import pg.eti.kask.jee.quickr.user.entity.User;
 import pg.eti.kask.jee.quickr.user.repository.api.UserRepository;
@@ -8,10 +10,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequestScoped
 public class UserInMemoryRepository implements UserRepository {
 
     private final DataStore dataStore;
 
+    @Inject
     public UserInMemoryRepository(DataStore dataStore) {
         this.dataStore = dataStore;
     }

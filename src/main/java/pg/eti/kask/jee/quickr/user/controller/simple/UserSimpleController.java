@@ -1,5 +1,7 @@
 package pg.eti.kask.jee.quickr.user.controller.simple;
 
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import pg.eti.kask.jee.quickr.component.DtoFunctionFactory;
 import pg.eti.kask.jee.quickr.controller.servlet.exception.BadRequestException;
 import pg.eti.kask.jee.quickr.controller.servlet.exception.IdNotUniqueException;
@@ -13,11 +15,13 @@ import pg.eti.kask.jee.quickr.user.service.UserService;
 import java.io.InputStream;
 import java.util.UUID;
 
+@RequestScoped
 public class UserSimpleController implements UserController {
     private final UserService service;
     private final UserAvatarService avatarService;
     private final DtoFunctionFactory factory;
 
+    @Inject
     public UserSimpleController(UserService userService, UserAvatarService avatarService, DtoFunctionFactory factory) {
         this.service = userService;
         this.avatarService = avatarService;

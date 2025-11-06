@@ -1,5 +1,8 @@
 package pg.eti.kask.jee.quickr.user.service;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import pg.eti.kask.jee.quickr.controller.servlet.exception.IdNotUniqueException;
 import pg.eti.kask.jee.quickr.controller.servlet.exception.NotFoundException;
@@ -10,10 +13,13 @@ import pg.eti.kask.jee.quickr.user.repository.api.UserRepository;
 import java.util.List;
 import java.util.UUID;
 
+@ApplicationScoped
+@NoArgsConstructor(force = true)
 public class UserService {
     private final UserRepository repository;
     private final Pbkdf2PasswordHash passwordHash;
 
+    @Inject
     public UserService(UserRepository repository, Pbkdf2PasswordHash passwordHash) {
         this.repository = repository;
         this.passwordHash = passwordHash;

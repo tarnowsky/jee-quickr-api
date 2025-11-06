@@ -1,10 +1,13 @@
 package pg.eti.kask.jee.quickr.component;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import pg.eti.kask.jee.quickr.order.dto.function.*;
 import pg.eti.kask.jee.quickr.user.dto.function.CreateUserFunction;
 import pg.eti.kask.jee.quickr.user.dto.function.ReturnUserFunction;
 import pg.eti.kask.jee.quickr.user.dto.function.ReturnUsersFunction;
 import pg.eti.kask.jee.quickr.user.dto.function.UpdateUserFunction;
 
+@ApplicationScoped
 public class DtoFunctionFactory {
     public CreateUserFunction createUserFunction() {
         return new CreateUserFunction();
@@ -17,5 +20,29 @@ public class DtoFunctionFactory {
     }
     public UpdateUserFunction updateUserFunction() {
         return new UpdateUserFunction();
+    }
+
+    public CreateOrderFunction createOrderFunction() {
+        return new CreateOrderFunction();
+    }
+
+    public ReturnOrderFunction returnOrderFunction() {
+        return new ReturnOrderFunction();
+    }
+
+    public ReturnOrdersFunction returnOrdersFunction() {
+        return new ReturnOrdersFunction();
+    }
+
+    public ReturnVenueFunction returnVenueFunction() {
+        return new ReturnVenueFunction();
+    }
+
+    public ReturnVenuesFunction returnVenuesFunction() {
+        return new ReturnVenuesFunction();
+    }
+
+    public UpdateOrderFunction updateOrderFunction() {
+        return new UpdateOrderFunction();
     }
 }
