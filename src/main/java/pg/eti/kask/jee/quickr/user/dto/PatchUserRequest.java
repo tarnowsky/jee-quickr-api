@@ -13,4 +13,5 @@ public class PatchUserRequest {
     private String email;
     private String login;
     private LocalDate birthDate;
+    private String avatarPath;
 }

@@ -16,6 +16,7 @@ public class CreateUserFunction implements BiFunction<UUID, PutUserRequest, User
                 .login(req.getLogin())
                 .password(req.getPassword())
                 .birthDate(req.getBirthDate())
+                .avatarPath(req.getAvatarPath())
                 .build();
     }
 

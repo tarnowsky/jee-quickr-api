@@ -19,4 +19,6 @@ public class User implements Serializable {
     private String password;
     private UserRole role;
     private LocalDate birthDate;
+    @ToString.Exclude
+    private String avatarPath;
 }

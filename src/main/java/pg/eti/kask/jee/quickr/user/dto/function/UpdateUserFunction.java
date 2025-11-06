@@ -14,6 +14,9 @@ public class UpdateUserFunction implements BiFunction<User, PatchUserRequest, Us
                 .email(req.getEmail() != null && !req.getEmail().isBlank() ? req.getEmail() : user.getEmail())
                 .login(req.getLogin() != null && !req.getLogin().isBlank() ? req.getLogin() : user.getLogin())
                 .birthDate(req.getBirthDate() != null ? req.getBirthDate() : user.getBirthDate())
+                .avatarPath(req.getAvatarPath() != null && !req.getAvatarPath().isBlank()
+                        ? req.getAvatarPath()
+                        : user.getAvatarPath())
                 .password(user.getPassword())
                 .role(user.getRole())
                 .build();

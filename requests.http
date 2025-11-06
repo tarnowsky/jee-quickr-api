@@ -38,3 +38,30 @@ Content-Type: application/json
 DELETE {{baseUrl}}/users/{{newUserId}}
 Accept: application/json
 
+### Dodaj avatara victor
+PUT {{baseUrl}}/users/{{userId}}/avatar
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="avatar"; filename="victor-avatar.jpeg"
+
+< src/main/resources/pg/eti/kask/jee/quickr/configuration/user/avatar_1.jpeg
+--boundary--
+
+### Pobierz avatara victor
+GET {{baseUrl}}/users/{{userId}}/avatar
+
+### Zmień avatara victor
+PUT {{baseUrl}}/users/{{userId}}/avatar
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="avatar"; filename="victor-new-avatar.jpeg"
+
+< src/main/resources/pg/eti/kask/jee/quickr/configuration/user/avatar_2.jpeg
+--boundary--
+
+### Usuń avatara victor
+DELETE {{baseUrl}}/users/{{userId}}/avatar
+
+###

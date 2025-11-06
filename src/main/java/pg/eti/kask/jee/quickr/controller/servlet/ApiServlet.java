@@ -30,6 +30,7 @@ public class ApiServlet extends HttpServlet {
                 compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
         private static final Pattern USERS = Pattern.compile("/users/?");
         private static final Pattern USER = Pattern.compile("/users/(%s)".formatted(UUID.pattern()));
+        private static final Pattern USER_AVATAR = Pattern.compile("/users/(%s)/avatar".formatted(UUID.pattern()));
     }
 
     private UserController userController;
@@ -37,6 +38,7 @@ public class ApiServlet extends HttpServlet {
     private final Jsonb jsonb = JsonbBuilder.create();
 
     private static final String jsonContentType = "application/json";
+    private static final String imageContentType = "image/png";
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -67,6 +69,17 @@ public class ApiServlet extends HttpServlet {
                 UUID id = extractUuid(Patterns.USER, path);
                 res.getWriter().write(jsonb.toJson(userController.getUserResponse(id)));
                 return;
+            } else if (path.matches(Patterns.USER_AVATAR.pattern())) {
+                res.setContentType(imageContentType);
+                UUID id = extractUuid(Patterns.USER_AVATAR, path);
+                try {
+                    byte[] avatar = userController.getUserAvatar(id);
+                    res.setContentLength(avatar.length);
+                    res.getOutputStream().write(avatar);
+                } catch (IllegalStateException e) {
+                    res.sendError(HttpServletResponse.SC_NOT_FOUND, "Avatar not found");
+                }
+                return;
             }
         }
         res.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -81,6 +94,10 @@ public class ApiServlet extends HttpServlet {
                 UUID id = extractUuid(Patterns.USER, path);
                 userController.putUserRequest(id, jsonb.fromJson(req.getReader(), PutUserRequest.class));
                 res.addHeader("Location", createUrl(req, Paths.API, "users", id.toString()));
+                return;
+            } else if (path.matches(Patterns.USER_AVATAR.pattern())) {
+                UUID id = extractUuid(Patterns.USER_AVATAR, path);
+                userController.putUserAvatar(id, req.getPart("avatar").getInputStream());
                 return;
             }
         }
@@ -109,6 +126,10 @@ public class ApiServlet extends HttpServlet {
             if (path.matches(Patterns.USER.pattern())) {
                 UUID id = extractUuid(Patterns.USER, path);
                 userController.deleteUser(id);
+                return;
+            } else if (path.matches(Patterns.USER_AVATAR.pattern())) {
+                UUID uuid = extractUuid(Patterns.USER_AVATAR, path);
+                userController.deleteUserAvatar(uuid);
                 return;
             }
         }

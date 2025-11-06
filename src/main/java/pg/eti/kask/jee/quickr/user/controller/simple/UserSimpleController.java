@@ -5,20 +5,22 @@ import pg.eti.kask.jee.quickr.controller.servlet.exception.BadRequestException;
 import pg.eti.kask.jee.quickr.controller.servlet.exception.IdNotUniqueException;
 import pg.eti.kask.jee.quickr.controller.servlet.exception.NotFoundException;
 import pg.eti.kask.jee.quickr.user.controller.api.UserController;
-import pg.eti.kask.jee.quickr.user.dto.GetUserResponse;
-import pg.eti.kask.jee.quickr.user.dto.GetUsersResponse;
-import pg.eti.kask.jee.quickr.user.dto.PatchUserRequest;
-import pg.eti.kask.jee.quickr.user.dto.PutUserRequest;
+import pg.eti.kask.jee.quickr.user.dto.*;
+import pg.eti.kask.jee.quickr.user.entity.User;
+import pg.eti.kask.jee.quickr.user.service.UserAvatarService;
 import pg.eti.kask.jee.quickr.user.service.UserService;
 
+import java.io.InputStream;
 import java.util.UUID;
 
 public class UserSimpleController implements UserController {
     private final UserService service;
+    private final UserAvatarService avatarService;
     private final DtoFunctionFactory factory;
 
-    public UserSimpleController(UserService userService, DtoFunctionFactory factory) {
+    public UserSimpleController(UserService userService, UserAvatarService avatarService, DtoFunctionFactory factory) {
         this.service = userService;
+        this.avatarService = avatarService;
         this.factory = factory;
     }
 
@@ -45,5 +47,26 @@ public class UserSimpleController implements UserController {
     @Override
     public void deleteUser(UUID id) {
         service.delete(id);
+    }
+
+    @Override
+    public byte[] getUserAvatar(UUID id) {
+        return avatarService.getAvatar(id);
+    }
+
+    @Override
+    public void putUserAvatar(UUID id, InputStream avatar) {
+        avatarService.saveAvatar(id, avatar);
+        User usr = service.find(id);
+        usr.setAvatarPath(avatarService.getAvatarPath(id));
+        service.update(usr);
+    }
+
+    @Override
+    public void deleteUserAvatar(UUID id) {
+        avatarService.deleteAvatar(id);
+        User usr = service.find(id);
+        usr.setAvatarPath(null);
+        service.update(usr);
     }
 }
