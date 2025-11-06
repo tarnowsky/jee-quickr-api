@@ -10,10 +10,10 @@ public class UpdateUserFunction implements BiFunction<User, PatchUserRequest, Us
     @Override
     public User apply(User user, PatchUserRequest req) {
         return User.builder()
-                .email(req.getEmail())
-                .login(req.getLogin())
-                .birthDate(req.getBirthDate())
                 .id(user.getId())
+                .email(req.getEmail() != null && !req.getEmail().isBlank() ? req.getEmail() : user.getEmail())
+                .login(req.getLogin() != null && !req.getLogin().isBlank() ? req.getLogin() : user.getLogin())
+                .birthDate(req.getBirthDate() != null ? req.getBirthDate() : user.getBirthDate())
                 .password(user.getPassword())
                 .role(user.getRole())
                 .build();

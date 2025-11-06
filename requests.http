@@ -1,0 +1,40 @@
+### Zmienne środowiskowe
+@baseUrl = http://localhost:9080/quickr-api/api
+@userId = 76d2704d-1531-404a-94de-ccc38030bb9f
+@newUserId = a1b2c3d4-e5f6-7890-1234-567890abcdef
+
+### Pobierz wszystkich użytkowników
+GET {{baseUrl}}/users
+Accept: application/json
+
+### Pobierz pojedynczego użytkownika (victor)
+GET {{baseUrl}}/users/{{userId}}
+Accept: application/json
+
+### Utwórz nowego użytkownika (PUT)
+# Zastępuje istniejącego użytkownika lub tworzy nowego, jeśli nie istnieje.
+PUT {{baseUrl}}/users/{{newUserId}}
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com",
+  "login": "newuser",
+  "password": "password123",
+  "birthDate": "2000-01-01"
+}
+
+### Zaktualizuj częściowo użytkownika (PATCH)
+# Aktualizuje tylko podane pola dla użytkownika "victor".
+PATCH {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+
+{
+  "email": "victor.new@quickr.com",
+  "birthDate": "2002-07-19"
+}
+
+### Usuń użytkownika
+# Usuwa nowo utworzonego użytkownika.
+DELETE {{baseUrl}}/users/{{newUserId}}
+Accept: application/json
+
