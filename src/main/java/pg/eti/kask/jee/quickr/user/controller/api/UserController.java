@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.user.controller.api;
 
+import pg.eti.kask.jee.quickr.order.dto.GetOrdersResponse;
 import pg.eti.kask.jee.quickr.user.dto.*;
 
 import java.io.InputStream;
@@ -15,4 +16,8 @@ public interface UserController {
     byte[] getUserAvatar(UUID id);
     void putUserAvatar(UUID id, InputStream avatar);
     void deleteUserAvatar(UUID id);
+
+    GetOrdersResponse getOrdersByUserId(UUID id);
+
+    void putUserPasswordByUserId(UUID id, PutPasswordRequest req);
 }

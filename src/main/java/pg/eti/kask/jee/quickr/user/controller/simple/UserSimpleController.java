@@ -6,6 +6,7 @@ import pg.eti.kask.jee.quickr.component.DtoFunctionFactory;
 import pg.eti.kask.jee.quickr.controller.servlet.exception.BadRequestException;
 import pg.eti.kask.jee.quickr.controller.servlet.exception.IdNotUniqueException;
 import pg.eti.kask.jee.quickr.controller.servlet.exception.NotFoundException;
+import pg.eti.kask.jee.quickr.order.dto.GetOrdersResponse;
 import pg.eti.kask.jee.quickr.user.controller.api.UserController;
 import pg.eti.kask.jee.quickr.user.dto.*;
 import pg.eti.kask.jee.quickr.user.entity.User;
@@ -72,5 +73,15 @@ public class UserSimpleController implements UserController {
         User usr = service.find(id);
         usr.setAvatarPath(null);
         service.update(usr);
+    }
+
+    @Override
+    public GetOrdersResponse getOrdersByUserId(UUID id) {
+        return factory.returnOrdersFunction().apply(service.findAllOrdersByUserId(id));
+    }
+
+    @Override
+    public void putUserPasswordByUserId(UUID id, PutPasswordRequest req) {
+        service.updatePassword(factory.updateUserPasswordFunction().apply(service.find(id), req));
     }
 }

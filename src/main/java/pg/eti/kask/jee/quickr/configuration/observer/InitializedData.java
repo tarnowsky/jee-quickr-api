@@ -102,7 +102,7 @@ public class InitializedData {
         Order cafeConLatte = Order.builder()
                 .id(UUID.fromString("0a4bd66b-4e05-4f37-a022-b7a3ac30f3e8"))
                 .price(2.99)
-                .user(mike)
+                .user(victor)
                 .orderDate(LocalDate.of(2025,10,2))
                 .build();
 

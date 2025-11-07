@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import pg.eti.kask.jee.quickr.controller.servlet.exception.IdNotUniqueException;
 import pg.eti.kask.jee.quickr.controller.servlet.exception.NotFoundException;
+import pg.eti.kask.jee.quickr.order.entity.Order;
 import pg.eti.kask.jee.quickr.order.entity.Venue;
 import pg.eti.kask.jee.quickr.order.repository.api.VenueRepository;
 
@@ -54,5 +55,11 @@ public class VenueService {
     public Venue delete(@NonNull UUID id) {
         return repository.delete(id)
                 .orElseThrow(() -> new NotFoundException("Venue id %s not found in datastore".formatted(id)));
+    }
+
+    public List<Order> findAllOrdersByVenueId(@NonNull UUID id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Venue id %s not found in datastore".formatted(id)))
+                .getOrders();
     }
 }

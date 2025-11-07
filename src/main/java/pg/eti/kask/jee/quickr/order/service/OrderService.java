@@ -8,6 +8,8 @@ import pg.eti.kask.jee.quickr.controller.servlet.exception.IdNotUniqueException;
 import pg.eti.kask.jee.quickr.controller.servlet.exception.NotFoundException;
 import pg.eti.kask.jee.quickr.order.entity.Order;
 import pg.eti.kask.jee.quickr.order.repository.api.OrderRepository;
+import pg.eti.kask.jee.quickr.order.repository.api.VenueRepository;
+import pg.eti.kask.jee.quickr.user.repository.api.UserRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,15 +18,19 @@ import java.util.UUID;
 @NoArgsConstructor(force = true)
 public class OrderService {
 
-    private final OrderRepository repository;
+    private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final VenueRepository venueRepository;
 
     @Inject
-    public OrderService(OrderRepository repository) {
-        this.repository = repository;
+    public OrderService(OrderRepository orderRepository, UserRepository userRepository, VenueRepository venueRepository) {
+        this.orderRepository = orderRepository;
+        this.userRepository = userRepository;
+        this.venueRepository = venueRepository;
     }
 
     public Order find(@NonNull UUID id) {
-        return repository.findById(id)
+        return orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Order with a given id %s not found".formatted(id)));
     }
 
@@ -33,13 +39,13 @@ public class OrderService {
             throw new IllegalArgumentException("Order id cannot be null");
         }
 
-        return repository.create(user)
+        return orderRepository.create(user)
                 .orElseThrow(() -> new IdNotUniqueException("Order with a given id %s exists in the datastore"
                     .formatted(user.getId())));
     }
 
     public List<Order> findAll() {
-        return repository.findAll();
+        return orderRepository.findAll();
     }
 
     public Order update(@NonNull Order user) {
@@ -47,12 +53,14 @@ public class OrderService {
             throw new IllegalArgumentException("Order id cannot be null");
         }
 
-        return repository.update(user)
+        return orderRepository.update(user)
                 .orElseThrow(() -> new NotFoundException("Order id %s not found in datastore".formatted(user.getId())));
     }
 
     public Order delete(@NonNull UUID id) {
-        return repository.delete(id)
+        return orderRepository.delete(id)
                 .orElseThrow(() -> new NotFoundException("Order id %s not found in datastore".formatted(id)));
     }
+
+
 }

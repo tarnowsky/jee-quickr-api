@@ -101,7 +101,6 @@ Content-Type: application/json
 DELETE {{baseUrl}}/orders/{{newOrderId}}
 Accept: application/json
 
-
 ### Pobierz wszystkie obiekty
 GET {{baseUrl}}/venues
 Accept: application/json
@@ -113,3 +112,9 @@ Accept: application/json
 ### Usuń obiekt
 DELETE {{baseUrl}}/venues/{{venueId}}
 Accept: application/json
+
+### Pobierz wszystkie zamówienia restauracji
+GET {{baseUrl}}/venues/{{venueId}}/orders
+
+### Pobierz wszystkie zamówienia uzytkownika
+GET {{baseUrl}}/users/{{userId}}/orders

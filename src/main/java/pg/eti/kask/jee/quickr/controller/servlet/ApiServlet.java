@@ -53,12 +53,16 @@ public class ApiServlet extends HttpServlet {
         private static final Pattern USERS = Pattern.compile("/users/?");
         private static final Pattern USER = Pattern.compile("/users/(%s)".formatted(UUID.pattern()));
         private static final Pattern USER_AVATAR = Pattern.compile("/users/(%s)/avatar".formatted(UUID.pattern()));
+        private static final Pattern ORDERS_BY_USER_ID = Pattern.compile("/users/(%s)/orders".formatted(UUID.pattern()));
+
 
         private static final Pattern ORDERS = Pattern.compile("/orders/?");
         private static final Pattern ORDER = Pattern.compile("/orders/(%s)".formatted(UUID.pattern()));
 
         private static final Pattern VENUES = Pattern.compile("/venues/?");
         private static final Pattern VENUE = Pattern.compile("/venues/(%s)".formatted(UUID.pattern()));
+        private static final Pattern ORDERS_BY_VENUE_ID = Pattern.compile("/venues/(%s)/orders".formatted(UUID.pattern()));
+
 
     }
 
@@ -113,6 +117,16 @@ public class ApiServlet extends HttpServlet {
             } else if (path.matches(Patterns.VENUES.pattern())) {
                 res.setContentType(jsonContentType);
                 res.getWriter().write(jsonb.toJson(venueController.getVenuesResponse()));
+                return;
+            } else if (path.matches(Patterns.ORDERS_BY_USER_ID.pattern())) {
+                res.setContentType(jsonContentType);
+                UUID id = extractUuid(Patterns.ORDERS_BY_USER_ID, path);
+                res.getWriter().write(jsonb.toJson(userController.getOrdersByUserId(id)));
+                return;
+            } else if (path.matches(Patterns.ORDERS_BY_VENUE_ID.pattern())) {
+                res.setContentType(jsonContentType);
+                UUID id = extractUuid(Patterns.ORDERS_BY_VENUE_ID, path);
+                res.getWriter().write(jsonb.toJson(venueController.getOrdersByVenueId(id)));
                 return;
             }
         }

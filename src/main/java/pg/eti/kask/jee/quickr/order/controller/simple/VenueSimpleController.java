@@ -4,6 +4,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import pg.eti.kask.jee.quickr.component.DtoFunctionFactory;
 import pg.eti.kask.jee.quickr.order.controller.api.VenueController;
+import pg.eti.kask.jee.quickr.order.dto.GetOrdersResponse;
 import pg.eti.kask.jee.quickr.order.dto.GetVenueResponse;
 import pg.eti.kask.jee.quickr.order.dto.GetVenuesResponse;
 import pg.eti.kask.jee.quickr.order.service.VenueService;
@@ -35,5 +36,10 @@ public class VenueSimpleController implements VenueController {
     @Override
     public void deleteVenueRequest(UUID id) {
         service.delete(id);
+    }
+
+    @Override
+    public GetOrdersResponse getOrdersByVenueId(UUID id) {
+        return factory.returnOrdersFunction().apply(service.findAllOrdersByVenueId(id));
     }
 }
