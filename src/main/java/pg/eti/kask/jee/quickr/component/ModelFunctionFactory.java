@@ -2,6 +2,7 @@ package pg.eti.kask.jee.quickr.component;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import pg.eti.kask.jee.quickr.order.model.function.*;
+import pg.eti.kask.jee.quickr.user.service.UserService;
 
 @ApplicationScoped
 public class ModelFunctionFactory {
@@ -9,8 +10,8 @@ public class ModelFunctionFactory {
         return new OrderToModelFunction();
     }
 
-    public ModelToOrderFunction modelToOrder() {
-        return new ModelToOrderFunction();
+    public ModelToOrderFunction modelToOrder(UserService userService) {
+        return new ModelToOrderFunction(userService);
     }
 
     public OrdersToModelFunction ordersToModel() {

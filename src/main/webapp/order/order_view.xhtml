@@ -37,11 +37,14 @@
                 <p>Order date:</p>
                 <h:outputText value="#{orderView.order.orderDate}"/>
             </div>
+            <p>
+                <h:link outcome="/order/order_edit.xhtml" value="Edit">
+                    <f:param name="id" value="#{orderView.id}"/>
+                </h:link>
+            </p>
 
-            <f:facet name="header">Edit</f:facet>
-            <h:link outcome="/order/order_edit.xhtml" value="Edit">
-                <f:param name="id" value="#{orderView.id}"/>
-            </h:link>
+
+
         </article>
     </ui:define>
 

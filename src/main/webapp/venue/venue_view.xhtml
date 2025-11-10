@@ -50,6 +50,11 @@
                     </h:form>
                 </h:column>
             </h:dataTable>
+            <p>
+                <h:link outcome="/order/order_create.xhtml" value="Create order">
+                    <f:param name="id" value="#{venueView.id}"/>
+                </h:link>
+            </p>
         </article>
     </ui:define>
 </ui:composition>
