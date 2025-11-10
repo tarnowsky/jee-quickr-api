@@ -65,6 +65,6 @@ public class VenueView implements Serializable {
 
         // Usuń zamówienie z serwisu
         orderService.delete(orderEntity.getId());
-        return "venue_view?faces-redirect=true&amp;id=" + id;
+        return "venue_view?faces-redirect=true&includeViewParams=true";
     }
 }

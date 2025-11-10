@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/template/main.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{orderEdit.id}" required="true"/>
+        <f:viewAction action="#{orderEdit.init()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <h:outputStylesheet library="order" name="css/order_edit.css"/>
+
+        <article>
+            <header>
+                <h2>Edit order
+                    <h:outputText value="#{orderEdit.id}"/>
+                </h2>
+            </header>
+            <h:form styleClass="edit-form" enctype="multipart/form-data" onreset="onReset()">
+                <div class="form-outline">
+                    <h:inputText id="price" value="#{orderEdit.order.price}" styleClass="form-control"/>
+                    <h:outputLabel for="price" value="Price:" styleClass="form-label"/>
+                </div>
+                <div class="form-outline">
+                    <h:inputText styleClass="form-control" id="date" value="#{orderEdit.order.orderDate}">
+                        <f:convertDateTime pattern="yyyy-MM-dd" type="localDate"/>
+                    </h:inputText>
+                    <h:outputLabel for="date" value="Order date:" styleClass="form-label"/>
+                </div>
+                <div class="btn-container-multi">
+                    <div>
+                        <h:commandButton styleClass="btn btn-primary" value="Update" action="#{orderEdit.saveAction()}"/>
+                    </div>
+                    <div>
+                        <h:commandButton styleClass="btn btn-secondary" type="reset" value="Reset"/>
+                    </div>
+                </div>
+
+            </h:form>
+        </article>
+    </ui:define>
+
+</ui:composition>

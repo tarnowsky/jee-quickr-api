@@ -22,7 +22,8 @@
             </div>
             <div class="item-info-container">
                 <p>Price:</p>
-                <h:outputText value="#{orderView.order.price}"/> PLN
+                <h:outputText value="#{orderView.order.price}"/>
+                PLN
             </div>
             <div class="item-info-container">
                 <p>Venue name:</p>
@@ -36,6 +37,11 @@
                 <p>Order date:</p>
                 <h:outputText value="#{orderView.order.orderDate}"/>
             </div>
+
+            <f:facet name="header">Edit</f:facet>
+            <h:link outcome="/order/order_edit.xhtml" value="Edit">
+                <f:param name="id" value="#{orderView.id}"/>
+            </h:link>
         </article>
     </ui:define>
 

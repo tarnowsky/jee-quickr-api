@@ -13,8 +13,8 @@ public class OrderToEditModelFunction implements Function<Order, OrderEditModel>
         return OrderEditModel.builder()
                 .price(order.getPrice())
                 .orderDate(order.getOrderDate())
-                .userId(order.getUser().getId())
-                .venueId(order.getVenue().getId())
+//                .userId(order.getUser().getId())
+//                .venueId(order.getVenue().getId())
                 .build();
     }
 }

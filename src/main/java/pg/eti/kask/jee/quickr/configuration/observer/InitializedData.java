@@ -165,8 +165,6 @@ public class InitializedData {
         venueService.create(fastFood);
         venueService.create(cafe);
 
-        System.out.println(fastFood.getOrders().get(0).getVenue().getName());
-
         orderService.create(burgerNoCoke);
         orderService.create(steak);
         orderService.create(burgerAndCoke);

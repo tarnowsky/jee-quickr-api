@@ -12,6 +12,6 @@ import java.util.UUID;
 public class OrderEditModel {
     private Double price;
     private LocalDate orderDate;
-    private UUID userId;
-    private UUID venueId;
+//    private UUID userId;
+//    private UUID venueId;
 }
