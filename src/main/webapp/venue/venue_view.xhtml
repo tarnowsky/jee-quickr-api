@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/template/main.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{venueView.id}" required="true"/>
+        <f:viewAction action="#{venueView.init()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <h:outputStylesheet library="venue" name="css/venue_view.css"/>
+        <article>
+            <header>
+                <h2>
+                    <h:outputText value="#{venueView.venue.name}"/>
+                </h2>
+            </header>
+            <hr/>
+            <div class="item-info-container">
+                <p>ID:</p>
+                <h:outputText value="#{venueView.venue.id}"/>
+            </div>
+            <div class="item-info-container">
+                <p>Venue category:</p>
+                <h:outputText value="#{venueView.venue.venueCategory}"/>
+            </div>
+            <h6>Venue orders:</h6>
+            <h:dataTable value="#{venueView.venue.orders}" var="order" styleClass="table">
+                <h:column>
+                    <f:facet name="header">ID</f:facet>
+                    <h:outputText value="#{order.id}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Price</f:facet>
+                    <h:outputText value="#{order.price}"/> PLN
+                </h:column>
+                <h:column>
+                    <f:facet name="header">View</f:facet>
+                    <h:link outcome="/order/order_view.xhtml" value="View">
+                        <f:param name="id" value="#{order.id}"/>
+                    </h:link>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Delete</f:facet>
+                    <h:form>
+                        <h:commandButton styleClass="btn" value="Delete" action="#{venueView.deleteAction(order)}"/>
+                    </h:form>
+                </h:column>
+            </h:dataTable>
+        </article>
+    </ui:define>
+</ui:composition>

@@ -14,7 +14,11 @@ import java.util.UUID;
 public class Order implements Serializable {
     private UUID id;
     private Double price;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Venue venue;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private User user;
     private LocalDate orderDate;
 }

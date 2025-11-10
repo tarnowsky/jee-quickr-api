@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/template/main.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{orderView.id}" required="true"/>
+        <f:viewAction action="#{orderView.init()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <h:outputStylesheet library="order" name="css/order_view.css"/>
+        <article>
+            <header>
+                <h2>Order</h2>
+            </header>
+            <div class="item-info-container">
+                <p>ID:</p>
+                <h:outputText value="#{orderView.id}"/>
+            </div>
+            <div class="item-info-container">
+                <p>Price:</p>
+                <h:outputText value="#{orderView.order.price}"/> PLN
+            </div>
+            <div class="item-info-container">
+                <p>Venue name:</p>
+                <h:outputText value="#{orderView.order.venueName}"/>
+            </div>
+            <div class="item-info-container">
+                <p>User login:</p>
+                <h:outputText value="#{orderView.order.userLogin}"/>
+            </div>
+            <div class="item-info-container">
+                <p>Order date:</p>
+                <h:outputText value="#{orderView.order.orderDate}"/>
+            </div>
+        </article>
+    </ui:define>
+
+</ui:composition>

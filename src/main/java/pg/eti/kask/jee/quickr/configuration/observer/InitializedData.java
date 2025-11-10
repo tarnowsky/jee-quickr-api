@@ -154,17 +154,18 @@ public class InitializedData {
                 .order(cappuccino)
                 .build();
 
+        burgerAndCoke.setVenue(foodTrack);
+        steak.setVenue(restaurant);
+        burgerNoCoke.setVenue(fastFood);
+        cafeConLatte.setVenue(cafe);
+        cappuccino.setVenue(cafe);
+
         venueService.create(foodTrack);
         venueService.create(restaurant);
         venueService.create(fastFood);
         venueService.create(cafe);
 
-
-        burgerAndCoke.setVenue(foodTrack);
-        steak.setVenue(restaurant);
-        burgerAndCoke.setVenue(fastFood);
-        cafeConLatte.setVenue(cafe);
-        cappuccino.setVenue(cafe);
+        System.out.println(fastFood.getOrders().get(0).getVenue().getName());
 
         orderService.create(burgerNoCoke);
         orderService.create(steak);

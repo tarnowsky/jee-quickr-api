@@ -1,8 +1,8 @@
-package pg.eti.kask.jee.quickr.order.entity;
+package pg.eti.kask.jee.quickr.order.model;
 
 import lombok.*;
+import pg.eti.kask.jee.quickr.order.entity.VenueCategory;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,12 +10,10 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Builder
-public class Venue implements Serializable {
+public class VenueModel {
     private UUID id;
     private String name;
     private VenueCategory venueCategory;
     @Singular
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private List<Order> orders;
+    private List<OrderModel> orders;
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core">
+<f:view>
+    <h:head>
+        <meta charset="UTF-8"/>
+        <meta name="description" content="QuickrAPI"/>
+        <meta name="keywords" content="RPG"/>
+        <meta name="author" content="Michał Tarnowski"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Quickr API</title>
+
+        <h:outputStylesheet library="webjars" name="mdb-ui-kit/6.4.0/css/mdb.min.css"/>
+        <h:outputStylesheet library="default" name="css/main.css"/>
+        <h:outputScript library="webjars" name="mdb-ui-kit/6.4.0/js/mdb.min.js"/>
+        <h:outputScript library="mdb" name="js/main.js" target="body"/>
+    </h:head>
+    <h:body>
+        <div class="container">
+            <div>
+                <header class="main-header">
+                    <h:graphicImage styleClass="logo" name="static/logo.png" alt="logo"/>
+                    <h1>QuickrAPI</h1>
+                </header>
+                <nav>
+                    <ul>
+                        <li>
+                            <h:link outcome="/index.html">Home</h:link>
+                        </li>
+                        <li>
+                            <h:link outcome="/venue/venue_list.xhtml">Venues</h:link>
+                        </li>
+                    </ul>
+                </nav>
+                <main>
+                   <ui:insert name="content"/>
+                </main>
+            </div>
+            <footer>
+                <div class="footer-content-container">
+                    <p>Copyright &#169; 2025, Michał Tarnowski</p>
+                </div>
+            </footer>
+        </div>
+
+    </h:body>
+</f:view>
+</html>
