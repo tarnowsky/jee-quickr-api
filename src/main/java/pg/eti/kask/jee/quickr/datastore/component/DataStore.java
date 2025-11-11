@@ -2,6 +2,8 @@ package pg.eti.kask.jee.quickr.datastore.component;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import pg.eti.kask.jee.quickr.order.entity.Order;
@@ -36,7 +38,7 @@ public class DataStore {
                 .findFirst();
     }
 
-    public synchronized List<User> findAllUsers(){
+    public synchronized List<User> findAllUsers() {
         return users.values().stream()
                 .map(cloningUtility::clone)
                 .collect(Collectors.toList());
@@ -67,7 +69,7 @@ public class DataStore {
 
 
     // -=-=-=-=-=-=-=-=-= ORDERS =-=-=-=-=-=-=-=-=-=-=
-    public synchronized List<Order> findAllOrders(){
+    public synchronized List<Order> findAllOrders() {
         return orders.values().stream()
                 .map(cloningUtility::clone)
                 .collect(Collectors.toList());
@@ -82,23 +84,64 @@ public class DataStore {
             return Optional.empty();
         }
 
+        if (!venues.containsKey(value.getVenue().getId())) {
+            throw new BadRequestException("Venue id not found in datastore");
+        }
+
         Order cloned = cloningUtility.clone(value);
         orders.put(cloned.getId(), cloned);
+
+        Venue updatedVenue = venues.get(cloned.getVenue().getId());
+        List<Order> newOrders = new ArrayList<>(updatedVenue.getOrders());
+        if (newOrders.stream().noneMatch(order -> order.getId().equals(cloned.getId()))) {
+            newOrders.add(cloned);
+            updatedVenue.setOrders(newOrders);
+            updateVenue(updatedVenue);
+        }
+
+
         return Optional.of(cloned);
     }
 
     public synchronized Optional<Order> updateOrder(Order value) {
+        if (!orders.containsKey(value.getId())) {
+            return Optional.empty();
+        }
+
         Order cloned = cloningUtility.clone(value);
+        Venue venue = venues.get(cloned.getVenue().getId());
+
+        if (venue == null) {
+            return Optional.empty();
+        }
+
+        Venue updatedVenue = venues.get(cloned.getVenue().getId());
+        List<Order> newOrders = new ArrayList<>(updatedVenue.getOrders());
+        newOrders.removeIf(order -> order.getId().equals(cloned.getId()));
+        newOrders.add(cloned);
+        updatedVenue.setOrders(newOrders);
+        updateVenue(updatedVenue);
+
         return Optional.ofNullable(orders.replace(cloned.getId(), cloned));
     }
 
     public synchronized Optional<Order> removeOrderById(UUID id) {
+        if (!orders.containsKey(id)) {
+            return Optional.empty();
+        }
+
+        Venue updatedVenue = venues.get(orders.get(id).getVenue().getId());
+        List<Order> newOrders = new ArrayList<>(updatedVenue.getOrders());
+        newOrders.removeIf(order -> order.getId().equals(id));
+        updatedVenue.setOrders(newOrders);
+        updateVenue(updatedVenue);
+
         return Optional.ofNullable(orders.remove(id));
     }
 
 
     // -=-=-=-=-=-=-=-=-= VENUES =-=-=-=-=-=-=-=-=-=-=
-    public synchronized List<Venue> findAllVenues(){
+    public synchronized List<Venue> findAllVenues() {
         return venues.values().stream()
                 .map(cloningUtility::clone)
                 .collect(Collectors.toList());
@@ -124,6 +167,11 @@ public class DataStore {
     }
 
     public synchronized Optional<Venue> removeVenueById(UUID id) {
+        if (!venues.containsKey(id)) {
+            throw new NotFoundException("No venue with given id found in datastore");
+        }
+
+        venues.get(id).getOrders().forEach(order -> orders.remove(order.getId()));
         return Optional.ofNullable(venues.remove(id));
     }
 }

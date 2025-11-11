@@ -2,10 +2,10 @@ package pg.eti.kask.jee.quickr.order.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import pg.eti.kask.jee.quickr.controller.servlet.exception.IdNotUniqueException;
-import pg.eti.kask.jee.quickr.controller.servlet.exception.NotFoundException;
 import pg.eti.kask.jee.quickr.order.entity.Order;
 import pg.eti.kask.jee.quickr.order.repository.api.OrderRepository;
 import pg.eti.kask.jee.quickr.order.repository.api.VenueRepository;
@@ -40,7 +40,7 @@ public class OrderService {
         }
 
         return orderRepository.create(user)
-                .orElseThrow(() -> new IdNotUniqueException("Order with a given id %s exists in the datastore"
+                .orElseThrow(() -> new BadRequestException("Order with a given id %s exists in the datastore"
                     .formatted(user.getId())));
     }
 

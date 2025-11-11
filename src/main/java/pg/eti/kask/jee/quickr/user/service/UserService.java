@@ -2,10 +2,10 @@ package pg.eti.kask.jee.quickr.user.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import pg.eti.kask.jee.quickr.controller.servlet.exception.IdNotUniqueException;
-import pg.eti.kask.jee.quickr.controller.servlet.exception.NotFoundException;
 import pg.eti.kask.jee.quickr.crypto.component.Pbkdf2PasswordHash;
 import pg.eti.kask.jee.quickr.order.entity.Order;
 import pg.eti.kask.jee.quickr.order.repository.api.OrderRepository;
@@ -46,7 +46,7 @@ public class UserService {
 
         user.setPassword(passwordHash.generate(user.getPassword().toCharArray()));
         return userRepository.create(user)
-                .orElseThrow(() -> new IdNotUniqueException("User with a given id %s exists in the datastore"
+                .orElseThrow(() -> new BadRequestException("User with a given id %s exists in the datastore"
                     .formatted(user.getId())));
     }
 
