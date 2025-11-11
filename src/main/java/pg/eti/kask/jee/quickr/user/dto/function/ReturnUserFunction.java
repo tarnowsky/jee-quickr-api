@@ -10,6 +10,12 @@ public class ReturnUserFunction implements Function<User, GetUserResponse> {
     public GetUserResponse apply(User user) {
         return GetUserResponse.builder()
                 .id(user.getId())
+                .orders(user.getOrders().stream()
+                        .map(order -> GetUserResponse.Order.builder()
+                                .id(order.getId())
+                                .price(order.getPrice())
+                                .build())
+                        .toList())
                 .email(user.getEmail())
                 .login(user.getLogin())
                 .birthDate(user.getBirthDate())
