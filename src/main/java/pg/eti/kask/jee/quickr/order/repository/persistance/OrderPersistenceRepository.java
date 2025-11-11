@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.order.repository.persistance;
 
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequestScoped
 public class OrderPersistenceRepository implements OrderRepository {
 
     private EntityManager em;

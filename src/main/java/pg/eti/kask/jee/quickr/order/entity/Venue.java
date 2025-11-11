@@ -24,6 +24,6 @@ public class Venue implements Serializable {
     @Singular
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "venue", cascade = CascadeType.REMOVE)
     private List<Order> orders;
 }

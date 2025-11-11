@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.user.repository.persistence;
 
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import pg.eti.kask.jee.quickr.user.entity.User;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequestScoped
 public class UserPersistenceRepository implements UserRepository {
 
     private EntityManager em;
@@ -20,9 +22,10 @@ public class UserPersistenceRepository implements UserRepository {
 
     @Override
     public Optional<User> findByLogin(String login) {
-        return Optional.ofNullable(
-                em.createQuery("select u from User u where u.login = :login", User.class).getSingleResult()
-        );
+        return em.createQuery("select u from User u where u.login = :login", User.class)
+                        .setParameter("login", login)
+                        .getResultStream()
+                        .findFirst();
     }
 
     @Override

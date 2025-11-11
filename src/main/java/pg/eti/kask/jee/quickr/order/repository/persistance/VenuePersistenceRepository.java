@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.order.repository.persistance;
 
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import pg.eti.kask.jee.quickr.order.entity.Venue;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequestScoped
 public class VenuePersistenceRepository implements VenueRepository {
 
     private EntityManager em;
