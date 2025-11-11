@@ -2,6 +2,7 @@ package pg.eti.kask.jee.quickr.order.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;
@@ -24,34 +25,37 @@ public class VenueService {
         this.repository = repository;
     }
 
+    public List<Venue> findAll() {
+        return repository.findAll();
+    }
+
     public Venue find(@NonNull UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Venue with a given id %s not found".formatted(id)));
     }
 
-    public Venue create(@NonNull Venue user) {
-        if (user.getId() == null) {
-            throw new IllegalArgumentException("Venue id cannot be null");
+    @Transactional
+    public Venue create(@NonNull Venue venue) {
+        if (repository.findById(venue.getId()).isPresent()) {
+            throw new IllegalArgumentException("Venue already exists");
         }
 
-        return repository.create(user)
+        return repository.create(venue)
                 .orElseThrow(() -> new BadRequestException("Venue with a given id %s exists in the datastore"
-                    .formatted(user.getId())));
+                    .formatted(venue.getId())));
     }
 
-    public List<Venue> findAll() {
-        return repository.findAll();
-    }
-
-    public Venue update(@NonNull Venue user) {
-        if (user.getId() == null) {
+    @Transactional
+    public Venue update(@NonNull Venue venue) {
+        if (venue.getId() == null) {
             throw new IllegalArgumentException("Venue id cannot be null");
         }
 
-        return repository.update(user)
-                .orElseThrow(() -> new NotFoundException("Venue id %s not found in datastore".formatted(user.getId())));
+        return repository.update(venue)
+                .orElseThrow(() -> new NotFoundException("Venue id %s not found in datastore".formatted(venue.getId())));
     }
 
+    @Transactional
     public Venue delete(@NonNull UUID id) {
         return repository.delete(id)
                 .orElseThrow(() -> new NotFoundException("Venue id %s not found in datastore".formatted(id)));
