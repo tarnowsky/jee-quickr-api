@@ -55,7 +55,13 @@ public class OrderCreate implements Serializable {
     }
 
     public void init() {
+
+        assert conversation != null;
+        assert factory != null;
+        assert venueService != null;
+
         if (conversation.isTransient()) {
+            assert userService != null;
             order = OrderCreateModel.builder()
                     .id(UUID.randomUUID())
                     .venue(factory.venueToModel().apply(venueService.find(venueId)))
@@ -66,6 +72,11 @@ public class OrderCreate implements Serializable {
     }
 
     public String saveAction() {
+
+        assert conversation != null;
+        assert factory != null;
+        assert venueService != null;
+
         Order newOrder = factory.modelToOrder(userService).apply(order);
         Venue venueEntity = venueService.find(venueId);
         orderService.create(newOrder);
@@ -73,12 +84,15 @@ public class OrderCreate implements Serializable {
         List<Order> mutableOrders = new ArrayList<>(venueEntity.getOrders());
         mutableOrders.add(newOrder);
         venueEntity.setOrders(mutableOrders);
+        venueService.update(venueEntity);
 
         conversation.end();
-        return "/venue/venue_list?faces-redirect=true";
+        return "/venue/venue_view?id=%s&faces-redirect=true".formatted(venueId);
     }
 
     public String cancelAction() {
+        assert conversation != null;
+
         conversation.end();
         return "/venue/venue_list?faces-redirect=true";
     }
