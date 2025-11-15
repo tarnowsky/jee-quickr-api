@@ -15,7 +15,6 @@ public class CreateOrderFunction implements BiFunction<UUID, PutOrderRequest, Or
         return Order.builder()
                 .id(id)
                 .price(req.getPrice())
-                .venue(Venue.builder().id(req.getVenueId()).build())
                 .user(User.builder().id(req.getUserId()).build())
                 .orderDate(req.getOrderDate())
                 .build();

@@ -16,10 +16,14 @@ import pg.eti.kask.jee.quickr.order.dto.GetOrderResponse;
 import pg.eti.kask.jee.quickr.order.dto.GetOrdersResponse;
 import pg.eti.kask.jee.quickr.order.dto.PatchOrderRequest;
 import pg.eti.kask.jee.quickr.order.dto.PutOrderRequest;
+import pg.eti.kask.jee.quickr.order.entity.Order;
+import pg.eti.kask.jee.quickr.order.entity.Venue;
 import pg.eti.kask.jee.quickr.order.service.OrderService;
 import pg.eti.kask.jee.quickr.order.service.VenueService;
 import pg.eti.kask.jee.quickr.user.service.UserService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -69,14 +73,20 @@ public class OrderRestController implements OrderController {
     }
 
     @Override
-    public void putOrder(UUID id, PutOrderRequest req) {
+    public void putOrder(UUID venueId, UUID orderId, PutOrderRequest req) {
 
         try {
-            orderService.create(factory.createOrderFunction().apply(id, req));
+            Order newOrder = orderService.create(factory.createOrderFunction().apply(orderId, req));
+            Venue venueToUpdate = venueService.find(venueId);
+
+            newOrder.setVenue(venueToUpdate);
+            orderService.update(newOrder);
+
             response.setHeader("Location", uriInfo.getBaseUriBuilder()
                     .path(OrderController.class, "getOrder")
-                    .build(id)
+                    .build(orderId)
                     .toString());
+
         throw new WebApplicationException(Response.Status.CREATED);
 
         } catch (TransactionalException ex) {

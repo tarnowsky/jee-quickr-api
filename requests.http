@@ -79,14 +79,13 @@ GET {{baseUrl}}/orders/{{orderId}}
 Accept: application/json
 
 ### Utwórz nowe zamówienie (PUT)
-PUT {{baseUrl}}/orders/{{newOrderId}}
+PUT {{baseUrl}}/venues/{{venueId}}/orders/{{newOrderId}}
 Content-Type: application/json
 
 {
   "price": 15.99,
   "orderDate": "2025-12-24",
-  "userId": "{{mikeId}}",
-  "venueId": "{{venueId}}"
+  "userId": "{{mikeId}}"
 }
 
 ### Zaktualizuj częściowo zamówienie (PATCH)
@@ -106,7 +105,7 @@ GET {{baseUrl}}/venues
 Accept: application/json
 
 ### Pobierz pojedynczy obiekt
-GET {{baseUrl}}/venues/d59593c0-0b25-48d4-b3fa-5451dd9a4c32
+GET {{baseUrl}}/venues/{{venueId}}
 Accept: application/json
 
 ### Usuń obiekt

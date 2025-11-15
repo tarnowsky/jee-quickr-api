@@ -33,9 +33,9 @@ public interface OrderController {
     GetOrdersResponse getUserOrders(@PathParam("id") UUID id);
 
     @PUT
-    @Path("/orders/{id}")
+    @Path("/venues/{venueId}/orders/{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
-    void putOrder(@PathParam("id") UUID id, PutOrderRequest req);
+    void putOrder(@PathParam("venueId") UUID venueId, @PathParam("orderId") UUID orderId, PutOrderRequest req);
 
     @PATCH
     @Path("/orders/{id}")

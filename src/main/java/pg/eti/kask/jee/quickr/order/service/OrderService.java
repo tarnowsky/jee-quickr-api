@@ -45,10 +45,6 @@ public class OrderService {
             throw new IllegalArgumentException("Order already exists.");
         }
 
-        if (venueRepository.findById(order.getVenue().getId()).isEmpty()) {
-            throw new IllegalArgumentException("Venue with given id does not exist");
-        }
-
         if (userRepository.findById(order.getUser().getId()).isEmpty()) {
             throw new IllegalArgumentException("User with given id does not exist");
         }
