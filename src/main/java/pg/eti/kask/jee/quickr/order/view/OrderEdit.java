@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.NotFoundException;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Singular;
 import pg.eti.kask.jee.quickr.component.ModelFunctionFactory;
 import pg.eti.kask.jee.quickr.order.entity.Order;
 import pg.eti.kask.jee.quickr.order.model.OrderEditModel;

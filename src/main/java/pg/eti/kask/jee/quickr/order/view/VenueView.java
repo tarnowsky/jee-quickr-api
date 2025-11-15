@@ -63,7 +63,10 @@ public class VenueView implements Serializable {
         mutableOrders.remove(orderEntity);
         venueEntity.setOrders(mutableOrders);
 
-        // Usuń zamówienie z serwisu
+        // Usuń zamówienie z venue
+        venueService.update(venueEntity);
+
+        // Usuń zamówienie z db
         orderService.delete(orderEntity.getId());
         return "venue_view?faces-redirect=true&includeViewParams=true";
     }
