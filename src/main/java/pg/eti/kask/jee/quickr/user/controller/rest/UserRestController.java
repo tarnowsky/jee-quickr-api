@@ -56,17 +56,17 @@ public class UserRestController implements UserController {
     }
 
     @Override
-    public GetUsersResponse getUsersResponse() {
+    public GetUsersResponse getUsers() {
         return factory.returnUsersFunction().apply(userService.findAll());
     }
 
     @Override
-    public GetUserResponse getUserResponse(UUID id) {
+    public GetUserResponse getUser(UUID id) {
         return factory.returnUserFunction().apply(userService.find(id));
     }
 
     @Override
-    public void putUserRequest(UUID id, PutUserRequest req) {
+    public void putUser(UUID id, PutUserRequest req) {
         try {
             userService.create(factory.createUserFunction().apply(id, req));
             response.setHeader("Location", uriInfo.getBaseUriBuilder()
@@ -85,7 +85,7 @@ public class UserRestController implements UserController {
     }
 
     @Override
-    public void patchUserRequest(UUID id, PatchUserRequest req) {
+    public void patchUser(UUID id, PatchUserRequest req) {
         try {
             userService.update(factory.updateUserFunction().apply(userService.find(id), req));
             response.setHeader("Location", uriInfo.getBaseUriBuilder()

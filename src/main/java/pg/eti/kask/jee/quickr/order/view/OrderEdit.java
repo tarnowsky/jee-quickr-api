@@ -1,6 +1,7 @@
 package pg.eti.kask.jee.quickr.order.view;
 
 
+import jakarta.ejb.EJB;
 import jakarta.faces.annotation.View;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
@@ -23,12 +24,16 @@ import java.util.UUID;
 @Named
 public class OrderEdit implements Serializable {
 
-    private final OrderService orderService;
+    private OrderService orderService;
     private final ModelFunctionFactory factory;
 
-    @Inject
-    public OrderEdit(OrderService orderService, ModelFunctionFactory factory) {
+    @EJB
+    public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
+    }
+
+    @Inject
+    public OrderEdit(ModelFunctionFactory factory) {
         this.factory = factory;
     }
 

@@ -14,22 +14,22 @@ public interface UserController {
     @GET
     @Path("/users")
     @Produces(MediaType.APPLICATION_JSON)
-    GetUsersResponse getUsersResponse();
+    GetUsersResponse getUsers();
 
     @GET
     @Path("/users/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    GetUserResponse getUserResponse(@PathParam("id") UUID id);
+    GetUserResponse getUser(@PathParam("id") UUID id);
 
     @PUT
     @Path("/users/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    void putUserRequest(@PathParam("id") UUID id, PutUserRequest req);
+    void putUser(@PathParam("id") UUID id, PutUserRequest req);
 
     @PATCH
     @Path("/users/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    void patchUserRequest(@PathParam("id") UUID id, PatchUserRequest req);
+    void patchUser(@PathParam("id") UUID id, PatchUserRequest req);
 
     @DELETE
     @Path("/users/{id}")
@@ -38,7 +38,7 @@ public interface UserController {
 
     @GET
     @Path("/users/{id}/avatar")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces("image/png")
     byte[] getUserAvatar(@PathParam("id") UUID id);
 
     @PUT

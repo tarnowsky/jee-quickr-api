@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.order.view;
 
+import jakarta.ejb.EJB;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -11,16 +12,25 @@ import pg.eti.kask.jee.quickr.order.service.VenueService;
 @RequestScoped
 @Named
 public class VenueList {
-    private final VenueService venueService;
     private VenuesModel venues;
+    private VenueService venueService;
+    private OrderService orderService;
+
     private final ModelFunctionFactory factory;
-    private final OrderService orderService;
+
+    @EJB
+    public void setVenueService(VenueService venueService) {
+        this.venueService = venueService;
+    }
+
+    @EJB
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @Inject
-    public VenueList(VenueService service, ModelFunctionFactory factory, OrderService orderService) {
-        this.venueService = service;
+    public VenueList(ModelFunctionFactory factory) {
         this.factory = factory;
-        this.orderService = orderService;
     }
 
     public VenuesModel getVenues() {

@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.order.view;
 
+import jakarta.ejb.EJB;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -21,12 +22,16 @@ import java.util.UUID;
 @Named
 public class OrderView implements Serializable {
 
-    private final OrderService service;
+    private OrderService service;
     private final ModelFunctionFactory factory;
 
-    @Inject
-    public OrderView(OrderService service, ModelFunctionFactory factory) {
+    @EJB
+    public void setService(OrderService service) {
         this.service = service;
+    }
+
+    @Inject
+    public OrderView(ModelFunctionFactory factory) {
         this.factory = factory;
     }
 
@@ -41,10 +46,12 @@ public class OrderView implements Serializable {
         try {
             Order order = service.find(id);
             this.order = factory.orderToModel().apply(order);
-        } catch (NotFoundException ex) {
-            FacesContext.getCurrentInstance().getExternalContext().responseSendError(
+        } catch (NotFoundException e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.getExternalContext().responseSendError(
                     HttpServletResponse.SC_NOT_FOUND, "Order not found"
             );
+            context.responseComplete();
         }
     }
 }

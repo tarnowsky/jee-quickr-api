@@ -110,7 +110,11 @@ public class OrderRestController implements OrderController {
             throw new WebApplicationException(Response.Status.CREATED);
 
         } catch (EJBException ex) {
-
+            if (ex.getCause() instanceof IllegalArgumentException) {
+                log.log(Level.WARNING, ex.getMessage(), ex);
+                throw new BadRequestException(ex);
+            }
+            throw ex;
         }
 
     }

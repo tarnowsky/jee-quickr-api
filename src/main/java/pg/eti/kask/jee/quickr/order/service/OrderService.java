@@ -8,6 +8,7 @@ import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import pg.eti.kask.jee.quickr.order.entity.Order;
+import pg.eti.kask.jee.quickr.order.exceptions.OrderNotFoundException;
 import pg.eti.kask.jee.quickr.order.repository.api.OrderRepository;
 import pg.eti.kask.jee.quickr.order.repository.api.VenueRepository;
 import pg.eti.kask.jee.quickr.user.repository.api.UserRepository;
@@ -37,7 +38,7 @@ public class OrderService {
 
     public Order find(@NonNull UUID id) {
         return orderRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Order with a given id %s not found".formatted(id)));
+                .orElseThrow(() -> new OrderNotFoundException("Order with a given id %s not found".formatted(id)));
     }
 
     public Order create(@NonNull Order order) {
@@ -60,12 +61,12 @@ public class OrderService {
         }
 
         return orderRepository.update(order)
-                .orElseThrow(() -> new NotFoundException("Order id %s not found in datastore".formatted(order.getId())));
+                .orElseThrow(() -> new OrderNotFoundException("Order id %s not found in datastore".formatted(order.getId())));
     }
 
     public Order delete(@NonNull UUID id) {
         return orderRepository.delete(id)
-                .orElseThrow(() -> new NotFoundException("Order id %s not found in datastore".formatted(id)));
+                .orElseThrow(() -> new OrderNotFoundException("Order id %s not found in datastore".formatted(id)));
     }
 
 

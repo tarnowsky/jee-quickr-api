@@ -17,6 +17,7 @@ import pg.eti.kask.jee.quickr.order.service.OrderService;
 import pg.eti.kask.jee.quickr.order.service.VenueService;
 import pg.eti.kask.jee.quickr.user.entity.User;
 import pg.eti.kask.jee.quickr.user.entity.UserRole;
+import pg.eti.kask.jee.quickr.user.exceptions.UserNotFoundException;
 import pg.eti.kask.jee.quickr.user.service.UserService;
 
 import java.time.LocalDate;
@@ -61,7 +62,7 @@ public class InitializedData {
         try {
             userService.find("admin");
 
-        } catch (NotFoundException ex) {
+        } catch (UserNotFoundException ex) {
 
             // -=-=-=-=-=-=-=-= USERS =-=-=-=-=-=-=-=-=-
 

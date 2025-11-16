@@ -11,6 +11,7 @@ import pg.eti.kask.jee.quickr.crypto.component.Pbkdf2PasswordHash;
 import pg.eti.kask.jee.quickr.order.entity.Order;
 import pg.eti.kask.jee.quickr.order.repository.api.OrderRepository;
 import pg.eti.kask.jee.quickr.user.entity.User;
+import pg.eti.kask.jee.quickr.user.exceptions.UserNotFoundException;
 import pg.eti.kask.jee.quickr.user.repository.api.UserRepository;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class UserService {
 
     public User find(@NonNull String login) {
         return userRepository.findByLogin(login)
-                .orElseThrow(() -> new NotFoundException("User with a given login %s not found".formatted(login)));
+                .orElseThrow(() -> new UserNotFoundException("User with a given login (%s) not found".formatted(login)));
     }
 
     public User create(@NonNull User user) {

@@ -12,7 +12,6 @@ GET {{baseUrl}}/users/{{userId}}
 Accept: application/json
 
 ### Utwórz nowego użytkownika (PUT)
-# Zastępuje istniejącego użytkownika lub tworzy nowego, jeśli nie istnieje.
 PUT {{baseUrl}}/users/{{newUserId}}
 Content-Type: application/json
 
@@ -114,7 +113,7 @@ DELETE {{baseUrl}}/venues/{{venueId}}
 Accept: application/json
 
 ### Pobierz wszystkie zamówienia restauracji
-GET {{baseUrl}}/venues/d59593c0-0b25-48d4-b3fa-5451dd9a4c32/orders
+GET {{baseUrl}}/venues/{{venueId}}
 
 ### Pobierz wszystkie zamówienia uzytkownika
 GET {{baseUrl}}/users/{{userId}}/orders

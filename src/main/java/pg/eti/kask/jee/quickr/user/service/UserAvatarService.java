@@ -5,6 +5,7 @@ import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;
 
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class UserAvatarService {
         Path avatarPath = getAvatarFilePath(userId);
 
         if (!Files.exists(avatarPath)) {
-            throw new IllegalStateException("Avatar not found for user: " + userId);
+            throw new NotFoundException("Avatar not found for user: " + userId);
         }
 
         try {

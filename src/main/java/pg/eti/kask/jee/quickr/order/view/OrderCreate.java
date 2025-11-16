@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.order.view;
 
+import jakarta.ejb.EJB;
 import jakarta.enterprise.context.Conversation;
 import jakarta.enterprise.context.ConversationScoped;
 import jakarta.inject.Inject;
@@ -12,7 +13,6 @@ import pg.eti.kask.jee.quickr.component.ModelFunctionFactory;
 import pg.eti.kask.jee.quickr.order.entity.Order;
 import pg.eti.kask.jee.quickr.order.entity.Venue;
 import pg.eti.kask.jee.quickr.order.model.OrderCreateModel;
-import pg.eti.kask.jee.quickr.order.model.VenueModel;
 import pg.eti.kask.jee.quickr.order.service.OrderService;
 import pg.eti.kask.jee.quickr.order.service.VenueService;
 import pg.eti.kask.jee.quickr.user.service.UserService;
@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @ConversationScoped
 @Named
@@ -29,10 +28,11 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(force = true)
 public class OrderCreate implements Serializable {
 
-    private final OrderService orderService;
-    private final VenueService venueService;
-    private final UserService userService;
+    private OrderService orderService;
+    private VenueService venueService;
+    private UserService userService;
 
+    private final Conversation conversation;
     private final ModelFunctionFactory factory;
 
     @Getter
@@ -42,14 +42,24 @@ public class OrderCreate implements Serializable {
     @Setter
     private UUID venueId;
 
-    private final Conversation conversation;
+    @EJB
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @EJB
+    public void setVenueService(VenueService venueService) {
+        this.venueService = venueService;
+    }
+
+    @EJB
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @Inject
     public OrderCreate(
-            OrderService orderService, VenueService venueService, UserService userService, ModelFunctionFactory factory, Conversation conversation) {
-        this.orderService = orderService;
-        this.venueService = venueService;
-        this.userService = userService;
+            ModelFunctionFactory factory, Conversation conversation) {
         this.factory = factory;
         this.conversation = conversation;
     }

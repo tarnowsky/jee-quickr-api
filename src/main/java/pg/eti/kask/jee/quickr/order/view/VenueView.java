@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.order.view;
 
+import jakarta.ejb.EJB;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -25,9 +26,11 @@ import java.util.UUID;
 @ViewScoped
 @Named
 public class VenueView implements Serializable {
-    private final VenueService venueService;
+
+    private VenueService venueService;
+    private OrderService orderService;
+
     private final ModelFunctionFactory factory;
-    private final OrderService orderService;
 
     @Setter
     @Getter
@@ -36,11 +39,19 @@ public class VenueView implements Serializable {
     @Getter
     private VenueModel venue;
 
-    @Inject
-    public VenueView(VenueService venueService, ModelFunctionFactory factory, OrderService orderService) {
+    @EJB
+    public void setVenueService(VenueService venueService) {
         this.venueService = venueService;
-        this.factory = factory;
+    }
+
+    @EJB
+    public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
+    }
+
+    @Inject
+    public VenueView(ModelFunctionFactory factory) {
+        this.factory = factory;
     }
 
     public void init() throws IOException {
