@@ -1,8 +1,10 @@
 package pg.eti.kask.jee.quickr.user.controller.rest;
 
 import jakarta.ejb.EJB;
+import jakarta.ejb.EJBException;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.WebApplicationException;
@@ -19,6 +21,7 @@ import pg.eti.kask.jee.quickr.user.service.UserService;
 
 import java.io.InputStream;
 import java.util.UUID;
+import java.util.logging.Level;
 
 @Log
 @Path("")
@@ -64,12 +67,21 @@ public class UserRestController implements UserController {
 
     @Override
     public void putUserRequest(UUID id, PutUserRequest req) {
-        userService.create(factory.createUserFunction().apply(id, req));
-        response.setHeader("Location", uriInfo.getBaseUriBuilder()
-                .path(UserController.class, "getUser")
-                .build(id)
-                .toString());
-        throw new WebApplicationException(Response.Status.CREATED);
+        try {
+            userService.create(factory.createUserFunction().apply(id, req));
+            response.setHeader("Location", uriInfo.getBaseUriBuilder()
+                    .path(UserController.class, "getUser")
+                    .build(id)
+                    .toString());
+            throw new WebApplicationException(Response.Status.CREATED);
+        } catch (EJBException ex) {
+            if (ex.getCause() instanceof IllegalArgumentException) {
+                log.log(Level.WARNING, ex.getMessage(), ex);
+                throw new BadRequestException(ex);
+            }
+            throw ex;
+        }
+
     }
 
     @Override
@@ -77,9 +89,9 @@ public class UserRestController implements UserController {
         try {
             userService.update(factory.updateUserFunction().apply(userService.find(id), req));
             response.setHeader("Location", uriInfo.getBaseUriBuilder()
-                .path(UserController.class, "getUser")
-                .build(id)
-                .toString());
+                    .path(UserController.class, "getUser")
+                    .build(id)
+                    .toString());
             throw new WebApplicationException(Response.Status.NO_CONTENT);
         } catch (NotFoundException ex) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);

@@ -1,6 +1,7 @@
 package pg.eti.kask.jee.quickr.order.controller.rest;
 
 import jakarta.ejb.EJB;
+import jakarta.ejb.EJBException;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.TransactionalException;
@@ -108,12 +109,8 @@ public class OrderRestController implements OrderController {
 
             throw new WebApplicationException(Response.Status.CREATED);
 
-        } catch (TransactionalException ex) {
-            if (ex.getCause() instanceof IllegalArgumentException) {
-                log.log(Level.WARNING, ex.getMessage(), ex);
-                throw new BadRequestException(ex);
-            }
-            throw ex;
+        } catch (EJBException ex) {
+
         }
 
     }
