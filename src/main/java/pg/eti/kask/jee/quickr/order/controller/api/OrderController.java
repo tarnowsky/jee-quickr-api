@@ -43,7 +43,7 @@ public interface OrderController {
     void patchOrder(@PathParam("venueId") UUID venueId, @PathParam("orderId") UUID orderId, PatchOrderRequest req);
 
     @DELETE
-    @Path("/orders/{id}")
+    @Path("venues/{venueId}/orders/{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
-    void deleteOrder(@PathParam("id") UUID id);
+    void deleteOrder(@PathParam("venueId") UUID venueId, @PathParam("orderId") UUID orderId);
 }

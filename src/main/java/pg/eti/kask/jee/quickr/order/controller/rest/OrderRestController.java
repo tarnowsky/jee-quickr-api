@@ -121,7 +121,12 @@ public class OrderRestController implements OrderController {
     }
 
     @Override
-    public void deleteOrder(UUID id) {
-        orderService.delete(id);
+    public void deleteOrder(UUID venueId, UUID orderId) {
+        try {
+            venueService.find(venueId);
+            orderService.delete(orderId);
+        } catch (NotFoundException ex) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
     }
 }
