@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.order.controller.rest;
 
+import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.TransactionalException;
@@ -29,26 +30,40 @@ import java.util.logging.Level;
 @Log
 @Path("")
 public class OrderRestController implements OrderController {
-    private final DtoFunctionFactory factory;
-    private final OrderService orderService;
-    private final VenueService venueService;
-    private final UserService userService;
-    private final UriInfo uriInfo;
+
+    private OrderService orderService;
+    private VenueService venueService;
+    private UserService userService;
+
     private HttpServletResponse response;
 
-    @Inject
-    public OrderRestController(DtoFunctionFactory factory, OrderService orderService, VenueService venueService, UserService userService,
-                               @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo) {
-        this.factory = factory;
+    private final DtoFunctionFactory factory;
+    private final UriInfo uriInfo;
+
+    @EJB
+    public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
+    }
+
+    @EJB
+    public void setVenueService(VenueService venueService) {
         this.venueService = venueService;
+    }
+
+    @EJB
+    public void setUserService(UserService userService) {
         this.userService = userService;
-        this.uriInfo = uriInfo;
     }
 
     @Context
     public void setResponse(HttpServletResponse response) {
         this.response = response;
+    }
+
+    @Inject
+    public OrderRestController(DtoFunctionFactory factory, @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo) {
+        this.factory = factory;
+        this.uriInfo = uriInfo;
     }
 
     @Override

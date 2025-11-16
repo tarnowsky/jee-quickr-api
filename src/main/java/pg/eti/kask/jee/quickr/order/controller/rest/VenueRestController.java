@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.order.controller.rest;
 
+import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import pg.eti.kask.jee.quickr.component.DtoFunctionFactory;
@@ -13,12 +14,16 @@ import java.util.UUID;
 @Path("")
 public class VenueRestController implements VenueController {
 
-    private final VenueService venueService;
+    private VenueService venueService;
     private final DtoFunctionFactory factory;
 
-    @Inject
-    public VenueRestController(VenueService venueService, DtoFunctionFactory factory) {
+    @EJB
+    public void setVenueService(VenueService venueService) {
         this.venueService = venueService;
+    }
+
+    @Inject
+    public VenueRestController(DtoFunctionFactory factory) {
         this.factory = factory;
     }
 
