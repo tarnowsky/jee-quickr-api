@@ -57,8 +57,13 @@ public class OrderRestController implements OrderController {
     }
 
     @Override
-    public GetOrderResponse getOrder(UUID id) {
-        return factory.returnOrderFunction().apply(orderService.find(id));
+    public GetOrderResponse getOrder(UUID venueId, UUID orderId) {
+        try {
+            venueService.find(venueId);
+            return factory.returnOrderFunction().apply(orderService.find(orderId));
+        } catch (NotFoundException ex) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
     }
 
     @Override

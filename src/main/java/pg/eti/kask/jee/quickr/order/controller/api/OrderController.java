@@ -18,9 +18,9 @@ public interface OrderController {
     GetOrdersResponse getOrders();
 
     @GET
-    @Path("/orders/{id}")
+    @Path("/venues/{venueId}/orders/{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
-    GetOrderResponse getOrder(@PathParam("id") UUID id);
+    GetOrderResponse getOrder(@PathParam("venueId") UUID venueId, @PathParam("orderId") UUID id);
 
     @GET
     @Path("/venues/{id}/orders")
