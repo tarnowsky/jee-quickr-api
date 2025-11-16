@@ -94,7 +94,7 @@ PATCH {{baseUrl}}/venues/{{venueId}}/orders/{{newOrderId}}
 Content-Type: application/json
 
 {
-  "price": 5.99
+  "price": 333.33
 }
 
 ### Usuń zamówienie

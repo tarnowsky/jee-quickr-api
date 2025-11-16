@@ -88,7 +88,7 @@ public class OrderRestController implements OrderController {
 
             response.setHeader("Location", uriInfo.getBaseUriBuilder()
                     .path(OrderController.class, "getOrder")
-                    .build(orderId)
+                    .build(venueId, orderId)
                     .toString());
 
             throw new WebApplicationException(Response.Status.CREATED);
@@ -111,7 +111,7 @@ public class OrderRestController implements OrderController {
 
             response.setHeader("Location", uriInfo.getBaseUriBuilder()
                     .path(OrderController.class, "getOrder")
-                    .build(orderId)
+                    .build(venueId, orderId)
                     .toString());
 
             throw new WebApplicationException(Response.Status.NO_CONTENT);
