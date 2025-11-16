@@ -69,13 +69,14 @@ DELETE {{baseUrl}}/users/{{userId}}/avatar
 @newOrderId = 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
 @venueId = 2ff1b71b-6927-4446-b4e0-1c573b38bc70
 @mikeId = 25ba2834-f92d-4f77-98c3-46355037c624
+@fastFoodId = 2ff1b71b-6927-4446-b4e0-1c573b38bc70
 
 ### Pobierz wszystkie zamówienia
 GET {{baseUrl}}/orders
 Accept: application/json
 
 ### Pobierz pojedyncze zamówienie
-GET {{baseUrl}}/orders/{{orderId}}
+GET {{baseUrl}}/venues/{{fastFoodId}}/orders/{{orderId}}
 Accept: application/json
 
 ### Utwórz nowe zamówienie (PUT)
@@ -97,7 +98,7 @@ Content-Type: application/json
 }
 
 ### Usuń zamówienie
-DELETE {{baseUrl}}/orders/4141c59a-e436-4322-8336-db8facce08c0
+DELETE {{baseUrl}}/venues/{{venueId}}/orders/{{newOrderId}}
 Accept: application/json
 
 ### Pobierz wszystkie obiekty
