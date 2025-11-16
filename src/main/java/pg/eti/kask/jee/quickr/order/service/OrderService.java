@@ -1,8 +1,8 @@
 package pg.eti.kask.jee.quickr.order.service;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,8 @@ import pg.eti.kask.jee.quickr.user.repository.api.UserRepository;
 import java.util.List;
 import java.util.UUID;
 
-@ApplicationScoped
+@LocalBean
+@Stateless
 @NoArgsConstructor(force = true)
 public class OrderService {
 
@@ -39,7 +40,6 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundException("Order with a given id %s not found".formatted(id)));
     }
 
-    @Transactional
     public Order create(@NonNull Order order) {
         if (orderRepository.findById(order.getId()).isPresent()) {
             throw new IllegalArgumentException("Order already exists.");
@@ -54,7 +54,6 @@ public class OrderService {
                     .formatted(order.getId())));
     }
 
-    @Transactional
     public Order update(@NonNull Order order) {
         if (order.getId() == null) {
             throw new IllegalArgumentException("Order id cannot be null");
@@ -64,7 +63,6 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundException("Order id %s not found in datastore".formatted(order.getId())));
     }
 
-    @Transactional
     public Order delete(@NonNull UUID id) {
         return orderRepository.delete(id)
                 .orElseThrow(() -> new NotFoundException("Order id %s not found in datastore".formatted(id)));

@@ -1,5 +1,7 @@
 package pg.eti.kask.jee.quickr.user.service;
 
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -16,7 +18,8 @@ import pg.eti.kask.jee.quickr.user.repository.api.UserRepository;
 import java.util.List;
 import java.util.UUID;
 
-@ApplicationScoped
+@LocalBean
+@Stateless
 @NoArgsConstructor(force = true)
 public class UserService {
     private final UserRepository userRepository;
@@ -44,7 +47,6 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("User with a given login %s not found".formatted(login)));
     }
 
-    @Transactional
     public User create(@NonNull User user) {
         if (userRepository.findById(user.getId()).isPresent()) {
             throw new IllegalArgumentException("User already exists");
@@ -56,7 +58,6 @@ public class UserService {
                         .formatted(user.getId())));
     }
 
-    @Transactional
     public User update(@NonNull User user) {
         if (user.getId() == null) {
             throw new IllegalArgumentException("User id cannot be null");
@@ -66,7 +67,6 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("User id %s not found in datastore".formatted(user.getId())));
     }
 
-    @Transactional
     public User delete(@NonNull UUID id) {
         return userRepository.delete(id)
                 .orElseThrow(() -> new NotFoundException("User id %s not found in datastore".formatted(id)));
