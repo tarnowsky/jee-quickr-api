@@ -1,11 +1,14 @@
-package pg.eti.kask.jee.quickr.configuration.observer;
+package pg.eti.kask.jee.quickr.configuration.singleton;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.context.control.RequestContextController;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import pg.eti.kask.jee.quickr.order.entity.Order;
 import pg.eti.kask.jee.quickr.order.entity.Venue;
@@ -19,30 +22,42 @@ import pg.eti.kask.jee.quickr.user.service.UserService;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@ApplicationScoped
+@Singleton
+@Startup
+@TransactionAttribute(value = TransactionAttributeType.NOT_SUPPORTED)
+@NoArgsConstructor
 public class InitializedData {
 
-    private final UserService userService;
-    private final OrderService orderService;
-    private final VenueService venueService;
-    private final RequestContextController requestContextController;
+    private UserService userService;
+    private OrderService orderService;
+    private VenueService venueService;
+
+    @EJB
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @EJB
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @EJB
+    public void setVenueService(VenueService venueService) {
+        this.venueService = venueService;
+    }
 
     @Inject
-    public InitializedData(UserService userService, OrderService orderService, VenueService venueService, RequestContextController requestContextController) {
+    public InitializedData(UserService userService, OrderService orderService, VenueService venueService) {
         this.userService = userService;
         this.orderService = orderService;
         this.venueService = venueService;
-        this.requestContextController = requestContextController;
     }
 
-    public void contextInitialized(@Observes @Initialized(ApplicationScoped.class) Object init) {
-        init();
-    }
 
+    @PostConstruct
     @SneakyThrows
     public void init() {
-        requestContextController.activate();
-
         try {
             userService.find("admin");
 
@@ -172,8 +187,5 @@ public class InitializedData {
             orderService.create(cafeConLatte);
             orderService.create(cappuccino);
         }
-
-        requestContextController.deactivate();
-
     }
 }
