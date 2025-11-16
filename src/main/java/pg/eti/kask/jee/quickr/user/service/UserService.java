@@ -2,9 +2,7 @@ package pg.eti.kask.jee.quickr.user.service;
 
 import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;

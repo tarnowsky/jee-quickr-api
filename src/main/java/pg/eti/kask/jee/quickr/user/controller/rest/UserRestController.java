@@ -1,4 +1,4 @@
-package pg.eti.kask.jee.quickr.user.controller.resr;
+package pg.eti.kask.jee.quickr.user.controller.rest;
 
 import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
@@ -13,6 +13,8 @@ import lombok.extern.java.Log;
 import pg.eti.kask.jee.quickr.component.DtoFunctionFactory;
 import pg.eti.kask.jee.quickr.user.controller.api.UserController;
 import pg.eti.kask.jee.quickr.user.dto.*;
+import pg.eti.kask.jee.quickr.user.entity.User;
+import pg.eti.kask.jee.quickr.user.service.UserAvatarService;
 import pg.eti.kask.jee.quickr.user.service.UserService;
 
 import java.io.InputStream;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class UserRestController implements UserController {
 
     private UserService userService;
+    private UserAvatarService avatarService;
     private HttpServletResponse response;
 
     private final DtoFunctionFactory factory;
@@ -39,6 +42,10 @@ public class UserRestController implements UserController {
         this.userService = userService;
     }
 
+    @EJB
+    public void setAvatarService(UserAvatarService avatarService) {
+        this.avatarService = avatarService;
+    }
 
     @Context
     public void setResponse(HttpServletResponse response) {
@@ -92,21 +99,27 @@ public class UserRestController implements UserController {
 
     @Override
     public byte[] getUserAvatar(UUID id) {
-        return new byte[0];
+        return avatarService.getAvatar(id);
     }
 
     @Override
     public void putUserAvatar(UUID id, InputStream avatar) {
-
+        avatarService.saveAvatar(id, avatar);
+        User user = userService.find(id);
+        user.setAvatarPath(avatarService.getAvatarPath(id));
+        userService.update(user);
     }
 
     @Override
     public void deleteUserAvatar(UUID id) {
-
+        avatarService.deleteAvatar(id);
+        User user = userService.find(id);
+        user.setAvatarPath(null);
+        userService.update(user);
     }
 
     @Override
     public void putUserPasswordByUserId(UUID id, PutPasswordRequest req) {
-
+        userService.updatePassword(factory.updateUserPasswordFunction().apply(userService.find(id), req));
     }
 }

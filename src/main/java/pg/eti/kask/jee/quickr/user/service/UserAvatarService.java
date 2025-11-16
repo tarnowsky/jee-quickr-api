@@ -1,5 +1,7 @@
 package pg.eti.kask.jee.quickr.user.service;
 
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -13,7 +15,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
-@ApplicationScoped
+@Stateless
+@LocalBean
 @NoArgsConstructor(force = true)
 public class UserAvatarService {
     private final Path avatarDirectory;
