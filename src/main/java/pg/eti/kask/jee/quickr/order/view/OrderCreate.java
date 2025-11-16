@@ -76,6 +76,7 @@ public class OrderCreate implements Serializable {
         assert conversation != null;
         assert factory != null;
         assert venueService != null;
+        assert orderService != null;
 
         Order newOrder = factory.modelToOrder(userService).apply(order);
         Venue venueEntity = venueService.find(venueId);

@@ -89,7 +89,7 @@ Content-Type: application/json
 }
 
 ### Zaktualizuj częściowo zamówienie (PATCH)
-PATCH {{baseUrl}}/orders/{{orderId}}
+PATCH {{baseUrl}}/venues/{{venueId}}/orders/{{newOrderId}}
 Content-Type: application/json
 
 {

@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.TransactionalException;
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
@@ -22,8 +23,6 @@ import pg.eti.kask.jee.quickr.order.service.OrderService;
 import pg.eti.kask.jee.quickr.order.service.VenueService;
 import pg.eti.kask.jee.quickr.user.service.UserService;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -87,7 +86,7 @@ public class OrderRestController implements OrderController {
                     .build(orderId)
                     .toString());
 
-        throw new WebApplicationException(Response.Status.CREATED);
+            throw new WebApplicationException(Response.Status.CREATED);
 
         } catch (TransactionalException ex) {
             if (ex.getCause() instanceof IllegalArgumentException) {
@@ -100,8 +99,20 @@ public class OrderRestController implements OrderController {
     }
 
     @Override
-    public void patchOrder(UUID id, PatchOrderRequest req) {
-        orderService.update(factory.updateOrderFunction().apply(orderService.find(id), req));
+    public void patchOrder(UUID venueId, UUID orderId, PatchOrderRequest req) {
+        try {
+            venueService.find(venueId);
+            orderService.update(factory.updateOrderFunction().apply(orderService.find(orderId), req));
+
+            response.setHeader("Location", uriInfo.getBaseUriBuilder()
+                    .path(OrderController.class, "getOrder")
+                    .build(orderId)
+                    .toString());
+
+            throw new WebApplicationException(Response.Status.NO_CONTENT);
+        } catch (NotFoundException ex) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
     }
 
     @Override
