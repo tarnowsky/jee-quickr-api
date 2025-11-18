@@ -1,0 +1,153 @@
+package pg.eti.kask.jee.quickr.controller.impl;
+
+import jakarta.ejb.EJB;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.TransactionalException;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+import lombok.extern.java.Log;
+import pg.eti.kask.jee.quickr.component.DtoFunctionFactory;
+import pg.eti.kask.jee.quickr.dto.order.*;
+import pg.eti.kask.jee.quickr.service.OrderService;
+import pg.eti.kask.jee.quickr.service.UserService;
+import pg.eti.kask.jee.quickr.service.VenueService;
+
+import java.util.UUID;
+import java.util.logging.Level;
+
+@Log
+@Path("")
+public class OrderController implements pg.eti.kask.jee.quickr.controller.api.OrderController {
+
+    private OrderService orderService;
+    private VenueService venueService;
+    private UserService userService;
+
+    private HttpServletResponse response;
+
+    private final DtoFunctionFactory factory;
+    private final UriInfo uriInfo;
+
+    @EJB
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @EJB
+    public void setVenueService(VenueService venueService) {
+        this.venueService = venueService;
+    }
+
+    @EJB
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @Context
+    public void setResponse(HttpServletResponse response) {
+        this.response = response;
+    }
+
+    @Inject
+    public OrderController(DtoFunctionFactory factory, @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo) {
+        this.factory = factory;
+        this.uriInfo = uriInfo;
+    }
+
+    @Override
+    public GetOrdersResponse getOrders() {
+        return factory.returnOrdersFunction().apply(orderService.findAll());
+    }
+
+
+    @Override
+    public GetOrderResponse getOrder(UUID orderId) {
+        return orderService.findById(orderId)
+                .map(factory.returnOrderFunction())
+                .orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public GetOrdersResponse getVenueOrders(UUID id) {
+        return orderService.findAllByVenue(id)
+                .map(factory.returnOrdersFunction())
+                .orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public GetOrdersResponse getUserOrders(UUID id) {
+        return orderService.findAllByUser(id)
+                .map(factory.returnOrdersFunction())
+                .orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public void putOrder(UUID orderId, PutOrderRequest req) {
+
+        try {
+            orderService.create(factory.createOrderFunction().apply(orderId, req));
+
+            String location = uriInfo.getBaseUriBuilder()
+                    .path("api")
+                    .path("orders")
+                    .path(orderId.toString())
+                    .build()
+                    .toString();
+            response.setHeader("Location", location);
+            throw new WebApplicationException(Response.status(Response.Status.CREATED).build());
+        } catch (TransactionalException ex) {
+            if (ex.getCause() instanceof IllegalArgumentException) {
+                log.log(Level.WARNING, ex.getMessage(), ex);
+                throw new BadRequestException(ex);
+            }
+            throw ex;
+        }
+
+    }
+
+    @Override
+    public void putOrderWithVenueId(UUID venueId, UUID orderId, PutOrderWithVenueRequest req) {
+        try {
+            orderService.create(
+                    factory.createOrderWithVenueFunction().apply(orderId, venueId, req)
+            );
+
+            String location = uriInfo.getBaseUriBuilder()
+                    .path("api")
+                    .path("firearms")
+                    .path(orderId.toString())
+                    .build()
+                    .toString();
+            response.setHeader("Location", location);
+            throw new WebApplicationException(Response.status(Response.Status.CREATED).build());
+        } catch (TransactionalException ex) {
+            if (ex.getCause() instanceof IllegalArgumentException) {
+                log.log(Level.WARNING, ex.getMessage(), ex);
+                throw new BadRequestException(ex);
+            }
+            throw ex;
+        }
+    }
+
+    @Override
+    public void patchOrder(UUID orderId, PatchOrderRequest req) {
+        orderService.findById(orderId).ifPresentOrElse(
+                entity -> orderService.update(factory.updateOrderFunction().apply(entity, req)),
+                NotFoundException::new
+        );
+    }
+
+    @Override
+    public void deleteOrder(UUID orderId) {
+        orderService.findById(orderId).ifPresentOrElse(
+                o -> orderService.delete(orderId),
+                NotFoundException::new
+        );
+    }
+}

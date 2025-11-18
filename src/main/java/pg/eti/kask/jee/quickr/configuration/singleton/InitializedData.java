@@ -2,23 +2,18 @@ package pg.eti.kask.jee.quickr.configuration.singleton;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.*;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.Initialized;
-import jakarta.enterprise.context.control.RequestContextController;
-import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
-import pg.eti.kask.jee.quickr.order.entity.Order;
-import pg.eti.kask.jee.quickr.order.entity.Venue;
-import pg.eti.kask.jee.quickr.order.entity.VenueCategory;
-import pg.eti.kask.jee.quickr.order.service.OrderService;
-import pg.eti.kask.jee.quickr.order.service.VenueService;
-import pg.eti.kask.jee.quickr.user.entity.User;
-import pg.eti.kask.jee.quickr.user.entity.UserRole;
-import pg.eti.kask.jee.quickr.user.exceptions.UserNotFoundException;
-import pg.eti.kask.jee.quickr.user.service.UserService;
+import pg.eti.kask.jee.quickr.entity.Order;
+import pg.eti.kask.jee.quickr.entity.Venue;
+import pg.eti.kask.jee.quickr.entity.enums.VenueCategory;
+import pg.eti.kask.jee.quickr.service.OrderService;
+import pg.eti.kask.jee.quickr.service.VenueService;
+import pg.eti.kask.jee.quickr.entity.User;
+import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
+import pg.eti.kask.jee.quickr.controller.exception.UserNotFoundException;
+import pg.eti.kask.jee.quickr.service.UserService;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -59,11 +54,7 @@ public class InitializedData {
     @PostConstruct
     @SneakyThrows
     public void init() {
-        try {
-            userService.find("admin");
-
-        } catch (UserNotFoundException ex) {
-
+            if (userService.findByLogin("admin").isEmpty()) {
             // -=-=-=-=-=-=-=-= USERS =-=-=-=-=-=-=-=-=-
 
             User admin = User.builder()
@@ -71,7 +62,7 @@ public class InitializedData {
                     .email("admin@quickr.com")
                     .login("admin")
                     .password("adminadmin")
-                    .role(UserRole.ADMIN)
+                    .role(UserRoles.ADMIN)
                     .birthDate(LocalDate.of(1969, 5, 17))
                     .build();
 
@@ -80,7 +71,7 @@ public class InitializedData {
                     .email("victor@quickr.com")
                     .login("victor")
                     .password("victorvictor")
-                    .role(UserRole.ADMIN)
+                    .role(UserRoles.ADMIN)
                     .birthDate(LocalDate.of(2002, 7, 18))
                     .build();
 
@@ -89,7 +80,7 @@ public class InitializedData {
                     .email("mike@quickr.com")
                     .login("mike")
                     .password("mikemike")
-                    .role(UserRole.ADMIN)
+                    .role(UserRoles.ADMIN)
                     .birthDate(LocalDate.of(2003, 1, 6))
                     .build();
 
@@ -98,7 +89,7 @@ public class InitializedData {
                     .email("debbie@quickr.com")
                     .login("debbie")
                     .password("debbiedebbie")
-                    .role(UserRole.ADMIN)
+                    .role(UserRoles.ADMIN)
                     .birthDate(LocalDate.of(2003, 12, 20))
                     .build();
 

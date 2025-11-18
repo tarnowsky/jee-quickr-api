@@ -2,16 +2,35 @@
 @baseUrl = http://localhost:9080/quickr-api/api
 @userId = 76d2704d-1531-404a-94de-ccc38030bb9f
 @newUserId = a1b2c3d4-e5f6-7890-1234-567890abcdef
+@orderId = bb31dcb1-6b55-47ec-a06c-be7d5ad76372
+@newOrderId = 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+@venueId = 2ff1b71b-6927-4446-b4e0-1c573b38bc70
+@newVenueId = 2ff1b71b-6927-4446-b4e0-1c573b38bc71
+@mikeId = 25ba2834-f92d-4f77-98c3-46355037c624
+@fastFoodId = 2ff1b71b-6927-4446-b4e0-1c573b38bc70
+
+
+###################################################
+### User Controller Requests (UserController.java)
+###################################################
 
 ### Pobierz wszystkich użytkowników
+# GET /users
 GET {{baseUrl}}/users
 Accept: application/json
 
-### Pobierz pojedynczego użytkownika (victor)
+### Pobierz pojedynczego użytkownika po ID (victor)
+# GET /users/{id}
 GET {{baseUrl}}/users/{{userId}}
 Accept: application/json
 
+### Pobierz pojedynczego użytkownika po loginie (victor)
+# GET /users/login/{login}
+GET {{baseUrl}}/users/login/victor
+Accept: application/json
+
 ### Utwórz nowego użytkownika (PUT)
+# PUT /users/{id}
 PUT {{baseUrl}}/users/{{newUserId}}
 Content-Type: application/json
 
@@ -23,7 +42,7 @@ Content-Type: application/json
 }
 
 ### Zaktualizuj częściowo użytkownika (PATCH)
-# Aktualizuje tylko podane pola dla użytkownika "victor".
+# PATCH /users/{id}
 PATCH {{baseUrl}}/users/{{userId}}
 Content-Type: application/json
 
@@ -33,11 +52,16 @@ Content-Type: application/json
 }
 
 ### Usuń użytkownika
-# Usuwa nowo utworzonego użytkownika.
+# DELETE /users/{id}
 DELETE {{baseUrl}}/users/{{newUserId}}
 Accept: application/json
 
-### Dodaj avatara victor
+### Pobierz avatara użytkownika
+# GET /users/{id}/avatar
+GET {{baseUrl}}/users/{{userId}}/avatar
+
+### Dodaj/zmień avatara użytkownika
+# PUT /users/{id}/avatar
 PUT {{baseUrl}}/users/{{userId}}/avatar
 Content-Type: multipart/form-data; boundary=boundary
 
@@ -47,49 +71,100 @@ Content-Disposition: form-data; name="avatar"; filename="victor-avatar.jpeg"
 < src/main/resources/pg/eti/kask/jee/quickr/configuration/user/avatar_1.jpeg
 --boundary--
 
-### Pobierz avatara victor
-GET {{baseUrl}}/users/{{userId}}/avatar
-
-### Zmień avatara victor
-PUT {{baseUrl}}/users/{{userId}}/avatar
-Content-Type: multipart/form-data; boundary=boundary
-
---boundary
-Content-Disposition: form-data; name="avatar"; filename="victor-new-avatar.jpeg"
-
-< src/main/resources/pg/eti/kask/jee/quickr/configuration/user/avatar_2.jpeg
---boundary--
-
-### Usuń avatara victor
+### Usuń avatara użytkownika
+# DELETE /users/{id}/avatar
 DELETE {{baseUrl}}/users/{{userId}}/avatar
 
-### Zmienne środowiskowe dla Order i Venue
-@orderId = bb31dcb1-6b55-47ec-a06c-be7d5ad76372
-@newOrderId = 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
-@venueId = 2ff1b71b-6927-4446-b4e0-1c573b38bc70
-@mikeId = 25ba2834-f92d-4f77-98c3-46355037c624
-@fastFoodId = 2ff1b71b-6927-4446-b4e0-1c573b38bc70
+### Zmień hasło użytkownika
+# PUT /users/{id}/passwd
+PUT {{baseUrl}}/users/{{userId}}/passwd
+Content-Type: application/json
+
+{
+  "password": "newStrongPassword123!"
+}
+
+
+####################################################
+### Venue Controller Requests (VenueController.java)
+####################################################
+
+### Pobierz wszystkie obiekty
+# GET /venues
+GET {{baseUrl}}/venues
+Accept: application/json
+
+### Pobierz pojedynczy obiekt
+# GET /venues/{id}
+GET {{baseUrl}}/venues/{{venueId}}
+Accept: application/json
+
+### Utwórz/zaktualizuj pojedynczy obiekt
+# PUT /venues/{id}
+PUT {{baseUrl}}/venues/{{newVenueId}}
+Content-Type: application/json
+
+{
+  "name": "New Venue",
+  "venueCategory": "FAST_FOOD"
+}
+
+### Usuń obiekt
+# DELETE /venues/{id}
+DELETE {{baseUrl}}/venues/{{venueId}}
+Accept: application/json
+
+
+####################################################
+### Order Controller Requests (OrderController.java)
+####################################################
 
 ### Pobierz wszystkie zamówienia
+# GET /orders
 GET {{baseUrl}}/orders
 Accept: application/json
 
 ### Pobierz pojedyncze zamówienie
-GET {{baseUrl}}/venues/{{fastFoodId}}/orders/{{orderId}}
+# GET /orders/{orderId}
+GET {{baseUrl}}/orders/{{orderId}}
 Accept: application/json
 
-### Utwórz nowe zamówienie (PUT)
-PUT {{baseUrl}}/venues/{{venueId}}/orders/{{newOrderId}}
+### Pobierz wszystkie zamówienia dla danego obiektu
+# GET /venues/{venueId}/orders
+GET {{baseUrl}}/venues/{{venueId}}/orders
+Accept: application/json
+
+### Pobierz wszystkie zamówienia danego użytkownika
+# GET /users/{id}/orders
+GET {{baseUrl}}/users/{{userId}}/orders
+Accept: application/json
+
+### Utwórz/zaktualizuj zamówienie (bez kontekstu obiektu)
+# PUT /venues/orders/{orderId}
+PUT {{baseUrl}}/venues/orders/{{newOrderId}}
+Content-Type: application/json
+
+{
+  "price": 25.50,
+  "orderDate": "2025-11-20",
+  "userId": "{{userId}}",
+  "venueId": "{{venueId}}"
+}
+
+### Utwórz/zaktualizuj zamówienie (w kontekście obiektu)
+# PUT /venues/{venueId}/orders/{orderId}
+PUT {{baseUrl}}/venues/{{newVenueId}}/orders/{{newOrderId}}
 Content-Type: application/json
 
 {
   "price": 15.99,
   "orderDate": "2025-12-24",
-  "userId": "{{mikeId}}"
+  "userId": "{{newUserId}}"
 }
 
 ### Zaktualizuj częściowo zamówienie (PATCH)
-PATCH {{baseUrl}}/venues/{{venueId}}/orders/{{newOrderId}}
+# PATCH /orders/{orderId}
+PATCH {{baseUrl}}/orders/{{newOrderId}}
 Content-Type: application/json
 
 {
@@ -97,23 +172,6 @@ Content-Type: application/json
 }
 
 ### Usuń zamówienie
-DELETE {{baseUrl}}/venues/{{venueId}}/orders/{{newOrderId}}
+# DELETE /orders/{orderId}
+DELETE {{baseUrl}}/orders/{{newOrderId}}
 Accept: application/json
-
-### Pobierz wszystkie obiekty
-GET {{baseUrl}}/venues
-Accept: application/json
-
-### Pobierz pojedynczy obiekt
-GET {{baseUrl}}/venues/{{venueId}}
-Accept: application/json
-
-### Usuń obiekt
-DELETE {{baseUrl}}/venues/{{venueId}}
-Accept: application/json
-
-### Pobierz wszystkie zamówienia restauracji
-GET {{baseUrl}}/venues/{{venueId}}
-
-### Pobierz wszystkie zamówienia uzytkownika
-GET {{baseUrl}}/users/{{userId}}/orders

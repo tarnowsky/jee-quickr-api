@@ -1,8 +1,11 @@
 package pg.eti.kask.jee.quickr.component;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import pg.eti.kask.jee.quickr.order.dto.function.*;
-import pg.eti.kask.jee.quickr.user.dto.function.*;
+import pg.eti.kask.jee.quickr.dto.order.function.*;
+import pg.eti.kask.jee.quickr.dto.user.function.*;
+import pg.eti.kask.jee.quickr.dto.venue.function.CreateVenueFunction;
+import pg.eti.kask.jee.quickr.dto.venue.function.ReturnVenueFunction;
+import pg.eti.kask.jee.quickr.dto.venue.function.ReturnVenuesFunction;
 
 @ApplicationScoped
 public class DtoFunctionFactory {
@@ -44,4 +47,12 @@ public class DtoFunctionFactory {
     }
 
     public UpdateUserPasswordFunction updateUserPasswordFunction() { return new UpdateUserPasswordFunction(); }
+
+    public CreateVenueFunction createVenueFunction() {
+        return new CreateVenueFunction();
+    }
+
+    public CreateOrderWithVenueFunction createOrderWithVenueFunction() {
+        return new CreateOrderWithVenueFunction();
+    }
 }

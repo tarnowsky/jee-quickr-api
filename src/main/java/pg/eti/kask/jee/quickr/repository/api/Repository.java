@@ -6,7 +6,7 @@ import java.util.Optional;
 public interface Repository<E, K> {
     Optional<E> findById(K id);
     List<E> findAll();
-    Optional<E> create(E entity);
-    Optional<E> update(E entity);
-    Optional<E> delete(K id);
+    void create(E entity);
+    void update(E entity);
+    void delete(E entity);
 }

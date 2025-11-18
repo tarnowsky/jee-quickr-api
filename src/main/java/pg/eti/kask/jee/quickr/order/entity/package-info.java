@@ -1,1 +1,0 @@
-package pg.eti.kask.jee.quickr.order.entity;
