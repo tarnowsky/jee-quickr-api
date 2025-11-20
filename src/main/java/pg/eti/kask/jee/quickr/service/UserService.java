@@ -1,11 +1,12 @@
 package pg.eti.kask.jee.quickr.service;
 
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
-import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;
 import pg.eti.kask.jee.quickr.entity.User;
 import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
@@ -40,18 +41,22 @@ public class UserService {
         this.avatarDirectory = avatarDirectory;
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
     public Optional<User> findById(UUID id) {
         return userRepository.findById(id);
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
     public Optional<User> findByLogin(String login) {
         return userRepository.findByLogin(login);
     }
 
+    @PermitAll
     public void create(User user) {
         validateUser(user);
 
@@ -76,8 +81,10 @@ public class UserService {
         }
 
         userRepository.create(user);
+
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
     public void update(User user) {
         if (user.getId() == null) {
             throw new IllegalArgumentException("User ID cannot be null for update operation");
@@ -102,6 +109,7 @@ public class UserService {
         userRepository.update(user);
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
     public void delete(UUID id) {
         if (id == null) {
             throw new IllegalArgumentException("User ID cannot be null");
@@ -109,7 +117,7 @@ public class UserService {
         userRepository.findById(id).ifPresent(userRepository::delete);
     }
 
-    public boolean verify(String login, String password) {
+    private boolean verify(String login, String password) {
         return passwordHash.verify(password.toCharArray(), findByLogin(login).get().getPassword());
     }
 

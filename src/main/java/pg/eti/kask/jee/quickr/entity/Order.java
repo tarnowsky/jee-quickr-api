@@ -19,14 +19,10 @@ public class Order implements Serializable {
     private UUID id;
     private Double price;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "venue_id")
     private Venue venue;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

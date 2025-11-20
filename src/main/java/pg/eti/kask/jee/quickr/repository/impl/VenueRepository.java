@@ -4,14 +4,13 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import pg.eti.kask.jee.quickr.entity.Venue;
-import pg.eti.kask.jee.quickr.repository.api.VenueRepository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Dependent
-public class VenuePersistenceRepository implements VenueRepository {
+public class VenueRepository implements pg.eti.kask.jee.quickr.repository.api.VenueRepository {
 
     private EntityManager em;
 

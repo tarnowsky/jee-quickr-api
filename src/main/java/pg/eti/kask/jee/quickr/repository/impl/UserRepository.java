@@ -4,14 +4,13 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import pg.eti.kask.jee.quickr.entity.User;
-import pg.eti.kask.jee.quickr.repository.api.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Dependent
-public class UserPersistenceRepository implements UserRepository {
+public class UserRepository implements pg.eti.kask.jee.quickr.repository.api.UserRepository {
 
     private EntityManager em;
 

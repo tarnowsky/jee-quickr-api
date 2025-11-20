@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.controller.impl;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import pg.eti.kask.jee.quickr.component.DtoFunctionFactory;
 import pg.eti.kask.jee.quickr.dto.venue.GetVenueResponse;
 import pg.eti.kask.jee.quickr.dto.venue.GetVenuesResponse;
 import pg.eti.kask.jee.quickr.dto.venue.PutVenueRequest;
+import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
 import pg.eti.kask.jee.quickr.service.VenueService;
 
 import java.util.UUID;
@@ -25,7 +27,7 @@ import java.util.logging.Level;
 @Path("")
 public class VenueController implements pg.eti.kask.jee.quickr.controller.api.VenueController {
 
-    private VenueService venueService;
+    private final VenueService venueService;
     private final DtoFunctionFactory factory;
     private final UriInfo uriInfo;
     private HttpServletResponse response;
@@ -35,18 +37,20 @@ public class VenueController implements pg.eti.kask.jee.quickr.controller.api.Ve
         this.response = response;
     }
 
-    @EJB
-    public void setVenueService(VenueService venueService) {
-        this.venueService = venueService;
-    }
 
     @Inject
-    public VenueController(DtoFunctionFactory factory, UriInfo uriInfo) {
+    public VenueController(
+            VenueService venueService,
+            DtoFunctionFactory factory,
+            @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo
+    ) {
+        this.venueService = venueService;
         this.factory = factory;
         this.uriInfo = uriInfo;
     }
 
     @Override
+    @RolesAllowed(UserRoles.USER)
     public GetVenuesResponse getVenues() {
         return factory.returnVenuesFunction().apply(venueService.findAll());
     }
@@ -57,6 +61,7 @@ public class VenueController implements pg.eti.kask.jee.quickr.controller.api.Ve
     }
 
     @Override
+    @RolesAllowed(UserRoles.ADMIN)
     public void putVenue(UUID id, PutVenueRequest putVenueRequest) {
         try {
             venueService.create(

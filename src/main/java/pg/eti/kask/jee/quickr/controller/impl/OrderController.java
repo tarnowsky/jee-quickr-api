@@ -1,7 +1,9 @@
 package pg.eti.kask.jee.quickr.controller.impl;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
+import jakarta.security.enterprise.SecurityContext;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.TransactionalException;
 import jakarta.ws.rs.BadRequestException;
@@ -14,6 +16,7 @@ import jakarta.ws.rs.core.UriInfo;
 import lombok.extern.java.Log;
 import pg.eti.kask.jee.quickr.component.DtoFunctionFactory;
 import pg.eti.kask.jee.quickr.dto.order.*;
+import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
 import pg.eti.kask.jee.quickr.service.OrderService;
 import pg.eti.kask.jee.quickr.service.UserService;
 import pg.eti.kask.jee.quickr.service.VenueService;
@@ -23,14 +26,12 @@ import java.util.logging.Level;
 
 @Log
 @Path("")
+@RolesAllowed(UserRoles.USER)
 public class OrderController implements pg.eti.kask.jee.quickr.controller.api.OrderController {
 
     private OrderService orderService;
-    private VenueService venueService;
-    private UserService userService;
-
     private HttpServletResponse response;
-
+    private SecurityContext securityContext;
     private final DtoFunctionFactory factory;
     private final UriInfo uriInfo;
 
@@ -39,19 +40,14 @@ public class OrderController implements pg.eti.kask.jee.quickr.controller.api.Or
         this.orderService = orderService;
     }
 
-    @EJB
-    public void setVenueService(VenueService venueService) {
-        this.venueService = venueService;
-    }
-
-    @EJB
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
     @Context
     public void setResponse(HttpServletResponse response) {
         this.response = response;
+    }
+
+    @Inject
+    public void setSecurityContext(@SuppressWarnings("CdiInjectionPointsInspection") jakarta.security.enterprise.SecurityContext securityContext) {
+        this.securityContext = securityContext;
     }
 
     @Inject
@@ -62,9 +58,8 @@ public class OrderController implements pg.eti.kask.jee.quickr.controller.api.Or
 
     @Override
     public GetOrdersResponse getOrders() {
-        return factory.returnOrdersFunction().apply(orderService.findAll());
+        return factory.returnOrdersFunction().apply(orderService.findAllForCallerPrincipal());
     }
-
 
     @Override
     public GetOrderResponse getOrder(UUID orderId) {
@@ -74,15 +69,15 @@ public class OrderController implements pg.eti.kask.jee.quickr.controller.api.Or
     }
 
     @Override
-    public GetOrdersResponse getVenueOrders(UUID id) {
-        return orderService.findAllByVenue(id)
+    public GetOrdersResponse getVenueOrders(UUID venueId) {
+        return orderService.findAllByVenue(venueId)
                 .map(factory.returnOrdersFunction())
                 .orElseThrow(NotFoundException::new);
     }
 
     @Override
-    public GetOrdersResponse getUserOrders(UUID id) {
-        return orderService.findAllByUser(id)
+    public GetOrdersResponse getUserOrders(UUID userId) {
+        return orderService.findAllByUser(userId)
                 .map(factory.returnOrdersFunction())
                 .orElseThrow(NotFoundException::new);
     }
@@ -91,7 +86,12 @@ public class OrderController implements pg.eti.kask.jee.quickr.controller.api.Or
     public void putOrder(UUID orderId, PutOrderRequest req) {
 
         try {
-            orderService.create(factory.createOrderFunction().apply(orderId, req));
+            OrderService svc = orderService;
+            if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
+                orderService.create(factory.createOrderFunction().apply(orderId, req));
+            } else {
+                svc.createForCallerPrincipal(factory.createOrderFunction().apply(orderId, req));
+            }
 
             String location = uriInfo.getBaseUriBuilder()
                     .path("api")
@@ -114,9 +114,15 @@ public class OrderController implements pg.eti.kask.jee.quickr.controller.api.Or
     @Override
     public void putOrderWithVenueId(UUID venueId, UUID orderId, PutOrderWithVenueRequest req) {
         try {
-            orderService.create(
-                    factory.createOrderWithVenueFunction().apply(orderId, venueId, req)
-            );
+            if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
+                orderService.create(
+                        factory.createOrderWithVenueFunction().apply(orderId, venueId, req)
+                );
+            } else {
+                orderService.createForCallerPrincipal(
+                        factory.createOrderWithVenueFunction().apply(orderId, venueId, req)
+                );
+            }
 
             String location = uriInfo.getBaseUriBuilder()
                     .path("api")

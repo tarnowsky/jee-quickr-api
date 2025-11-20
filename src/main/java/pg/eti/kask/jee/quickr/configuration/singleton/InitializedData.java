@@ -1,67 +1,66 @@
 package pg.eti.kask.jee.quickr.configuration.singleton;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.security.DeclareRoles;
+import jakarta.annotation.security.RunAs;
 import jakarta.ejb.*;
 import jakarta.inject.Inject;
+import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.java.Log;
 import pg.eti.kask.jee.quickr.entity.Order;
-import pg.eti.kask.jee.quickr.entity.Venue;
-import pg.eti.kask.jee.quickr.entity.enums.VenueCategory;
-import pg.eti.kask.jee.quickr.service.OrderService;
-import pg.eti.kask.jee.quickr.service.VenueService;
 import pg.eti.kask.jee.quickr.entity.User;
+import pg.eti.kask.jee.quickr.entity.Venue;
 import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
-import pg.eti.kask.jee.quickr.controller.exception.UserNotFoundException;
-import pg.eti.kask.jee.quickr.service.UserService;
+import pg.eti.kask.jee.quickr.entity.enums.VenueCategory;
+import pg.eti.kask.jee.quickr.repository.api.OrderRepository;
+import pg.eti.kask.jee.quickr.repository.api.UserRepository;
+import pg.eti.kask.jee.quickr.repository.api.VenueRepository;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Singleton
 @Startup
-@TransactionAttribute(value = TransactionAttributeType.NOT_SUPPORTED)
-@NoArgsConstructor
+@TransactionAttribute(value = TransactionAttributeType.REQUIRED)
+@NoArgsConstructor(force = true)
+@DependsOn("InitializeAdminService")
+@DeclareRoles({UserRoles.ADMIN, UserRoles.USER})
+@RunAs(UserRoles.ADMIN)
+@Log
 public class InitializedData {
 
-    private UserService userService;
-    private OrderService orderService;
-    private VenueService venueService;
-
-    @EJB
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    @EJB
-    public void setOrderService(OrderService orderService) {
-        this.orderService = orderService;
-    }
-
-    @EJB
-    public void setVenueService(VenueService venueService) {
-        this.venueService = venueService;
-    }
+    private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final VenueRepository venueRepository;
+    private final Pbkdf2PasswordHash passwordHash;
 
     @Inject
-    public InitializedData(UserService userService, OrderService orderService, VenueService venueService) {
-        this.userService = userService;
-        this.orderService = orderService;
-        this.venueService = venueService;
+    public InitializedData(
+            UserRepository userRepository,
+            OrderRepository orderRepository,
+            VenueRepository venueRepository,
+            @SuppressWarnings("CdiInjectionPointsInspection") Pbkdf2PasswordHash passwordHash
+    ) {
+        this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
+        this.venueRepository = venueRepository;
+        this.passwordHash = passwordHash;
     }
-
 
     @PostConstruct
     @SneakyThrows
     public void init() {
-            if (userService.findByLogin("admin").isEmpty()) {
+        if (!userRepository.existsByLogin("admin")) {
+
             // -=-=-=-=-=-=-=-= USERS =-=-=-=-=-=-=-=-=-
 
             User admin = User.builder()
                     .id(UUID.fromString("99426767-3f31-4796-bed6-316fed80dcc0"))
                     .email("admin@quickr.com")
                     .login("admin")
-                    .password("adminadmin")
+                    .password(passwordHash.generate("adminadmin".toCharArray()))
                     .role(UserRoles.ADMIN)
                     .birthDate(LocalDate.of(1969, 5, 17))
                     .build();
@@ -70,8 +69,8 @@ public class InitializedData {
                     .id(UUID.fromString("76d2704d-1531-404a-94de-ccc38030bb9f"))
                     .email("victor@quickr.com")
                     .login("victor")
-                    .password("victorvictor")
-                    .role(UserRoles.ADMIN)
+                    .password(passwordHash.generate("useruser".toCharArray()))
+                    .role(UserRoles.USER)
                     .birthDate(LocalDate.of(2002, 7, 18))
                     .build();
 
@@ -79,8 +78,8 @@ public class InitializedData {
                     .id(UUID.fromString("25ba2834-f92d-4f77-98c3-46355037c624"))
                     .email("mike@quickr.com")
                     .login("mike")
-                    .password("mikemike")
-                    .role(UserRoles.ADMIN)
+                    .password(passwordHash.generate("useruser".toCharArray()))
+                    .role(UserRoles.USER)
                     .birthDate(LocalDate.of(2003, 1, 6))
                     .build();
 
@@ -88,15 +87,15 @@ public class InitializedData {
                     .id(UUID.fromString("7d81de18-a1ff-4b9b-959c-0bf8035d66c7"))
                     .email("debbie@quickr.com")
                     .login("debbie")
-                    .password("debbiedebbie")
-                    .role(UserRoles.ADMIN)
+                    .password(passwordHash.generate("useruser".toCharArray()))
+                    .role(UserRoles.USER)
                     .birthDate(LocalDate.of(2003, 12, 20))
                     .build();
 
-            userService.create(admin);
-            userService.create(victor);
-            userService.create(mike);
-            userService.create(debbie);
+            userRepository.create(admin);
+            userRepository.create(victor);
+            userRepository.create(mike);
+            userRepository.create(debbie);
 
             // -=-=-=-=-=-=-=-= VENUES =-=-=-=-=-=-=-=-=-
 
@@ -124,10 +123,10 @@ public class InitializedData {
                     .venueCategory(VenueCategory.CAFE)
                     .build();
 
-            venueService.create(foodTrack);
-            venueService.create(restaurant);
-            venueService.create(fastFood);
-            venueService.create(cafe);
+            venueRepository.create(foodTrack);
+            venueRepository.create(restaurant);
+            venueRepository.create(fastFood);
+            venueRepository.create(cafe);
 
 
             // -=-=-=-=-=-=-=-= ORDERS =-=-=-=-=-=-=-=-=-
@@ -173,11 +172,11 @@ public class InitializedData {
                     .build();
 
 
-            orderService.create(burgerNoCoke);
-            orderService.create(steak);
-            orderService.create(burgerAndCoke);
-            orderService.create(cafeConLatte);
-            orderService.create(cappuccino);
+            orderRepository.create(burgerNoCoke);
+            orderRepository.create(steak);
+            orderRepository.create(burgerAndCoke);
+            orderRepository.create(cafeConLatte);
+            orderRepository.create(cappuccino);
         }
     }
 }

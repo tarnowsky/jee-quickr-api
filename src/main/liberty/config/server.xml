@@ -25,7 +25,7 @@
         </application-bnd>
     </application>
 
-    <dataSource id="QuickrAPIOrdersDataSource" jndiName="jdbc/QuickrAPIOrders">
+    <dataSource id="QuickrAPIDataSource" jndiName="jdbc/QuickrAPI">
         <jdbcDriver javax.sql.XADataSource="org.h2.jdbcx.JdbcDataSource"
                     javax.sql.ConnectionPoolDataSource="org.h2.jdbcx.JdbcDataSource"
                     javax.sql.DataSource="org.h2.jdbcx.JdbcDataSource"

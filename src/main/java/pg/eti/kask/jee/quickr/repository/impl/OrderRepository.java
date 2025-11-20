@@ -6,7 +6,6 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import pg.eti.kask.jee.quickr.entity.Order;
 import pg.eti.kask.jee.quickr.entity.Venue;
-import pg.eti.kask.jee.quickr.repository.api.OrderRepository;
 import pg.eti.kask.jee.quickr.entity.User;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Dependent
-public class OrderPersistenceRepository implements OrderRepository {
+public class OrderRepository implements pg.eti.kask.jee.quickr.repository.api.OrderRepository {
 
     private EntityManager em;
 

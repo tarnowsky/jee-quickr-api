@@ -5,7 +5,7 @@ import jakarta.security.enterprise.authentication.mechanism.http.BasicAuthentica
 import jakarta.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 
 @ApplicationScoped
-@BasicAuthenticationMechanismDefinition(realmName = "QuickrAPI")
+@BasicAuthenticationMechanismDefinition(realmName = "QuickrAPIRealm")
 @DatabaseIdentityStoreDefinition(
         dataSourceLookup = "jdbc/QuickrAPI",
         callerQuery = "select password from users where login = ?",

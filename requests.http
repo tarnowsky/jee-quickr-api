@@ -1,177 +1,233 @@
-### Zmienne środowiskowe
+### Environment Variables
 @baseUrl = http://localhost:9080/quickr-api/api
-@userId = 76d2704d-1531-404a-94de-ccc38030bb9f
-@newUserId = a1b2c3d4-e5f6-7890-1234-567890abcdef
-@orderId = bb31dcb1-6b55-47ec-a06c-be7d5ad76372
-@newOrderId = 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
-@venueId = 2ff1b71b-6927-4446-b4e0-1c573b38bc70
-@newVenueId = 2ff1b71b-6927-4446-b4e0-1c573b38bc71
+@adminLogin = admin
+@adminPasswordToken = YWRtaW4tc2VydmljZTphZG1pbmFkbWlu
+@adminAuth = Basic {{adminPasswordToken}}
+
+@userLogin = victor
+@userPasswordToken = dmljdG9yOnVzZXJ1c2Vy
+@userAuth = Basic {{userPasswordToken}}
+
+@testUserLogin = testuser
+@testUserPasswordToken = dGVzdHVzZXI6dGVzdHVzZXJ0ZXN0dXNlcg==
+@testUserAuth = Basic {{testUserPasswordToken}}
+
+@invalidAuth = Basic aW52YWxpZDp0b2tlbg==
+
+@adminId = 99426767-3f31-4796-bed6-316fed80dcc0
+@victorId = 76d2704d-1531-404a-94de-ccc38030bb9f
 @mikeId = 25ba2834-f92d-4f77-98c3-46355037c624
-@fastFoodId = 2ff1b71b-6927-4446-b4e0-1c573b38bc70
+@testUserId = 25ba2834-f92d-4f77-98c3-46355037c625
+
+@venueId = 2ff1b71b-6927-4446-b4e0-1c573b38bc70
+@testVenueId = 2ff1b71b-6927-4446-b4e0-1c573b38bc71
+
+@orderId = bb31dcb1-6b55-47ec-a06c-be7d5ad76372
+@testOrderId = 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+
+@json = application/json
 
 
-###################################################
-### User Controller Requests (UserController.java)
-###################################################
+# USERS TESTS
 
-### Pobierz wszystkich użytkowników
-# GET /users
+### Test 1: Get all users, NO AUTH (403)
+// @no-cookie-jar
 GET {{baseUrl}}/users
-Accept: application/json
+Content-Type: {{json}}
 
-### Pobierz pojedynczego użytkownika po ID (victor)
-# GET /users/{id}
-GET {{baseUrl}}/users/{{userId}}
-Accept: application/json
+### Test 2: Get all users, ADMIN AUTH (200)
+// @no-cookie-jar
+GET {{baseUrl}}/users
+Content-Type: {{json}}
+Authorization: {{adminAuth}}
 
-### Pobierz pojedynczego użytkownika po loginie (victor)
-# GET /users/login/{login}
-GET {{baseUrl}}/users/login/victor
-Accept: application/json
+### Test 3: Get specific user, ADMIN AUTH (200)
+// @no-cookie-jar
+GET {{baseUrl}}/users/{{victorId}}
+Content-Type: {{json}}
+Authorization: {{adminAuth}}
 
-### Utwórz nowego użytkownika (PUT)
-# PUT /users/{id}
-PUT {{baseUrl}}/users/{{newUserId}}
-Content-Type: application/json
+### Test 4: Get specific user, USER AUTH (403)
+// @no-cookie-jar
+GET {{baseUrl}}/users/{{victorId}}
+Content-Type: {{json}}
+Authorization: {{userAuth}}
 
-{
-  "email": "newuser@example.com",
-  "login": "newuser",
-  "password": "password123",
-  "birthDate": "2000-01-01"
-}
-
-### Zaktualizuj częściowo użytkownika (PATCH)
-# PATCH /users/{id}
-PATCH {{baseUrl}}/users/{{userId}}
-Content-Type: application/json
+### Test 5a: Create new user, NO AUTH (201)
+// @no-cookie-jar
+PUT {{baseUrl}}/users/{{testUserId}}
+Content-Type: {{json}}
 
 {
-  "email": "victor.new@quickr.com",
-  "birthDate": "2002-07-19"
+	"login": "testuser",
+	"email": "testuser@quickr.com",
+	"birthDate": "2000-01-01",
+	"password": "testusertestuser",
+	"roles": ["user"]
 }
 
-### Usuń użytkownika
-# DELETE /users/{id}
-DELETE {{baseUrl}}/users/{{newUserId}}
-Accept: application/json
-
-### Pobierz avatara użytkownika
-# GET /users/{id}/avatar
-GET {{baseUrl}}/users/{{userId}}/avatar
-
-### Dodaj/zmień avatara użytkownika
-# PUT /users/{id}/avatar
-PUT {{baseUrl}}/users/{{userId}}/avatar
-Content-Type: multipart/form-data; boundary=boundary
-
---boundary
-Content-Disposition: form-data; name="avatar"; filename="victor-avatar.jpeg"
-
-< src/main/resources/pg/eti/kask/jee/quickr/configuration/user/avatar_1.jpeg
---boundary--
-
-### Usuń avatara użytkownika
-# DELETE /users/{id}/avatar
-DELETE {{baseUrl}}/users/{{userId}}/avatar
-
-### Zmień hasło użytkownika
-# PUT /users/{id}/passwd
-PUT {{baseUrl}}/users/{{userId}}/passwd
-Content-Type: application/json
-
-{
-  "password": "newStrongPassword123!"
-}
-
-
-####################################################
-### Venue Controller Requests (VenueController.java)
-####################################################
-
-### Pobierz wszystkie obiekty
-# GET /venues
+### Test 5b: Test new user for user operation, USER AUTH (200)
+// @no-cookie-jar
 GET {{baseUrl}}/venues
-Accept: application/json
+Content-Type: {{json}}
+Authorization: {{testUserAuth}}
 
-### Pobierz pojedynczy obiekt
-# GET /venues/{id}
+### Test 5c: Test new user for admin operation, USER AUTH (403)
+// @no-cookie-jar
 GET {{baseUrl}}/venues/{{venueId}}
-Accept: application/json
+Content-Type: {{json}}
+Authorization: {{testUserAuth}}
 
-### Utwórz/zaktualizuj pojedynczy obiekt
-# PUT /venues/{id}
-PUT {{baseUrl}}/venues/{{newVenueId}}
-Content-Type: application/json
+### Test 6: Get test user, ADMIN AUTH (200)
+// @no-cookie-jar
+GET {{baseUrl}}/users/{{testUserId}}
+Content-Type: {{json}}
+Authorization: {{adminAuth}}
+
+### Test 7: Delete user, USER AUTH (403)
+// @no-cookie-jar
+DELETE {{baseUrl}}/users/{{testUserId}}
+Content-Type: {{json}}
+Authorization: {{userAuth}}
+
+### Test 8: Delete user, ADMIN AUTH (204)
+// @no-cookie-jar
+DELETE {{baseUrl}}/users/{{testUserId}}
+Content-Type: {{json}}
+Authorization: {{adminAuth}}
+
+###
+
+# CATEGORIES
+
+### Test 9: Create new venue, NO AUTH (401)
+// @no-cookie-jar
+PUT {{baseUrl}}/venues/{{testVenueId}}
+Content-Type: {{json}}
 
 {
-  "name": "New Venue",
-  "venueCategory": "FAST_FOOD"
+"name": "Test Venue",
+"venueCategory" "FAST_FOOD"
 }
 
-### Usuń obiekt
-# DELETE /venues/{id}
-DELETE {{baseUrl}}/venues/{{venueId}}
-Accept: application/json
+### Test 10: Create new venue, INVALID AUTH (401)
+// @no-cookie-jar
+PUT {{baseUrl}}/venues/{{testVenueId}}
+Content-Type: {{json}}
+Authorization: {{invalidAuth}}
+
+{
+"name": "Test Venue",
+"venueCategory" "FAST_FOOD"
+}
+
+### Test 11: Create new venue, USER AUTH (403)
+// @no-cookie-jar
+PUT {{baseUrl}}/venues/{{testVenueId}}
+Content-Type: {{json}}
+Authorization: {{userAuth}}
+
+{
+"name": "Test Venue",
+"venueCategory" "FAST_FOOD"
+}
+
+### Test 12: Create new venue, ADMIN AUTH (201)
+// @no-cookie-jar
+PUT {{baseUrl}}/venues/{{testVenueId}}
+Content-Type: {{json}}
+Authorization: {{adminAuth}}
+
+{
+"name": "Test Venue",
+"venueCategory": "FAST_FOOD"
+}
+
+### Test 13: Get new venue, ADMIN AUTH (200)
+// @no-cookie-jar
+GET {{baseUrl}}/venues/{{testVenueId}}
+Content-Type: {{json}}
+Authorization: {{adminAuth}}
+
+### Test 14: Get new venue, USER AUTH (403)
+// @no-cookie-jar
+GET {{baseUrl}}/venues/{{testVenueId}}
+Content-Type: {{json}}
+Authorization: {{userAuth}}
+
+### Test 15: Get new venue, NO AUTH (403)
+// @no-cookie-jar
+GET {{baseUrl}}/venues/{{testVenueId}}
+Content-Type: {{json}}
+
+### Test 16: Get new venue, INVALID AUTH (403)
+// @no-cookie-jar
+GET {{baseUrl}}/venues/{{testVenueId}}
+Content-Type: {{json}}
+Authorization: {{invalidAuth}}
+
+### Test 17: Get all venues, USER AUTH (200)
+// @no-cookie-jar
+GET {{baseUrl}}/venues
+Content-Type: {{json}}
+Authorization: {{userAuth}}
+
+### Test 18: Get all venues, USER AUTH (200)
+// @no-cookie-jar
+GET {{baseUrl}}/venues
+Content-Type: {{json}}
+Authorization: {{adminAuth}}
+
+### Test 19: Delete venue, USER AUTH (403)
+// @no-cookie-jar
+DELETE {{baseUrl}}/venues/{{testVenueId}}
+Content-Type: {{json}}
+Authorization: {{userAuth}}
+
+### Test 20: Delete venue, ADMIN AUTH (204)
+// @no-cookie-jar
+DELETE {{baseUrl}}/venues/{{testVenueId}}
+Content-Type: {{json}}
+Authorization: {{adminAuth}}
+
+### Test 21: Get deleted new venue, ADMIN AUTH (404)
+// @no-cookie-jar
+GET {{baseUrl}}/venues/{{testVenueId}}
+Content-Type: {{json}}
+Authorization: {{adminAuth}}
+###
+
+# ELEMENTS
 
 
-####################################################
-### Order Controller Requests (OrderController.java)
-####################################################
+### Test 22: Create new order, assign user as admin, ADMIN AUTH
+// @no-cookie-jar
+PUT {{baseUrl}}/venues/{{venueId}}/orders/{{testOrderId}}
+Content-Type: {{json}}
+Authorization: {{adminAuth}}
 
-### Pobierz wszystkie zamówienia
-# GET /orders
+{
+"price": "123.45",
+"orderDate": "2000-11-11",
+"userId": "{{victorId}}"
+}
+
+### Test 3: Get specific user, ADMIN AUTH (200)
+// @no-cookie-jar
 GET {{baseUrl}}/orders
-Accept: application/json
+Content-Type: {{json}}
+Authorization: {{userAuth}}
 
-### Pobierz pojedyncze zamówienie
-# GET /orders/{orderId}
-GET {{baseUrl}}/orders/{{orderId}}
-Accept: application/json
 
-### Pobierz wszystkie zamówienia dla danego obiektu
-# GET /venues/{venueId}/orders
-GET {{baseUrl}}/venues/{{venueId}}/orders
-Accept: application/json
-
-### Pobierz wszystkie zamówienia danego użytkownika
-# GET /users/{id}/orders
-GET {{baseUrl}}/users/{{userId}}/orders
-Accept: application/json
-
-### Utwórz/zaktualizuj zamówienie (bez kontekstu obiektu)
-# PUT /venues/orders/{orderId}
-PUT {{baseUrl}}/venues/orders/{{newOrderId}}
-Content-Type: application/json
+### Test 23: Create new order, USER AUTH (201)
+// @no-cookie-jar
+PUT {{baseUrl}}/venues/{{venueId}}/orders/{{testOrderId}}
+Content-Type: {{json}}
+Authorization: {{testUserAuth}}
 
 {
-  "price": 25.50,
-  "orderDate": "2025-11-20",
-  "userId": "{{userId}}",
-  "venueId": "{{venueId}}"
+	"price": "19.99",
+	"orderDate": "2000-01-01"
 }
 
-### Utwórz/zaktualizuj zamówienie (w kontekście obiektu)
-# PUT /venues/{venueId}/orders/{orderId}
-PUT {{baseUrl}}/venues/{{newVenueId}}/orders/{{newOrderId}}
-Content-Type: application/json
 
-{
-  "price": 15.99,
-  "orderDate": "2025-12-24",
-  "userId": "{{newUserId}}"
-}
-
-### Zaktualizuj częściowo zamówienie (PATCH)
-# PATCH /orders/{orderId}
-PATCH {{baseUrl}}/orders/{{newOrderId}}
-Content-Type: application/json
-
-{
-  "price": 333.33
-}
-
-### Usuń zamówienie
-# DELETE /orders/{orderId}
-DELETE {{baseUrl}}/orders/{{newOrderId}}
-Accept: application/json

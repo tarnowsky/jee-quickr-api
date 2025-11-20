@@ -1,5 +1,6 @@
 package pg.eti.kask.jee.quickr.service;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import pg.eti.kask.jee.quickr.entity.Order;
 import pg.eti.kask.jee.quickr.entity.Venue;
+import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
 import pg.eti.kask.jee.quickr.repository.api.OrderRepository;
 import pg.eti.kask.jee.quickr.repository.api.VenueRepository;
 
@@ -22,18 +24,17 @@ import java.util.UUID;
 public class VenueService {
 
     private final VenueRepository venueRepository;
-    private final OrderRepository orderRepository;
 
     @Inject
-    public VenueService(VenueRepository venueRepository, OrderRepository orderRepository) {
+    public VenueService(VenueRepository venueRepository) {
         this.venueRepository = venueRepository;
-        this.orderRepository = orderRepository;
     }
-
+    @RolesAllowed(UserRoles.USER)
     public List<Venue> findAll() {
         return venueRepository.findAll();
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
     public Optional<Venue> findById(@NonNull UUID id) {
         if (id == null) {
             throw new IllegalArgumentException("Venue ID cannot be null");
@@ -41,13 +42,14 @@ public class VenueService {
         return venueRepository.findById(id);
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
     public void create(@NonNull Venue venue) {
         if (venue == null) {
             throw new IllegalArgumentException("Venue cannot be null");
         }
         venueRepository.create(venue);
     }
-
+    @RolesAllowed(UserRoles.ADMIN)
     public void update(@NonNull Venue venue) {
         if (venue == null) {
             throw new IllegalArgumentException("Venue cannot be null");

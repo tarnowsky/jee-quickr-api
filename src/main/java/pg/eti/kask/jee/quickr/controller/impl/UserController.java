@@ -1,6 +1,7 @@
 package pg.eti.kask.jee.quickr.controller.impl;
 
 import jakarta.ejb.EJB;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,6 +11,7 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.UriInfo;
+import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import pg.eti.kask.jee.quickr.component.DtoFunctionFactory;
 import pg.eti.kask.jee.quickr.dto.user.*;
@@ -22,28 +24,20 @@ import java.util.logging.Level;
 
 @Log
 @Path("")
+@NoArgsConstructor(force = true)
+@RequestScoped
 public class UserController implements pg.eti.kask.jee.quickr.controller.api.UserController {
 
     private UserService userService;
-    private HttpServletResponse response;
-
     private final DtoFunctionFactory factory;
-    private final UriInfo uriInfo;
 
     @Inject
-    public UserController(DtoFunctionFactory factory, @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo) {
+    public UserController(
+            DtoFunctionFactory factory,
+            UserService userService
+    ) {
         this.factory = factory;
-        this.uriInfo = uriInfo;
-    }
-
-    @EJB
-    public void setUserService(UserService userService) {
         this.userService = userService;
-    }
-
-    @Context
-    public void setResponse(HttpServletResponse response) {
-        this.response = response;
     }
 
     @Override
