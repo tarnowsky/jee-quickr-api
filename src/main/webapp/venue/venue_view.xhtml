@@ -28,28 +28,33 @@
                 <h:outputText value="#{venueView.venue.venueCategory}"/>
             </div>
             <h6>#{msg['venue.view.header.venue_orders']}:</h6>
-            <h:dataTable value="#{venueView.venue.orders}" var="order" styleClass="table">
-                <h:column>
-                    <f:facet name="header">ID</f:facet>
-                    <h:outputText value="#{order.id}"/>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{msg['order.price']}</f:facet>
-                    <h:outputText value="#{order.price}"/> PLN
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{msg['order.view']}</f:facet>
-                    <h:link outcome="/order/order_view.xhtml" value="#{msg['order.view']}">
-                        <f:param name="id" value="#{order.id}"/>
-                    </h:link>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{msg['order.delete']}</f:facet>
-                    <h:form>
-                        <h:commandButton styleClass="btn" value="#{msg['order.delete']}" action="#{venueView.deleteAction(order)}"/>
-                    </h:form>
-                </h:column>
-            </h:dataTable>
+            <h:panelGroup id="order-table-container-venue">
+                <h:dataTable value="#{venueView.venue.orders}" var="order" styleClass="table">
+                    <h:column>
+                        <f:facet name="header">ID</f:facet>
+                        <h:outputText value="#{order.id}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['order.price']}</f:facet>
+                        <h:outputText value="#{order.price}"/> PLN
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['order.view']}</f:facet>
+                        <h:link outcome="/order/order_view.xhtml" value="#{msg['order.view']}">
+                            <f:param name="id" value="#{order.id}"/>
+                        </h:link>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['order.delete']}</f:facet>
+                        <h:form>
+                            <h:commandButton styleClass="btn" value="#{msg['order.delete']}"
+                                             action="#{venueView.deleteAction(order)}">
+                                <f:ajax execute="@form" render=":order-table-container-venue"/>
+                            </h:commandButton>
+                        </h:form>
+                    </h:column>
+                </h:dataTable>
+            </h:panelGroup>
             <p>
                 <h:link outcome="/order/order_create.xhtml" value="#{msg['order.create']}">
                     <f:param name="id" value="#{venueView.id}"/>

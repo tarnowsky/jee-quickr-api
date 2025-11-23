@@ -11,39 +11,44 @@
             <header>
                 <h2>#{msg['venue.list.title']}</h2>
             </header>
-            <h:dataTable value="#{venueList.venues.venues}" var="venue" styleClass="table">
-                <h:column>
-                    <f:facet name="header">ID</f:facet>
-                    <h:outputText value="#{venue.id}"/>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{msg['venue.list.header.name']}</f:facet>
-                    <h:outputText value="#{venue.name}"/>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{msg['venue.list.header.venue_category']}</f:facet>
-                    <h:outputText value="#{venue.venueCategory}"/>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{msg['venue.list.header.view']}</f:facet>
-                    <!-- Admin: View all orders for this venue -->
-                    <h:link rendered="#{facesContext.externalContext.isUserInRole('admin')}"
-                            outcome="/venue/venue_view.xhtml" value="#{msg['venue.list.view_all_orders']}">
-                        <f:param name="id" value="#{venue.id}"/>
-                    </h:link>
-                    <!-- User: View only their orders for this venue -->
-                    <h:link rendered="#{!facesContext.externalContext.isUserInRole('admin')}"
-                            outcome="/venue/user_venue_orders.xhtml" value="#{msg['venue.list.my_orders']}">
-                        <f:param name="venueId" value="#{venue.id}"/>
-                    </h:link>
-                </h:column>
-                <h:column rendered="#{facesContext.externalContext.isUserInRole('admin')}">
-                    <f:facet name="header">#{msg['venue.list.header.delete']}</f:facet>
-                    <h:form>
-                        <h:commandButton styleClass="btn" value="#{msg['venue.list.delete']}" action="#{venueList.deleteAction(venue)}"/>
-                    </h:form>
-                </h:column>
-            </h:dataTable>
+            <h:panelGroup id="venue-table-container">
+                <h:dataTable value="#{venueList.venues.venues}" var="venue" styleClass="table">
+                    <h:column>
+                        <f:facet name="header">ID</f:facet>
+                        <h:outputText value="#{venue.id}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.name']}</f:facet>
+                        <h:outputText value="#{venue.name}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.venue_category']}</f:facet>
+                        <h:outputText value="#{venue.venueCategory}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.view']}</f:facet>
+                        <!-- Admin: View all orders for this venue -->
+                        <h:link rendered="#{facesContext.externalContext.isUserInRole('admin')}"
+                                outcome="/venue/venue_view.xhtml" value="#{msg['venue.list.view_all_orders']}">
+                            <f:param name="id" value="#{venue.id}"/>
+                        </h:link>
+                        <!-- User: View only their orders for this venue -->
+                        <h:link rendered="#{!facesContext.externalContext.isUserInRole('admin')}"
+                                outcome="/venue/user_venue_orders.xhtml" value="#{msg['venue.list.my_orders']}">
+                            <f:param name="venueId" value="#{venue.id}"/>
+                        </h:link>
+                    </h:column>
+                    <h:column rendered="#{facesContext.externalContext.isUserInRole('admin')}">
+                        <f:facet name="header">#{msg['venue.list.header.delete']}</f:facet>
+                        <h:form>
+                            <h:commandButton styleClass="btn" value="#{msg['venue.list.delete']}"
+                                             action="#{venueList.deleteAction(venue)}">
+                                <f:ajax execute="@form" render=":venue-table-container"/>
+                            </h:commandButton>
+                        </h:form>
+                    </h:column>
+                </h:dataTable>
+            </h:panelGroup>
         </article>
 
     </ui:define>
