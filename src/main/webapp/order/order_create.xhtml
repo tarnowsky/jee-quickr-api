@@ -25,13 +25,23 @@
                     <h:outputLabel for="date" value="Order date:" styleClass="form-label"/>
                 </div>
                 <!-- Admin-only: Select which user the order belongs to -->
-                <div class="form-outline" rendered="#{facesContext.externalContext.isUserInRole('admin')}">
-                    <h:selectOneMenu id="userId" value="#{orderCreate.order.userId}" styleClass="form-control">
-                        <f:selectItems value="#{orderCreate.availableUsers}" var="user"
-                                       itemValue="#{user.id}" itemLabel="#{user.login}"/>
-                    </h:selectOneMenu>
-                    <h:outputLabel for="userId" value="User:" styleClass="form-label"/>
-                </div>
+                <h:panelGroup rendered="#{facesContext.externalContext.isUserInRole('admin')}">
+                    <div>
+                        <h:outputLabel for="userId" value="User:" styleClass="form-label"/>
+                        <h:selectOneMenu id="userId" value="#{orderCreate.order.userId}" styleClass="form-select">
+                            <f:selectItems value="#{orderCreate.availableUsers}" var="user"
+                                           itemValue="#{user.id}" itemLabel="#{user.login}"/>
+                        </h:selectOneMenu>
+                    </div>
+                </h:panelGroup>
+                <!-- Regular user: Show their login as readonly -->
+                <h:panelGroup rendered="#{!facesContext.externalContext.isUserInRole('admin')}">
+                    <div class="form-outline">
+                        <h:inputText id="userLogin" value="#{facesContext.externalContext.userPrincipal.name}" 
+                                     readonly="true" styleClass="form-control"/>
+                        <h:outputLabel for="userLogin" value="User:" styleClass="form-label"/>
+                    </div>
+                </h:panelGroup>
                 <div class="btn-container-multi">
                     <div class="text-center">
                         <h:commandButton styleClass="btn btn-primary" value="Create"
