@@ -6,7 +6,6 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.NotFoundException;
 import lombok.Getter;
 import lombok.Setter;
 import pg.eti.kask.jee.quickr.component.ModelFunctionFactory;
@@ -43,15 +42,12 @@ public class OrderView implements Serializable {
     private OrderModel order;
 
     public void init() throws IOException {
-        try {
-            Order order = service.findById(id).get();
-            this.order = factory.orderToModel().apply(order);
-        } catch (NotFoundException e) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            context.getExternalContext().responseSendError(
-                    HttpServletResponse.SC_NOT_FOUND, "Order not found"
-            );
-            context.responseComplete();
+        java.util.Optional<Order> orderOptional = service.findById(id);
+        if (orderOptional.isPresent()) {
+            this.order = factory.orderToModel().apply(orderOptional.get());
+        } else {
+            FacesContext.getCurrentInstance().getExternalContext().responseSendError(
+                    HttpServletResponse.SC_NOT_FOUND, "Order not found");
         }
     }
 }
