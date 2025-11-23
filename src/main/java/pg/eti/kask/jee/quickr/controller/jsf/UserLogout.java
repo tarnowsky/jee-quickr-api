@@ -1,7 +1,6 @@
 package pg.eti.kask.jee.quickr.controller.jsf;
 
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +20,6 @@ public class UserLogout {
     @SneakyThrows
     public String logoutAction() {
         request.logout();
-        String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
-        return viewId + "?faces-redirect=true&includeViewParams=true";
+        return "/venue/venue_list.xhtml?faces-redirect=true";
     }
 }
