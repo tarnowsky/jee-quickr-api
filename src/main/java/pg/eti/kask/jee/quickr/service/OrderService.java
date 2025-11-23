@@ -11,7 +11,6 @@ import pg.eti.kask.jee.quickr.entity.Order;
 import pg.eti.kask.jee.quickr.entity.User;
 import pg.eti.kask.jee.quickr.entity.Venue;
 import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
-import pg.eti.kask.jee.quickr.interceptor.Log;
 import pg.eti.kask.jee.quickr.interceptor.Loggable;
 import pg.eti.kask.jee.quickr.repository.api.OrderRepository;
 import pg.eti.kask.jee.quickr.repository.api.UserRepository;

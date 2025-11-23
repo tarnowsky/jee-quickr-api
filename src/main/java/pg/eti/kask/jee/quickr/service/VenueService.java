@@ -4,16 +4,11 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import pg.eti.kask.jee.quickr.entity.Order;
 import pg.eti.kask.jee.quickr.entity.Venue;
 import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
-import pg.eti.kask.jee.quickr.interceptor.Log;
 import pg.eti.kask.jee.quickr.interceptor.Loggable;
-import pg.eti.kask.jee.quickr.repository.api.OrderRepository;
 import pg.eti.kask.jee.quickr.repository.api.VenueRepository;
 
 import java.util.List;
