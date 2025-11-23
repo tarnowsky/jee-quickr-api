@@ -40,6 +40,9 @@
                         <li>
                             <h:link outcome="/venue/venue_list.xhtml">#{msg['nav.venues']}</h:link>
                         </li>
+                        <li>
+                            <h:link outcome="/chat/chat.xhtml" rendered="#{facesContext.externalContext.userPrincipal != null}">#{msg['nav.chat']}</h:link>
+                        </li>
                     </ul>
                 </nav>
                 <main>
