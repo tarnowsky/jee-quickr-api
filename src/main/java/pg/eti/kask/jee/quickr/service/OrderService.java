@@ -11,6 +11,8 @@ import pg.eti.kask.jee.quickr.entity.Order;
 import pg.eti.kask.jee.quickr.entity.User;
 import pg.eti.kask.jee.quickr.entity.Venue;
 import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
+import pg.eti.kask.jee.quickr.interceptor.Log;
+import pg.eti.kask.jee.quickr.interceptor.Loggable;
 import pg.eti.kask.jee.quickr.repository.api.OrderRepository;
 import pg.eti.kask.jee.quickr.repository.api.UserRepository;
 import pg.eti.kask.jee.quickr.repository.api.VenueRepository;
@@ -80,6 +82,7 @@ public class OrderService {
     }
 
     @RolesAllowed(UserRoles.USER)
+    @Loggable
     public void createForCallerPrincipal(Order order) {
         User user = userRepository.findByLogin(securityContext.getCallerPrincipal().getName())
                 .orElseThrow(IllegalStateException::new);
@@ -123,6 +126,7 @@ public class OrderService {
     }
 
     @RolesAllowed(UserRoles.ADMIN)
+    @Loggable
     public void create(Order order) {
         if (orderRepository.findById(order.getId()).isPresent()) {
             throw new IllegalArgumentException("Order already exists.");
@@ -140,12 +144,13 @@ public class OrderService {
     }
 
     @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
+    @Loggable
     public void update(Order order) {
-        checkAdminRoleOrOwner(orderRepository.findById(order.getId()));
         orderRepository.update(order);
     }
 
     @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
+    @Loggable
     public void delete(UUID id) {
         checkAdminRoleOrOwner(orderRepository.findById(id));
         orderRepository.findById(id).ifPresent(orderRepository::delete);
@@ -162,5 +167,4 @@ public class OrderService {
         }
         throw new EJBAccessException("Caller not authorized.");
     }
-
 }

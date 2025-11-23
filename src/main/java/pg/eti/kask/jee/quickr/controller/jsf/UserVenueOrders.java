@@ -4,6 +4,7 @@ import jakarta.ejb.EJB;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.ws.rs.NotFoundException;
 import lombok.Getter;
 import lombok.Setter;
 import pg.eti.kask.jee.quickr.component.ModelFunctionFactory;
@@ -13,6 +14,7 @@ import pg.eti.kask.jee.quickr.service.OrderService;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 

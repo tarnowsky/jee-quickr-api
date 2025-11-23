@@ -11,6 +11,8 @@ import lombok.NonNull;
 import pg.eti.kask.jee.quickr.entity.Order;
 import pg.eti.kask.jee.quickr.entity.Venue;
 import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
+import pg.eti.kask.jee.quickr.interceptor.Log;
+import pg.eti.kask.jee.quickr.interceptor.Loggable;
 import pg.eti.kask.jee.quickr.repository.api.OrderRepository;
 import pg.eti.kask.jee.quickr.repository.api.VenueRepository;
 
@@ -46,6 +48,7 @@ public class VenueService {
     }
 
     @RolesAllowed(UserRoles.ADMIN)
+    @Loggable
     public void create(@NonNull Venue venue) {
         if (venue == null) {
             throw new IllegalArgumentException("Venue cannot be null");
@@ -54,6 +57,7 @@ public class VenueService {
     }
 
     @RolesAllowed(UserRoles.ADMIN)
+    @Loggable
     public void update(@NonNull Venue venue) {
         if (venue == null) {
             throw new IllegalArgumentException("Venue cannot be null");
@@ -61,6 +65,8 @@ public class VenueService {
         venueRepository.update(venue);
     }
 
+    @RolesAllowed(UserRoles.ADMIN)
+    @Loggable
     public void delete(@NonNull UUID id) {
         venueRepository.findById(id).ifPresent(venueRepository::delete);
     }

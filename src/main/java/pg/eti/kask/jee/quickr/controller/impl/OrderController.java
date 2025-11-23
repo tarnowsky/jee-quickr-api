@@ -18,8 +18,6 @@ import pg.eti.kask.jee.quickr.component.DtoFunctionFactory;
 import pg.eti.kask.jee.quickr.dto.order.*;
 import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
 import pg.eti.kask.jee.quickr.service.OrderService;
-import pg.eti.kask.jee.quickr.service.UserService;
-import pg.eti.kask.jee.quickr.service.VenueService;
 
 import java.util.UUID;
 import java.util.logging.Level;

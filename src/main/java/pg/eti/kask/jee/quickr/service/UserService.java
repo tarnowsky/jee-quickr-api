@@ -10,6 +10,7 @@ import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import lombok.NoArgsConstructor;
 import pg.eti.kask.jee.quickr.entity.User;
 import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
+import pg.eti.kask.jee.quickr.interceptor.Loggable;
 import pg.eti.kask.jee.quickr.repository.api.UserRepository;
 
 import java.io.IOException;
@@ -56,6 +57,7 @@ public class UserService {
     }
 
     @PermitAll
+    @Loggable
     public void create(User user) {
         validateUser(user);
 
@@ -84,6 +86,7 @@ public class UserService {
     }
 
     @RolesAllowed(UserRoles.ADMIN)
+    @Loggable
     public void update(User user) {
         if (user.getId() == null) {
             throw new IllegalArgumentException("User ID cannot be null for update operation");
@@ -97,22 +100,20 @@ public class UserService {
 
         Optional<User> existingUserWithLogin = userRepository.findByLogin(user.getLogin());
         if (existingUserWithLogin.isPresent() && !existingUserWithLogin.get().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("Login '" + user.getLogin() + "' is already taken by another user");
+            throw new IllegalArgumentException("User with login '" + user.getLogin() + "' already exists");
         }
 
         Optional<User> existingUserWithEmail = userRepository.findByEmail(user.getEmail());
         if (existingUserWithEmail.isPresent() && !existingUserWithEmail.get().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("Email '" + user.getEmail() + "' is already taken by another user");
+            throw new IllegalArgumentException("User with email '" + user.getEmail() + "' already exists");
         }
 
         userRepository.update(user);
     }
 
     @RolesAllowed(UserRoles.ADMIN)
+    @Loggable
     public void delete(UUID id) {
-        if (id == null) {
-            throw new IllegalArgumentException("User ID cannot be null");
-        }
         userRepository.findById(id).ifPresent(userRepository::delete);
     }
 
@@ -192,7 +193,7 @@ public class UserService {
         }).orElse(new byte[0]);
     }
 
-    private static void validateUser(User user) {
+    private void validateUser(User user) {
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
         }
