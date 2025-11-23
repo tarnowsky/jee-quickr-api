@@ -18,6 +18,7 @@ import pg.eti.kask.jee.quickr.service.VenueService;
 import pg.eti.kask.jee.quickr.service.UserService;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @ConversationScoped
@@ -40,6 +41,9 @@ public class OrderCreate implements Serializable {
     @Getter
     @Setter
     private UUID venueId;
+
+    @Getter
+    private List<pg.eti.kask.jee.quickr.entity.User> availableUsers;
 
     @EJB
     public void setOrderService(OrderService orderService) {
@@ -76,16 +80,25 @@ public class OrderCreate implements Serializable {
             assert userService != null;
             assert securityContext != null;
 
-            String currentUserLogin = securityContext.getCallerPrincipal().getName();
-            UUID currentUserId = userService.findByLogin(currentUserLogin)
-                    .orElseThrow(() -> new IllegalStateException("Current user not found"))
-                    .getId();
+            UUID selectedUserId;
+
+            // If admin, load all users for selection; otherwise use current user
+            if (securityContext.isCallerInRole(pg.eti.kask.jee.quickr.entity.enums.UserRoles.ADMIN)) {
+                availableUsers = userService.findAll();
+                // Default to first user if available
+                selectedUserId = availableUsers.isEmpty() ? null : availableUsers.get(0).getId();
+            } else {
+                String currentUserLogin = securityContext.getCallerPrincipal().getName();
+                selectedUserId = userService.findByLogin(currentUserLogin)
+                        .orElseThrow(() -> new IllegalStateException("Current user not found"))
+                        .getId();
+            }
 
             order = OrderCreateModel.builder()
                     .id(UUID.randomUUID())
                     .venue(venueService.findById(venueId).map(factory.venueToModel())
                             .orElseThrow(NotFoundException::new))
-                    .userId(currentUserId)
+                    .userId(selectedUserId)
                     .build();
             conversation.begin();
         }

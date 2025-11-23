@@ -24,6 +24,14 @@
                     </h:inputText>
                     <h:outputLabel for="date" value="Order date:" styleClass="form-label"/>
                 </div>
+                <!-- Admin-only: Select which user the order belongs to -->
+                <div class="form-outline" rendered="#{facesContext.externalContext.isUserInRole('admin')}">
+                    <h:selectOneMenu id="userId" value="#{orderCreate.order.userId}" styleClass="form-control">
+                        <f:selectItems value="#{orderCreate.availableUsers}" var="user"
+                                       itemValue="#{user.id}" itemLabel="#{user.login}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel for="userId" value="User:" styleClass="form-label"/>
+                </div>
                 <div class="btn-container-multi">
                     <div class="text-center">
                         <h:commandButton styleClass="btn btn-primary" value="Create"
