@@ -41,40 +41,40 @@ public class OrderService {
         this.securityContext = securityContext;
     }
 
-    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
+    @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
     public Optional<List<Order>> findAllByUser(UUID userId) {
         return userRepository.findById(userId)
                 .map(orderRepository::findAllByUser);
     }
 
-    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
+    @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
     public Optional<List<Order>> findAllByVenue(UUID venueId) {
         return venueRepository.findById(venueId)
                 .map(orderRepository::findAllByVenue);
 
     }
 
-    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
+    @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
     public List<Order> findAll(User user) {
         return orderRepository.findAllByUser(user);
     }
 
-    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
+    @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
     public List<Order> findAll(Venue venue) {
         return orderRepository.findAllByVenue(venue);
     }
 
-    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
+    @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
     public List<Order> findAll() {
         return orderRepository.findAll();
     }
 
-    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
+    @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
     public Optional<Order> findById(UUID id) {
         return orderRepository.findById(id);
     }
 
-    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
+    @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
     public Optional<Order> find(User user, UUID id) {
         return orderRepository.findByIdAndUser(id, user);
     }
@@ -85,10 +85,24 @@ public class OrderService {
                 .orElseThrow(IllegalStateException::new);
 
         order.setUser(user);
-        create(order);
+
+        // Validate and create the order with venue relationship
+        if (orderRepository.findById(order.getId()).isPresent()) {
+            throw new IllegalArgumentException("Order already exists.");
+        }
+        Venue venue = venueRepository.findById(order.getVenue().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Venue does not exist."));
+
+        orderRepository.create(order);
+
+        // Update the venue's orders collection to maintain bidirectional relationship
+        if (!venue.getOrders().contains(order)) {
+            venue.getOrders().add(order);
+            venueRepository.update(venue);
+        }
     }
 
-    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
+    @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
     public Optional<Order> findForCallerPrincipal(UUID id) {
         if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
             return findById(id);
@@ -98,7 +112,7 @@ public class OrderService {
         return find(user, id);
     }
 
-    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
+    @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
     public List<Order> findAllForCallerPrincipal() {
         if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
             return findAll();
@@ -113,19 +127,25 @@ public class OrderService {
         if (orderRepository.findById(order.getId()).isPresent()) {
             throw new IllegalArgumentException("Order already exists.");
         }
-        if (venueRepository.findById(order.getVenue().getId()).isEmpty()) {
-            throw new IllegalArgumentException("Venue does not exists.");
-        }
+        Venue venue = venueRepository.findById(order.getVenue().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Venue does not exist."));
+
         orderRepository.create(order);
+
+        // Update the venue's orders collection to maintain bidirectional relationship
+        if (!venue.getOrders().contains(order)) {
+            venue.getOrders().add(order);
+            venueRepository.update(venue);
+        }
     }
 
-    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
+    @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
     public void update(Order order) {
         checkAdminRoleOrOwner(orderRepository.findById(order.getId()));
         orderRepository.update(order);
     }
 
-    @RolesAllowed({UserRoles.ADMIN, UserRoles.USER})
+    @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
     public void delete(UUID id) {
         checkAdminRoleOrOwner(orderRepository.findById(id));
         orderRepository.findById(id).ifPresent(orderRepository::delete);

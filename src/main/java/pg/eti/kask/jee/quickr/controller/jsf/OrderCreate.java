@@ -12,15 +12,12 @@ import lombok.Setter;
 import lombok.extern.java.Log;
 import pg.eti.kask.jee.quickr.component.ModelFunctionFactory;
 import pg.eti.kask.jee.quickr.entity.Order;
-import pg.eti.kask.jee.quickr.entity.Venue;
 import pg.eti.kask.jee.quickr.model.order.OrderCreateModel;
 import pg.eti.kask.jee.quickr.service.OrderService;
 import pg.eti.kask.jee.quickr.service.VenueService;
 import pg.eti.kask.jee.quickr.service.UserService;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @ConversationScoped
@@ -102,16 +99,18 @@ public class OrderCreate implements Serializable {
         assert orderService != null;
 
         Order newOrder = factory.modelToOrder(userService).apply(order);
-        Venue venueEntity = venueService.findById(venueId).get();
-        orderService.create(newOrder);
 
-        List<Order> mutableOrders = new ArrayList<>(venueEntity.getOrders());
-        mutableOrders.add(newOrder);
-        venueEntity.setOrders(mutableOrders);
-        venueService.update(venueEntity);
+        // Use appropriate create method based on role
+        if (securityContext.isCallerInRole(pg.eti.kask.jee.quickr.entity.enums.UserRoles.ADMIN)) {
+            orderService.create(newOrder);
+        } else {
+            orderService.createForCallerPrincipal(newOrder);
+        }
+
+        // No need to manually update venue - JPA manages the bidirectional relationship
 
         conversation.end();
-        return "/venue/venue_view?id=%s&faces-redirect=true".formatted(venueId);
+        return "/venue/user_venue_orders?venueId=%s&faces-redirect=true".formatted(venueId);
     }
 
     public String cancelAction() {

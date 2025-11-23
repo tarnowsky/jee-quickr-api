@@ -24,16 +24,10 @@ import java.util.UUID;
 public class VenueService {
 
     private final VenueRepository venueRepository;
-    private final pg.eti.kask.jee.quickr.repository.api.UserRepository userRepository;
-    private final jakarta.security.enterprise.SecurityContext securityContext;
 
     @Inject
-    public VenueService(VenueRepository venueRepository,
-            pg.eti.kask.jee.quickr.repository.api.UserRepository userRepository,
-            @SuppressWarnings("CdiInjectionPointsInspection") jakarta.security.enterprise.SecurityContext securityContext) {
+    public VenueService(VenueRepository venueRepository) {
         this.venueRepository = venueRepository;
-        this.userRepository = userRepository;
-        this.securityContext = securityContext;
     }
 
     @RolesAllowed(UserRoles.USER)
@@ -47,20 +41,8 @@ public class VenueService {
         if (id == null) {
             throw new IllegalArgumentException("Venue ID cannot be null");
         }
-        Optional<Venue> venue = venueRepository.findById(id);
-        if (venue.isPresent()) {
-            if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
-                return venue;
-            }
-            pg.eti.kask.jee.quickr.entity.User user = userRepository
-                    .findByLogin(securityContext.getCallerPrincipal().getName())
-                    .orElseThrow(IllegalStateException::new);
-            if (venue.get().getUser() != null && venue.get().getUser().getId().equals(user.getId())) {
-                return venue;
-            }
-            return Optional.empty();
-        }
-        return Optional.empty();
+        // All users (both regular and admin) can access any venue
+        return venueRepository.findById(id);
     }
 
     @RolesAllowed(UserRoles.ADMIN)
