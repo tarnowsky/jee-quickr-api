@@ -22,6 +22,10 @@ public class Venue implements Serializable {
     @Enumerated(EnumType.STRING)
     private VenueCategory venueCategory;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Singular
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

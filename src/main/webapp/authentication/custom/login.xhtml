@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="content">
+        <article class="text--justified">
+            <header><h2>Login</h2></header>
+            <section>
+                <h:form styleClass="container">
+                    <div class="row">
+                        <div class="col-4 p-2">
+                            <div class="form-outline">
+                                <h:inputText id="username" styleClass="form-control" value="#{userLogin.login}"/>
+                                <h:outputLabel for="username" styleClass="form-label" value="Login:"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 p-2">
+                            <div class="form-outline">
+                                <h:inputSecret id="password" styleClass="form-control" value="#{userLogin.password}"/>
+                                <h:outputLabel for="password" styleClass="form-label" value="Password:"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2 p-2 text-center">
+                            <h:commandButton styleClass="btn btn-primary" value="Login" action="#{userLogin.loginAction()}"/>
+                        </div>
+                        <div class="col-2 p-2 text-center">
+                            <h:commandButton styleClass="btn btn-secondary" type="reset" value="Reset"/>
+                        </div>
+                    </div>
+                </h:form>
+            </section>
+        </article>
+    </ui:define>
+
+</ui:composition>

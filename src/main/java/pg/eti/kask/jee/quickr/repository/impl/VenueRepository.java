@@ -50,5 +50,11 @@ public class VenueRepository implements pg.eti.kask.jee.quickr.repository.api.Ve
         }
     }
 
+    @Override
+    public List<Venue> findAllByUser(pg.eti.kask.jee.quickr.entity.User user) {
+        return em.createQuery("select v from Venue v where v.user = :user", Venue.class)
+                .setParameter("user", user)
+                .getResultList();
+    }
 
 }

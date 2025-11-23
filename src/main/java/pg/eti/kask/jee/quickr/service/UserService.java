@@ -34,8 +34,7 @@ public class UserService {
     public UserService(
             UserRepository userRepository,
             @SuppressWarnings("CdiInjectionPointsInspection") Pbkdf2PasswordHash passwordHash,
-            @Named("avatarDirectory") String avatarDirectory
-    ) {
+            @Named("avatarDirectory") String avatarDirectory) {
         this.userRepository = userRepository;
         this.passwordHash = passwordHash;
         this.avatarDirectory = avatarDirectory;
@@ -46,12 +45,12 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    @RolesAllowed(UserRoles.ADMIN)
+    @RolesAllowed(UserRoles.USER)
     public Optional<User> findById(UUID id) {
         return userRepository.findById(id);
     }
 
-    @RolesAllowed(UserRoles.ADMIN)
+    @RolesAllowed(UserRoles.USER)
     public Optional<User> findByLogin(String login) {
         return userRepository.findByLogin(login);
     }
@@ -120,7 +119,6 @@ public class UserService {
     private boolean verify(String login, String password) {
         return passwordHash.verify(password.toCharArray(), findByLogin(login).get().getPassword());
     }
-
 
     public void updatePassword(User user) {
         user.setPassword(passwordHash.generate(user.getPassword().toCharArray()));

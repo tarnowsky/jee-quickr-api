@@ -25,6 +25,12 @@
                 <header class="main-header">
                     <h:graphicImage styleClass="logo" name="static/logo.png" alt="logo"/>
                     <h1>QuickrAPI</h1>
+                    <div class="d-flex align-items-center justify-content-end">
+                        <h:form rendered="#{facesContext.externalContext.userPrincipal != null}">
+                            Logged in as: <h:outputText value="#{facesContext.externalContext.userPrincipal.name}"/>
+                            <h:commandButton styleClass="btn btn-link" value="Logout" action="#{userLogout.logoutAction()}"/>
+                        </h:form>
+                    </div>
                 </header>
                 <nav>
                     <ul>

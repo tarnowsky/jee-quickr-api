@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/template/main.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="venueId" value="#{userVenueOrders.venueId}" required="true"/>
+        <f:viewAction action="#{userVenueOrders.init()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <article>
+            <header>
+                <h2>My Orders at This Venue</h2>
+            </header>
+            <h:dataTable value="#{userVenueOrders.orders.orders}" var="order" styleClass="table">
+                <h:column>
+                    <f:facet name="header">ID</f:facet>
+                    <h:outputText value="#{order.id}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Price</f:facet>
+                    <h:outputText value="#{order.price}"/> PLN
+                </h:column>
+                <h:column>
+                    <f:facet name="header">View</f:facet>
+                    <h:link outcome="/order/order_view.xhtml" value="View">
+                        <f:param name="id" value="#{order.id}"/>
+                    </h:link>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Edit</f:facet>
+                    <h:link outcome="/order/order_edit.xhtml" value="Edit">
+                        <f:param name="id" value="#{order.id}"/>
+                    </h:link>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Delete</f:facet>
+                    <h:form>
+                        <h:commandButton styleClass="btn" value="Delete" action="#{userVenueOrders.deleteAction(order)}"/>
+                    </h:form>
+                </h:column>
+            </h:dataTable>
+            <p>
+                <h:link outcome="/order/order_create.xhtml" value="Create new order">
+                    <f:param name="id" value="#{userVenueOrders.venueId}"/>
+                </h:link>
+            </p>
+            <p>
+                <h:link outcome="/venue/venue_list.xhtml" value="Back to Venues"/>
+            </p>
+        </article>
+    </ui:define>
+
+</ui:composition>

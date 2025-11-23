@@ -24,22 +24,43 @@ import java.util.UUID;
 public class VenueService {
 
     private final VenueRepository venueRepository;
+    private final pg.eti.kask.jee.quickr.repository.api.UserRepository userRepository;
+    private final jakarta.security.enterprise.SecurityContext securityContext;
 
     @Inject
-    public VenueService(VenueRepository venueRepository) {
+    public VenueService(VenueRepository venueRepository,
+            pg.eti.kask.jee.quickr.repository.api.UserRepository userRepository,
+            @SuppressWarnings("CdiInjectionPointsInspection") jakarta.security.enterprise.SecurityContext securityContext) {
         this.venueRepository = venueRepository;
+        this.userRepository = userRepository;
+        this.securityContext = securityContext;
     }
+
     @RolesAllowed(UserRoles.USER)
     public List<Venue> findAll() {
+        // All users (both regular and admin) see all venues
         return venueRepository.findAll();
     }
 
-    @RolesAllowed(UserRoles.ADMIN)
+    @RolesAllowed(UserRoles.USER)
     public Optional<Venue> findById(@NonNull UUID id) {
         if (id == null) {
             throw new IllegalArgumentException("Venue ID cannot be null");
         }
-        return venueRepository.findById(id);
+        Optional<Venue> venue = venueRepository.findById(id);
+        if (venue.isPresent()) {
+            if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
+                return venue;
+            }
+            pg.eti.kask.jee.quickr.entity.User user = userRepository
+                    .findByLogin(securityContext.getCallerPrincipal().getName())
+                    .orElseThrow(IllegalStateException::new);
+            if (venue.get().getUser() != null && venue.get().getUser().getId().equals(user.getId())) {
+                return venue;
+            }
+            return Optional.empty();
+        }
+        return Optional.empty();
     }
 
     @RolesAllowed(UserRoles.ADMIN)
@@ -49,6 +70,7 @@ public class VenueService {
         }
         venueRepository.create(venue);
     }
+
     @RolesAllowed(UserRoles.ADMIN)
     public void update(@NonNull Venue venue) {
         if (venue == null) {

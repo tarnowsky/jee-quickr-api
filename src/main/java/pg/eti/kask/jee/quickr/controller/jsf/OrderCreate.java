@@ -35,6 +35,7 @@ public class OrderCreate implements Serializable {
 
     private final Conversation conversation;
     private final ModelFunctionFactory factory;
+    private final jakarta.security.enterprise.SecurityContext securityContext;
 
     @Getter
     private OrderCreateModel order;
@@ -60,9 +61,12 @@ public class OrderCreate implements Serializable {
 
     @Inject
     public OrderCreate(
-            ModelFunctionFactory factory, Conversation conversation) {
+            ModelFunctionFactory factory,
+            Conversation conversation,
+            @SuppressWarnings("CdiInjectionPointsInspection") jakarta.security.enterprise.SecurityContext securityContext) {
         this.factory = factory;
         this.conversation = conversation;
+        this.securityContext = securityContext;
     }
 
     public void init() {
@@ -73,10 +77,18 @@ public class OrderCreate implements Serializable {
 
         if (conversation.isTransient()) {
             assert userService != null;
+            assert securityContext != null;
+
+            String currentUserLogin = securityContext.getCallerPrincipal().getName();
+            UUID currentUserId = userService.findByLogin(currentUserLogin)
+                    .orElseThrow(() -> new IllegalStateException("Current user not found"))
+                    .getId();
+
             order = OrderCreateModel.builder()
                     .id(UUID.randomUUID())
-                    .venue(venueService.findById(venueId).map(factory.venueToModel()).orElseThrow(NotFoundException::new))
-                    .userId(userService.findAll().stream().findAny().get().getId())
+                    .venue(venueService.findById(venueId).map(factory.venueToModel())
+                            .orElseThrow(NotFoundException::new))
+                    .userId(currentUserId)
                     .build();
             conversation.begin();
         }

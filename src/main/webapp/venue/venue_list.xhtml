@@ -26,11 +26,18 @@
                 </h:column>
                 <h:column>
                     <f:facet name="header">View</f:facet>
-                    <h:link outcome="/venue/venue_view.xhtml" value="View">
-                        <f:param name="id" value="#{venue.id}" />
+                    <!-- Admin: View all orders for this venue -->
+                    <h:link rendered="#{facesContext.externalContext.isUserInRole('admin')}"
+                            outcome="/venue/venue_view.xhtml" value="View All Orders">
+                        <f:param name="id" value="#{venue.id}"/>
+                    </h:link>
+                    <!-- User: View only their orders for this venue -->
+                    <h:link rendered="#{!facesContext.externalContext.isUserInRole('admin')}"
+                            outcome="/venue/user_venue_orders.xhtml" value="My Orders">
+                        <f:param name="venueId" value="#{venue.id}"/>
                     </h:link>
                 </h:column>
-                <h:column>
+                <h:column rendered="#{facesContext.externalContext.isUserInRole('admin')}">
                     <f:facet name="header">Delete</f:facet>
                     <h:form>
                         <h:commandButton styleClass="btn" value="Delete" action="#{venueList.deleteAction(venue)}"/>

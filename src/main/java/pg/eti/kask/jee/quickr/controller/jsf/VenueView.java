@@ -6,7 +6,6 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.NotFoundException;
 import lombok.Getter;
 import lombok.Setter;
 import pg.eti.kask.jee.quickr.component.ModelFunctionFactory;
@@ -55,13 +54,12 @@ public class VenueView implements Serializable {
     }
 
     public void init() throws IOException {
-        try {
-            Venue venue = venueService.findById(id).get();
-            this.venue = factory.venueToModel().apply(venue);
-        } catch (NotFoundException ex) {
+        java.util.Optional<Venue> venueOptional = venueService.findById(id);
+        if (venueOptional.isPresent()) {
+            this.venue = factory.venueToModel().apply(venueOptional.get());
+        } else {
             FacesContext.getCurrentInstance().getExternalContext().responseSendError(
-                    HttpServletResponse.SC_NOT_FOUND, "Venue not found"
-            );
+                    HttpServletResponse.SC_NOT_FOUND, "Venue not found");
         }
     }
 
