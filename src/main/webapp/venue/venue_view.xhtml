@@ -24,34 +24,34 @@
                 <h:outputText value="#{venueView.venue.id}"/>
             </div>
             <div class="item-info-container">
-                <p>Venue category:</p>
+                <p>#{msg['venue.view.label.venue_category']}:</p>
                 <h:outputText value="#{venueView.venue.venueCategory}"/>
             </div>
-            <h6>Venue orders:</h6>
+            <h6>#{msg['venue.view.header.venue_orders']}:</h6>
             <h:dataTable value="#{venueView.venue.orders}" var="order" styleClass="table">
                 <h:column>
                     <f:facet name="header">ID</f:facet>
                     <h:outputText value="#{order.id}"/>
                 </h:column>
                 <h:column>
-                    <f:facet name="header">Price</f:facet>
+                    <f:facet name="header">#{msg['order.price']}</f:facet>
                     <h:outputText value="#{order.price}"/> PLN
                 </h:column>
                 <h:column>
-                    <f:facet name="header">View</f:facet>
-                    <h:link outcome="/order/order_view.xhtml" value="View">
+                    <f:facet name="header">#{msg['order.view']}</f:facet>
+                    <h:link outcome="/order/order_view.xhtml" value="#{msg['order.view']}">
                         <f:param name="id" value="#{order.id}"/>
                     </h:link>
                 </h:column>
                 <h:column>
-                    <f:facet name="header">Delete</f:facet>
+                    <f:facet name="header">#{msg['order.delete']}</f:facet>
                     <h:form>
-                        <h:commandButton styleClass="btn" value="Delete" action="#{venueView.deleteAction(order)}"/>
+                        <h:commandButton styleClass="btn" value="#{msg['order.delete']}" action="#{venueView.deleteAction(order)}"/>
                     </h:form>
                 </h:column>
             </h:dataTable>
             <p>
-                <h:link outcome="/order/order_create.xhtml" value="Create order">
+                <h:link outcome="/order/order_create.xhtml" value="#{msg['order.create']}">
                     <f:param name="id" value="#{venueView.id}"/>
                 </h:link>
             </p>

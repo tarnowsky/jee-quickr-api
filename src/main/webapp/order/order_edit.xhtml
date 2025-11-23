@@ -15,27 +15,27 @@
 
         <article>
             <header>
-                <h2>Edit order
+                <h2>#{msg['order.edit.title']}
                     <h:outputText value="#{orderEdit.id}"/>
                 </h2>
             </header>
             <h:form styleClass="edit-form" enctype="multipart/form-data" onreset="onReset()">
                 <div class="form-outline">
                     <h:inputText id="price" value="#{orderEdit.order.price}" styleClass="form-control"/>
-                    <h:outputLabel for="price" value="Price:" styleClass="form-label"/>
+                    <h:outputLabel for="price" value="#{msg['order.edit.label.price']}" styleClass="form-label"/>
                 </div>
                 <div class="form-outline">
                     <h:inputText styleClass="form-control" id="date" value="#{orderEdit.order.orderDate}">
                         <f:convertDateTime pattern="yyyy-MM-dd" type="localDate"/>
                     </h:inputText>
-                    <h:outputLabel for="date" value="Order date:" styleClass="form-label"/>
+                    <h:outputLabel for="date" value="#{msg['order.edit.label.order_date']}" styleClass="form-label"/>
                 </div>
                 <div class="btn-container-multi">
                     <div>
-                        <h:commandButton styleClass="btn btn-primary" value="Update" action="#{orderEdit.saveAction()}"/>
+                        <h:commandButton styleClass="btn btn-primary" value="#{msg['order.edit.button.update']}" action="#{orderEdit.saveAction()}"/>
                     </div>
                     <div>
-                        <h:commandButton styleClass="btn btn-secondary" type="reset" value="Reset"/>
+                        <h:commandButton styleClass="btn btn-secondary" type="reset" value="#{msg['order.edit.button.reset']}"/>
                     </div>
                 </div>
 

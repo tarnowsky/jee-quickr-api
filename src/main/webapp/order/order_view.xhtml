@@ -14,31 +14,31 @@
         <h:outputStylesheet library="order" name="css/order_view.css"/>
         <article>
             <header>
-                <h2>Order</h2>
+                <h2>#{msg['order.view.title']}</h2>
             </header>
             <div class="item-info-container">
                 <p>ID:</p>
                 <h:outputText value="#{orderView.id}"/>
             </div>
             <div class="item-info-container">
-                <p>Price:</p>
+                <p>#{msg['order.view.label.price']}:</p>
                 <h:outputText value="#{orderView.order.price}"/>
                 PLN
             </div>
             <div class="item-info-container">
-                <p>Venue name:</p>
+                <p>#{msg['order.view.label.venue_name']}:</p>
                 <h:outputText value="#{orderView.order.venueName}"/>
             </div>
             <div class="item-info-container">
-                <p>User login:</p>
+                <p>#{msg['order.view.label.user_login']}:</p>
                 <h:outputText value="#{orderView.order.userLogin}"/>
             </div>
             <div class="item-info-container">
-                <p>Order date:</p>
+                <p>#{msg['order.view.label.order_date']}:</p>
                 <h:outputText value="#{orderView.order.orderDate}"/>
             </div>
             <p>
-                <h:link outcome="/order/order_edit.xhtml" value="Edit">
+                <h:link outcome="/order/order_edit.xhtml" value="#{msg['order.view.button.edit']}">
                     <f:param name="id" value="#{orderView.id}"/>
                 </h:link>
             </p>

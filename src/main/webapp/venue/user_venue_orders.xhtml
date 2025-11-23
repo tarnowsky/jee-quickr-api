@@ -13,7 +13,7 @@
     <ui:define name="content">
         <article>
             <header>
-                <h2>My Orders at This Venue</h2>
+                <h2>#{msg['venue.orders.title']}</h2>
             </header>
             <h:dataTable value="#{userVenueOrders.orders.orders}" var="order" styleClass="table">
                 <h:column>
@@ -21,35 +21,35 @@
                     <h:outputText value="#{order.id}"/>
                 </h:column>
                 <h:column>
-                    <f:facet name="header">Price</f:facet>
+                    <f:facet name="header">#{msg['order.price']}</f:facet>
                     <h:outputText value="#{order.price}"/> PLN
                 </h:column>
                 <h:column>
-                    <f:facet name="header">View</f:facet>
-                    <h:link outcome="/order/order_view.xhtml" value="View">
+                    <f:facet name="header">#{msg['order.view']}</f:facet>
+                    <h:link outcome="/order/order_view.xhtml" value="#{msg['order.view']}">
                         <f:param name="id" value="#{order.id}"/>
                     </h:link>
                 </h:column>
                 <h:column>
-                    <f:facet name="header">Edit</f:facet>
-                    <h:link outcome="/order/order_edit.xhtml" value="Edit">
+                    <f:facet name="header">#{msg['order.edit']}</f:facet>
+                    <h:link outcome="/order/order_edit.xhtml" value="#{msg['order.edit']}">
                         <f:param name="id" value="#{order.id}"/>
                     </h:link>
                 </h:column>
                 <h:column>
-                    <f:facet name="header">Delete</f:facet>
+                    <f:facet name="header">#{msg['order.delete']}</f:facet>
                     <h:form>
-                        <h:commandButton styleClass="btn" value="Delete" action="#{userVenueOrders.deleteAction(order)}"/>
+                        <h:commandButton styleClass="btn" value="#{msg['order.delete']}" action="#{userVenueOrders.deleteAction(order)}"/>
                     </h:form>
                 </h:column>
             </h:dataTable>
             <p>
-                <h:link outcome="/order/order_create.xhtml" value="Create new order">
+                <h:link outcome="/order/order_create.xhtml" value="#{msg['order.create']}">
                     <f:param name="id" value="#{userVenueOrders.venueId}"/>
                 </h:link>
             </p>
             <p>
-                <h:link outcome="/venue/venue_list.xhtml" value="Back to Venues"/>
+                <h:link outcome="/venue/venue_list.xhtml" value="#{msg['venue.back']}"/>
             </p>
         </article>
     </ui:define>

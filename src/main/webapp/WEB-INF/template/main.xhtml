@@ -23,22 +23,22 @@
         <div class="container">
             <div>
                 <header class="main-header">
-                    <h:graphicImage styleClass="logo" name="static/logo.png" alt="logo"/>
-                    <h1>QuickrAPI</h1>
+                    <h:graphicImage styleClass="logo" name="static/logo_#{facesContext.viewRoot.locale.language}.png" alt="#{msg['header.alt']}"/>
+                    <h1>#{msg['header.title']}</h1>
                     <div class="d-flex align-items-center justify-content-end">
                         <h:form rendered="#{facesContext.externalContext.userPrincipal != null}">
-                            Logged in as: <h:outputText value="#{facesContext.externalContext.userPrincipal.name}"/>
-                            <h:commandButton styleClass="btn btn-link" value="Logout" action="#{userLogout.logoutAction()}"/>
+                            #{msg['header.logged_in_as']}: <h:outputText value="#{facesContext.externalContext.userPrincipal.name}"/>
+                            <h:commandButton styleClass="btn btn-link" value="#{msg['header.logout']}" action="#{userLogout.logoutAction()}"/>
                         </h:form>
                     </div>
                 </header>
                 <nav>
                     <ul>
                         <li>
-                            <h:link outcome="/index.html">Home</h:link>
+                            <h:link outcome="/index.html">#{msg['nav.home']}</h:link>
                         </li>
                         <li>
-                            <h:link outcome="/venue/venue_list.xhtml">Venues</h:link>
+                            <h:link outcome="/venue/venue_list.xhtml">#{msg['nav.venues']}</h:link>
                         </li>
                     </ul>
                 </nav>
@@ -48,7 +48,7 @@
             </div>
             <footer>
                 <div class="footer-content-container">
-                    <p>Copyright &#169; 2025, Michał Tarnowski</p>
+                    <p>#{msg['footer.copyright']}</p>
                 </div>
             </footer>
         </div>
