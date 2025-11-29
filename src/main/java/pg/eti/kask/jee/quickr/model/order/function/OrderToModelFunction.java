@@ -17,7 +17,7 @@ public class OrderToModelFunction implements Function<Order, OrderModel>, Serial
                 .itemCount(order.getItemCount())
                 .userLogin(order.getUser().getLogin())
                 .venueName(order.getVenue().getName())
-                .orderDate(order.getOrderDate().toString())
+                .orderDate(order.getOrderDate() != null ? order.getOrderDate().toString() : "")
                 .creationDateTime(order.getCreationDateTime())
                 .modificationDateTime(order.getModificationDateTime())
                 .version(order.getVersion())

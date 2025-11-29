@@ -21,11 +21,12 @@ public class Order extends BaseEntity {
     private Double price;
 
     @jakarta.validation.constraints.NotBlank
-    @jakarta.validation.constraints.Size(min = 3, max = 50)
+    @jakarta.validation.constraints.Size(min = 3, max = 30)
     private String name;
 
     @jakarta.validation.constraints.NotNull
     @jakarta.validation.constraints.Min(1)
+    @pg.eti.kask.jee.quickr.validator.MaxItemCount(99)
     @Column(name = "item_count")
     private Integer itemCount;
 
@@ -37,6 +38,7 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @jakarta.validation.constraints.NotNull
     @Column(name = "order_date")
     private LocalDate orderDate;
 }

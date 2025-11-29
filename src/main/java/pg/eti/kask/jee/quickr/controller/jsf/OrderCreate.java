@@ -111,6 +111,24 @@ public class OrderCreate implements Serializable {
         assert venueService != null;
         assert orderService != null;
 
+        assert orderService != null;
+
+        // Manual validation as a safeguard
+        jakarta.validation.ValidatorFactory validatorFactory = jakarta.validation.Validation
+                .buildDefaultValidatorFactory();
+        jakarta.validation.Validator validator = validatorFactory.getValidator();
+        java.util.Set<jakarta.validation.ConstraintViolation<OrderCreateModel>> violations = validator.validate(order);
+
+        if (!violations.isEmpty()) {
+            for (jakarta.validation.ConstraintViolation<OrderCreateModel> violation : violations) {
+                jakarta.faces.context.FacesContext.getCurrentInstance().addMessage(null,
+                        new jakarta.faces.application.FacesMessage(
+                                jakarta.faces.application.FacesMessage.SEVERITY_ERROR,
+                                violation.getMessage(), null));
+            }
+            return null; // Stay on the same page
+        }
+
         Order newOrder = factory.modelToOrder(userService).apply(order);
 
         // Use appropriate create method based on role

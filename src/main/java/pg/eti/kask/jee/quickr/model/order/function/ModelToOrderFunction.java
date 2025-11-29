@@ -21,6 +21,8 @@ public class ModelToOrderFunction implements Function<OrderCreateModel, Order>, 
         return Order.builder()
                 .id(model.getId())
                 .price(model.getPrice())
+                .name(model.getName())
+                .itemCount(model.getItemCount())
                 .user(userService.findById(model.getUserId()).get())
                 .orderDate(model.getOrderDate())
                 .venue(Venue.builder()

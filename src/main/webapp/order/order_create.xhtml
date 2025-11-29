@@ -15,14 +15,30 @@
             <header><h2>#{msg['order.create.title']}</h2></header>
             <h:form styleClass="edit-form" onreset="onReset()" enctype="multipart/form-data">
                 <div class="form-outline">
-                    <h:inputText id="price" value="#{orderCreate.order.price}" styleClass="form-control"/>
-                    <h:outputLabel for="price" value="#{msg['order.create.label.price']}" styleClass="form-label"/>
+                    <h:inputText id="name" value="#{orderCreate.order.name}" styleClass="form-control"
+                                 required="true" requiredMessage="#{msg['order.create.validation.name.required']}"/>
+                    <h:outputLabel for="name" value="#{msg['order.name']}" styleClass="form-label"/>
+                    <h:message for="name" styleClass="error-message"/>
                 </div>
                 <div class="form-outline">
-                    <h:inputText styleClass="form-control" id="date" value="#{orderCreate.order.orderDate}">
+                    <h:inputText id="itemCount" value="#{orderCreate.order.itemCount}" styleClass="form-control"
+                                 required="true" requiredMessage="#{msg['order.create.validation.itemCount.required']}"/>
+                    <h:outputLabel for="itemCount" value="#{msg['order.item_count']}" styleClass="form-label"/>
+                    <h:message for="itemCount" styleClass="error-message"/>
+                </div>
+                <div class="form-outline">
+                    <h:inputText id="price" value="#{orderCreate.order.price}" styleClass="form-control"
+                                 required="true" requiredMessage="#{msg['order.create.validation.price.required']}"/>
+                    <h:outputLabel for="price" value="#{msg['order.create.label.price']}" styleClass="form-label"/>
+                    <h:message for="price" styleClass="error-message"/>
+                </div>
+                <div class="form-outline">
+                    <h:inputText styleClass="form-control" id="date" value="#{orderCreate.order.orderDate}"
+                                 required="true" requiredMessage="#{msg['order.create.validation.date.required']}">
                         <f:convertDateTime pattern="yyyy-MM-dd" type="localDate"/>
                     </h:inputText>
                     <h:outputLabel for="date" value="#{msg['order.create.label.order_date']}" styleClass="form-label"/>
+                    <h:message for="date" styleClass="error-message"/>
                 </div>
                 <!-- Admin-only: Select which user the order belongs to -->
                 <h:panelGroup rendered="#{facesContext.externalContext.isUserInRole('admin')}">

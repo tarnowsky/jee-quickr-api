@@ -12,8 +12,23 @@ import java.util.UUID;
 @Builder
 public class OrderCreateModel {
     private UUID id;
+
+    @jakarta.validation.constraints.NotNull
+    @jakarta.validation.constraints.Positive
     private Double price;
+
+    @jakarta.validation.constraints.NotBlank
+    @jakarta.validation.constraints.Size(min = 3, max = 30)
+    private String name;
+
+    @jakarta.validation.constraints.NotNull
+    @jakarta.validation.constraints.Min(1)
+    @pg.eti.kask.jee.quickr.validator.MaxItemCount(99)
+    private Integer itemCount;
+
     private VenueModel venue;
     private UUID userId;
+
+    @jakarta.validation.constraints.NotNull
     private LocalDate orderDate;
 }

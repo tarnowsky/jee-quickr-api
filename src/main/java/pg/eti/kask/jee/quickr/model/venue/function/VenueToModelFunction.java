@@ -27,7 +27,9 @@ public class VenueToModelFunction implements Function<Venue, VenueModel>, Serial
                                                                 .itemCount(order.getItemCount())
                                                                 .venueName(order.getVenue().getName())
                                                                 .userLogin(order.getUser().getLogin())
-                                                                .orderDate(order.getOrderDate().toString())
+                                                                .orderDate(order.getOrderDate() != null
+                                                                                ? order.getOrderDate().toString()
+                                                                                : "")
                                                                 .creationDateTime(order.getCreationDateTime())
                                                                 .modificationDateTime(order.getModificationDateTime())
                                                                 .version(order.getVersion())
