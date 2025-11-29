@@ -6,6 +6,13 @@ import pg.eti.kask.jee.quickr.model.venue.VenueModel;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import pg.eti.kask.jee.quickr.validator.MaxItemCount;
+
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
@@ -13,22 +20,22 @@ import java.util.UUID;
 public class OrderCreateModel {
     private UUID id;
 
-    @jakarta.validation.constraints.NotNull
-    @jakarta.validation.constraints.Positive
+    @NotNull
+    @Positive
     private Double price;
 
-    @jakarta.validation.constraints.NotBlank
-    @jakarta.validation.constraints.Size(min = 3, max = 30)
+    @NotBlank
+    @Size(min = 3, max = 30)
     private String name;
 
-    @jakarta.validation.constraints.NotNull
-    @jakarta.validation.constraints.Min(1)
-    @pg.eti.kask.jee.quickr.validator.MaxItemCount(99)
+    @NotNull
+    @Min(1)
+    @MaxItemCount(99)
     private Integer itemCount;
 
     private VenueModel venue;
     private UUID userId;
 
-    @jakarta.validation.constraints.NotNull
+    @NotNull
     private LocalDate orderDate;
 }
