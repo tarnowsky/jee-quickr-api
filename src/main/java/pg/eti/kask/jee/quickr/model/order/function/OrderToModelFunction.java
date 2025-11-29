@@ -13,6 +13,8 @@ public class OrderToModelFunction implements Function<Order, OrderModel>, Serial
         return OrderModel.builder()
                 .id(order.getId().toString())
                 .price(order.getPrice())
+                .name(order.getName())
+                .itemCount(order.getItemCount())
                 .userLogin(order.getUser().getLogin())
                 .venueName(order.getVenue().getName())
                 .orderDate(order.getOrderDate().toString())

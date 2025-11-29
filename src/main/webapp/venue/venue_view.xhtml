@@ -45,11 +45,52 @@
                 <h:outputText value="#{venueView.venue.version}"/>
             </div>
             <h6>#{msg['venue.view.header.venue_orders']}:</h6>
+            
+            <h:form styleClass="filter-form">
+                <header>
+                    <h3>#{msg['order.filter.header']}</h3>
+                </header>
+                <div class="form-outline">
+                    <h:inputText id="name" value="#{venueView.filter.name}" styleClass="form-control"/>
+                    <h:outputLabel for="name" value="#{msg['order.filter.label.name']}" styleClass="form-label"/>
+                </div>
+                <div class="form-outline">
+                    <h:inputText id="minPrice" value="#{venueView.filter.minPrice}" styleClass="form-control"/>
+                    <h:outputLabel for="minPrice" value="#{msg['order.filter.label.price_min']}" styleClass="form-label"/>
+                </div>
+                <div class="form-outline">
+                    <h:inputText id="maxPrice" value="#{venueView.filter.maxPrice}" styleClass="form-control"/>
+                    <h:outputLabel for="maxPrice" value="#{msg['order.filter.label.price_max']}" styleClass="form-label"/>
+                </div>
+                <div class="form-outline">
+                    <h:inputText id="minItemCount" value="#{venueView.filter.minItemCount}" styleClass="form-control"/>
+                    <h:outputLabel for="minItemCount" value="#{msg['order.filter.label.item_count_min']}" styleClass="form-label"/>
+                </div>
+                <div class="form-outline">
+                    <h:inputText id="maxItemCount" value="#{venueView.filter.maxItemCount}" styleClass="form-control"/>
+                    <h:outputLabel for="maxItemCount" value="#{msg['order.filter.label.item_count_max']}" styleClass="form-label"/>
+                </div>
+                <div class="btn-container">
+                    <h:commandButton styleClass="btn btn-primary" value="#{msg['order.filter.button.filter']}"
+                                     action="#{venueView.filterAction()}"/>
+                    <h:commandButton styleClass="btn btn-secondary" value="#{msg['order.filter.button.reset']}"
+                                     action="#{venueView.filterAction()}" type="reset"/>
+                </div>
+            </h:form>
+
             <h:panelGroup id="order-table-container-venue">
                 <h:dataTable value="#{venueView.venue.orders}" var="order" styleClass="table">
                     <h:column>
                         <f:facet name="header">ID</f:facet>
                         <h:outputText value="#{order.id}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['order.name']}</f:facet>
+                        <h:outputText value="#{order.name}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['order.item_count']}</f:facet>
+                        <h:outputText value="#{order.itemCount}"/>
                     </h:column>
                     <h:column>
                         <f:facet name="header">#{msg['order.price']}</f:facet>

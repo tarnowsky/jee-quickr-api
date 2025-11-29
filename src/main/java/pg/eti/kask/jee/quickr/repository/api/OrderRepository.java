@@ -10,6 +10,10 @@ import java.util.UUID;
 
 public interface OrderRepository extends Repository<Order, UUID> {
     List<Order> findAllByUser(User user);
+
     List<Order> findAllByVenue(Venue venue);
+
     Optional<Order> findByIdAndUser(UUID id, User user);
+
+    List<Order> findAllByFilter(pg.eti.kask.jee.quickr.dto.OrderFilter filter);
 }

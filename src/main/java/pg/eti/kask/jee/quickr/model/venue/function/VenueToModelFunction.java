@@ -23,6 +23,8 @@ public class VenueToModelFunction implements Function<Venue, VenueModel>, Serial
                                                 .map(order -> OrderModel.builder()
                                                                 .id(order.getId().toString())
                                                                 .price(order.getPrice())
+                                                                .name(order.getName())
+                                                                .itemCount(order.getItemCount())
                                                                 .venueName(order.getVenue().getName())
                                                                 .userLogin(order.getUser().getLogin())
                                                                 .orderDate(order.getOrderDate().toString())

@@ -21,6 +21,14 @@
             </header>
             <h:form styleClass="edit-form" enctype="multipart/form-data" onreset="onReset()">
                 <div class="form-outline">
+                    <h:inputText id="name" value="#{orderEdit.order.name}" styleClass="form-control"/>
+                    <h:outputLabel for="name" value="#{msg['order.name']}" styleClass="form-label"/>
+                </div>
+                <div class="form-outline">
+                    <h:inputText id="itemCount" value="#{orderEdit.order.itemCount}" styleClass="form-control"/>
+                    <h:outputLabel for="itemCount" value="#{msg['order.item_count']}" styleClass="form-label"/>
+                </div>
+                <div class="form-outline">
                     <h:inputText id="price" value="#{orderEdit.order.price}" styleClass="form-control"/>
                     <h:outputLabel for="price" value="#{msg['order.edit.label.price']}" styleClass="form-label"/>
                 </div>

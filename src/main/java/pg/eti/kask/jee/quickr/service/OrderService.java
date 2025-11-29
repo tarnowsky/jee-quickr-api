@@ -171,4 +171,9 @@ public class OrderService {
         }
         throw new EJBAccessException("Caller not authorized.");
     }
+
+    @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
+    public List<Order> findAllByFilter(pg.eti.kask.jee.quickr.dto.OrderFilter filter) {
+        return orderRepository.findAllByFilter(filter);
+    }
 }

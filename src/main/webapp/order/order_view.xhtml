@@ -26,6 +26,14 @@
                 PLN
             </div>
             <div class="item-info-container">
+                <p>#{msg['order.name']}:</p>
+                <h:outputText value="#{orderView.order.name}"/>
+            </div>
+            <div class="item-info-container">
+                <p>#{msg['order.item_count']}:</p>
+                <h:outputText value="#{orderView.order.itemCount}"/>
+            </div>
+            <div class="item-info-container">
                 <p>#{msg['order.view.label.venue_name']}:</p>
                 <h:outputText value="#{orderView.order.venueName}"/>
             </div>

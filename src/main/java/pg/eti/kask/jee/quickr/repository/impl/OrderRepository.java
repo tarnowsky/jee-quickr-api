@@ -86,4 +86,41 @@ public class OrderRepository implements pg.eti.kask.jee.quickr.repository.api.Or
             return Optional.empty();
         }
     }
+
+    @Override
+    public List<Order> findAllByFilter(pg.eti.kask.jee.quickr.dto.OrderFilter filter) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Order> query = cb.createQuery(Order.class);
+        Root<Order> root = query.from(Order.class);
+
+        java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+
+        if (filter.getName() != null && !filter.getName().isEmpty()) {
+            predicates.add(cb.like(cb.lower(root.get("name")), "%" + filter.getName().toLowerCase() + "%"));
+        }
+
+        if (filter.getMinPrice() != null) {
+            predicates.add(cb.greaterThanOrEqualTo(root.get("price"), filter.getMinPrice()));
+        }
+
+        if (filter.getMaxPrice() != null) {
+            predicates.add(cb.lessThanOrEqualTo(root.get("price"), filter.getMaxPrice()));
+        }
+
+        if (filter.getMinItemCount() != null) {
+            predicates.add(cb.greaterThanOrEqualTo(root.get("itemCount"), filter.getMinItemCount()));
+        }
+
+        if (filter.getMaxItemCount() != null) {
+            predicates.add(cb.lessThanOrEqualTo(root.get("itemCount"), filter.getMaxItemCount()));
+        }
+
+        if (filter.getVenueId() != null) {
+            predicates.add(cb.equal(root.get("venue").get("id"), filter.getVenueId()));
+        }
+
+        query.select(root).where(cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0])));
+
+        return em.createQuery(query).getResultList();
+    }
 }

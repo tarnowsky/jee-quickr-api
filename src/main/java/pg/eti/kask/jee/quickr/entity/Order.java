@@ -16,7 +16,18 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 public class Order extends BaseEntity {
 
+    @jakarta.validation.constraints.NotNull
+    @jakarta.validation.constraints.Positive
     private Double price;
+
+    @jakarta.validation.constraints.NotBlank
+    @jakarta.validation.constraints.Size(min = 3, max = 50)
+    private String name;
+
+    @jakarta.validation.constraints.NotNull
+    @jakarta.validation.constraints.Min(1)
+    @Column(name = "item_count")
+    private Integer itemCount;
 
     @ManyToOne
     @JoinColumn(name = "venue_id")

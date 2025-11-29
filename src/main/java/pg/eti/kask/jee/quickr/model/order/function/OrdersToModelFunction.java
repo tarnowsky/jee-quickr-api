@@ -15,6 +15,8 @@ public class OrdersToModelFunction implements Function<List<Order>, OrdersModel>
 						.map(order -> OrdersModel.Order.builder()
 								.id(order.getId())
 								.price(order.getPrice())
+								.name(order.getName())
+								.itemCount(order.getItemCount())
 								.creationDateTime(order.getCreationDateTime())
 								.modificationDateTime(order.getModificationDateTime())
 								.version(order.getVersion())

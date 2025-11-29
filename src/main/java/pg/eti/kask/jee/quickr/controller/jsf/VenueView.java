@@ -57,15 +57,29 @@ public class VenueView implements Serializable {
         this.securityContext = securityContext;
     }
 
+    @Getter
+    private pg.eti.kask.jee.quickr.dto.OrderFilter filter = new pg.eti.kask.jee.quickr.dto.OrderFilter();
+
     public void init() throws IOException {
         java.util.Optional<Venue> venueOptional = venueService.findById(id);
         if (venueOptional.isPresent()) {
             this.venue = factory.venueToModel().apply(venueOptional.get());
+            // Set venue ID in filter
+            filter.setVenueId(id);
+            // Fetch filtered orders and update model
+            List<Order> filteredOrders = orderService.findAllByFilter(filter);
+            this.venue.setOrders(filteredOrders.stream()
+                    .map(factory.orderToModel())
+                    .collect(java.util.stream.Collectors.toList()));
         } else {
             FacesContext.getCurrentInstance().getExternalContext().responseSendError(
                     HttpServletResponse.SC_NOT_FOUND, "Venue not found");
             FacesContext.getCurrentInstance().responseComplete();
         }
+    }
+
+    public void filterAction() throws IOException {
+        init();
     }
 
     @Getter

@@ -46,16 +46,38 @@ public class UserVenueOrders implements Serializable {
         this.securityContext = securityContext;
     }
 
+    @Getter
+    private pg.eti.kask.jee.quickr.dto.OrderFilter filter = new pg.eti.kask.jee.quickr.dto.OrderFilter();
+
     public void init() {
-        // Get all orders for the current user at this specific venue
-        List<Order> userOrders = orderService.findAllForCallerPrincipal();
+        // Set venue ID in filter
+        filter.setVenueId(venueId);
 
-        // Filter to only orders for this venue
-        List<Order> venueUserOrders = userOrders.stream()
-                .filter(order -> order.getVenue() != null && order.getVenue().getId().equals(venueId))
-                .collect(Collectors.toList());
+        // Use the filter service directly
+        List<Order> filteredOrders = orderService.findAllByFilter(filter);
 
-        this.orders = factory.ordersToModel().apply(venueUserOrders);
+        // Filter by user if not admin (service handles roles, but we need to ensure own
+        // orders for user)
+        // Actually, findAllByFilter doesn't filter by user automatically unless we add
+        // it to criteria or check here.
+        // Let's rely on service check or filter manually here for safety if service
+        // returns all.
+        // Wait, OrderService.findAllByFilter is @RolesAllowed({ADMIN, USER}).
+        // But it uses OrderRepository.findAllByFilter which just runs criteria.
+        // We need to ensure regular users only see their own orders.
+
+        if (!securityContext.isCallerInRole(UserRoles.ADMIN)) {
+            String login = securityContext.getCallerPrincipal().getName();
+            filteredOrders = filteredOrders.stream()
+                    .filter(o -> o.getUser().getLogin().equals(login))
+                    .collect(Collectors.toList());
+        }
+
+        this.orders = factory.ordersToModel().apply(filteredOrders);
+    }
+
+    public void filterAction() {
+        init();
     }
 
     public String deleteAction(OrdersModel.Order order) {

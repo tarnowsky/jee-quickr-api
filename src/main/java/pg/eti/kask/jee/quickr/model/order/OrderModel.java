@@ -9,6 +9,8 @@ import lombok.*;
 public class OrderModel {
     private String id;
     private Double price;
+    private String name;
+    private Integer itemCount;
     private String venueName;
     private String userLogin;
     private String orderDate;
