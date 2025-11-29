@@ -8,6 +8,7 @@
     <f:metadata>
         <f:viewParam name="venueId" value="#{userVenueOrders.venueId}" required="true"/>
         <f:viewAction action="#{userVenueOrders.init()}"/>
+        <f:viewAction action="#{userVenueOrders.redirectToVenueView()}"/>
     </f:metadata>
 
     <ui:define name="content">

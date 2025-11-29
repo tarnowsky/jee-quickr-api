@@ -4,11 +4,13 @@ import jakarta.ejb.EJB;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.security.enterprise.SecurityContext;
 import jakarta.ws.rs.NotFoundException;
 import lombok.Getter;
 import lombok.Setter;
 import pg.eti.kask.jee.quickr.component.ModelFunctionFactory;
 import pg.eti.kask.jee.quickr.entity.Order;
+import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
 import pg.eti.kask.jee.quickr.model.order.OrdersModel;
 import pg.eti.kask.jee.quickr.service.OrderService;
 
@@ -24,6 +26,7 @@ public class UserVenueOrders implements Serializable {
 
     private OrderService orderService;
     private final ModelFunctionFactory factory;
+    private final SecurityContext securityContext;
 
     @Setter
     @Getter
@@ -38,8 +41,9 @@ public class UserVenueOrders implements Serializable {
     }
 
     @Inject
-    public UserVenueOrders(ModelFunctionFactory factory) {
+    public UserVenueOrders(ModelFunctionFactory factory, SecurityContext securityContext) {
         this.factory = factory;
+        this.securityContext = securityContext;
     }
 
     public void init() {
@@ -57,5 +61,12 @@ public class UserVenueOrders implements Serializable {
     public String deleteAction(OrdersModel.Order order) {
         orderService.delete(order.getId());
         return "user_venue_orders?faces-redirect=true&includeViewParams=true";
+    }
+
+    public String redirectToVenueView() {
+        if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
+            return "venue_view?faces-redirect=true&id=" + venueId;
+        }
+        return "";
     }
 }
