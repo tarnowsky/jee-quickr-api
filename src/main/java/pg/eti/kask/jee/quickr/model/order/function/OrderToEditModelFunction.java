@@ -11,6 +11,8 @@ public class OrderToEditModelFunction implements Function<Order, OrderEditModel>
     @Override
     public OrderEditModel apply(Order order) {
         return OrderEditModel.builder()
+                .name(order.getName())
+                .itemCount(order.getItemCount())
                 .price(order.getPrice())
                 .orderDate(order.getOrderDate())
                 .version(order.getVersion())

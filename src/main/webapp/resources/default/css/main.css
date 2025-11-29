@@ -319,3 +319,12 @@ footer {
     display: flex;
     gap: 1rem;
 }
+
+.item-info-container {
+    display: flex;
+    gap: 1rem;
+    & p {
+        font-weight: bold;
+        margin-bottom: 0;
+    }
+}

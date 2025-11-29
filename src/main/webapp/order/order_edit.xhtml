@@ -21,22 +21,34 @@
             </header>
             <h:form styleClass="edit-form" enctype="multipart/form-data" onreset="onReset()">
                 <div class="form-outline">
-                    <h:inputText id="name" value="#{orderEdit.order.name}" styleClass="form-control"/>
+                    <h:inputText id="name" value="#{orderEdit.order.name}" styleClass="form-control"
+                                 required="true" requiredMessage="#{msg['order.create.validation.name.required']}"
+                                 label="#{msg['order.name']}"/>
                     <h:outputLabel for="name" value="#{msg['order.name']}" styleClass="form-label"/>
+                    <h:message for="name" styleClass="error-message"/>
                 </div>
                 <div class="form-outline">
-                    <h:inputText id="itemCount" value="#{orderEdit.order.itemCount}" styleClass="form-control"/>
+                    <h:inputText id="itemCount" value="#{orderEdit.order.itemCount}" styleClass="form-control"
+                                 required="true" requiredMessage="#{msg['order.create.validation.itemCount.required']}"
+                                 label="#{msg['order.item_count']}"/>
                     <h:outputLabel for="itemCount" value="#{msg['order.item_count']}" styleClass="form-label"/>
+                    <h:message for="itemCount" styleClass="error-message"/>
                 </div>
                 <div class="form-outline">
-                    <h:inputText id="price" value="#{orderEdit.order.price}" styleClass="form-control"/>
+                    <h:inputText id="price" value="#{orderEdit.order.price}" styleClass="form-control"
+                                 required="true" requiredMessage="#{msg['order.create.validation.price.required']}"
+                                 label="#{msg['order.edit.label.price']}"/>
                     <h:outputLabel for="price" value="#{msg['order.edit.label.price']}" styleClass="form-label"/>
+                    <h:message for="price" styleClass="error-message"/>
                 </div>
                 <div class="form-outline">
-                    <h:inputText styleClass="form-control" id="date" value="#{orderEdit.order.orderDate}">
+                    <h:inputText styleClass="form-control" id="date" value="#{orderEdit.order.orderDate}"
+                                 required="true" requiredMessage="#{msg['order.create.validation.date.required']}"
+                                 label="#{msg['order.edit.label.order_date']}">
                         <f:convertDateTime pattern="yyyy-MM-dd" type="localDate"/>
                     </h:inputText>
                     <h:outputLabel for="date" value="#{msg['order.edit.label.order_date']}" styleClass="form-label"/>
+                    <h:message for="date" styleClass="error-message"/>
                 </div>
                 <h:inputHidden value="#{orderEdit.order.version}"/>
                 

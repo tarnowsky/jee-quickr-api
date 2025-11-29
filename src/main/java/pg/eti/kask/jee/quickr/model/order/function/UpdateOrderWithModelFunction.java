@@ -12,6 +12,8 @@ public class UpdateOrderWithModelFunction implements BiFunction<Order, OrderEdit
     public Order apply(Order order, OrderEditModel req) {
         return Order.builder()
                 .id(order.getId())
+                .name(req.getName() != null ? req.getName() : order.getName())
+                .itemCount(req.getItemCount() != null ? req.getItemCount() : order.getItemCount())
                 .price(req.getPrice() != null ? req.getPrice() : order.getPrice())
                 .orderDate(req.getOrderDate() != null ? req.getOrderDate() : order.getOrderDate())
                 // .user(req.getUserId() != null ? User.builder().id(req.getUserId()).build() :
