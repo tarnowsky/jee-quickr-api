@@ -19,7 +19,6 @@
                     <h:outputText value="#{orderEdit.id}"/>
                 </h2>
             </header>
-            <h:messages globalOnly="true" styleClass="error_messages"/>
             <h:form styleClass="edit-form" enctype="multipart/form-data" onreset="onReset()">
                 <div class="form-outline">
                     <h:inputText id="price" value="#{orderEdit.order.price}" styleClass="form-control"/>
@@ -32,7 +31,7 @@
                     <h:outputLabel for="date" value="#{msg['order.edit.label.order_date']}" styleClass="form-label"/>
                 </div>
                 <h:inputHidden value="#{orderEdit.order.version}"/>
-
+                
                 <div class="btn-container-multi">
                     <div>
                         <h:commandButton styleClass="btn btn-primary" value="#{msg['order.edit.button.update']}" action="#{orderEdit.saveAction()}"/>
@@ -46,17 +45,16 @@
                         </h:button>
                     </div>
                 </div>
-
+                
             </h:form>
-
             <h:panelGroup rendered="#{orderEdit.dbOrder != null}" styleClass="collision-info">
                 <h3>#{msg['venue.edit.collision.title']}</h3>
                 <p>#{msg['venue.edit.collision.message']}</p>
                 <h:panelGrid columns="2" styleClass="comparison-grid">
-                    <h:outputText value="#{msg['order.edit.label.price']}:"/>
+                    <h:outputText value="#{msg['order.edit.label.price']}"/>
                     <h:outputText value="#{orderEdit.dbOrder.price}"/>
 
-                    <h:outputText value="#{msg['order.edit.label.order_date']}:"/>
+                    <h:outputText value="#{msg['order.edit.label.order_date']}"/>
                     <h:outputText value="#{orderEdit.dbOrder.orderDate}"/>
                 </h:panelGrid>
                 <h:form>

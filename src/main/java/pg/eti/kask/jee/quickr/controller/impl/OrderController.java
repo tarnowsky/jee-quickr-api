@@ -44,12 +44,14 @@ public class OrderController implements pg.eti.kask.jee.quickr.controller.api.Or
     }
 
     @Inject
-    public void setSecurityContext(@SuppressWarnings("CdiInjectionPointsInspection") jakarta.security.enterprise.SecurityContext securityContext) {
+    public void setSecurityContext(
+            @SuppressWarnings("CdiInjectionPointsInspection") jakarta.security.enterprise.SecurityContext securityContext) {
         this.securityContext = securityContext;
     }
 
     @Inject
-    public OrderController(DtoFunctionFactory factory, @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo) {
+    public OrderController(DtoFunctionFactory factory,
+            @SuppressWarnings("CdiInjectionPointsInspection") UriInfo uriInfo) {
         this.factory = factory;
         this.uriInfo = uriInfo;
     }
@@ -114,12 +116,10 @@ public class OrderController implements pg.eti.kask.jee.quickr.controller.api.Or
         try {
             if (securityContext.isCallerInRole(UserRoles.ADMIN)) {
                 orderService.create(
-                        factory.createOrderWithVenueFunction().apply(orderId, venueId, req)
-                );
+                        factory.createOrderWithVenueFunction().apply(orderId, venueId, req));
             } else {
                 orderService.createForCallerPrincipal(
-                        factory.createOrderWithVenueFunction().apply(orderId, venueId, req)
-                );
+                        factory.createOrderWithVenueFunction().apply(orderId, venueId, req));
             }
 
             String location = uriInfo.getBaseUriBuilder()
@@ -141,17 +141,18 @@ public class OrderController implements pg.eti.kask.jee.quickr.controller.api.Or
 
     @Override
     public void patchOrder(UUID orderId, PatchOrderRequest req) {
-        orderService.findById(orderId).ifPresentOrElse(
-                entity -> orderService.update(factory.updateOrderFunction().apply(entity, req)),
-                NotFoundException::new
-        );
+        pg.eti.kask.jee.quickr.entity.Order order = orderService.findById(orderId).orElseThrow(NotFoundException::new);
+        try {
+            orderService.update(factory.updateOrderFunction().apply(order, req));
+        } catch (pg.eti.kask.jee.quickr.exception.OrderOptimisticLockException e) {
+            throw new WebApplicationException(Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build());
+        }
     }
 
     @Override
     public void deleteOrder(UUID orderId) {
         orderService.findById(orderId).ifPresentOrElse(
                 o -> orderService.delete(orderId),
-                NotFoundException::new
-        );
+                NotFoundException::new);
     }
 }

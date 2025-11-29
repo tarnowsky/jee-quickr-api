@@ -144,8 +144,13 @@ public class OrderService {
 
     @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })
     @Loggable
-    public void update(Order order) {
-        orderRepository.update(order);
+    public void update(Order order) throws pg.eti.kask.jee.quickr.exception.OrderOptimisticLockException {
+        try {
+            orderRepository.update(order);
+        } catch (jakarta.persistence.OptimisticLockException e) {
+            throw new pg.eti.kask.jee.quickr.exception.OrderOptimisticLockException("Order modified by another user",
+                    e);
+        }
     }
 
     @RolesAllowed({ UserRoles.ADMIN, UserRoles.USER })

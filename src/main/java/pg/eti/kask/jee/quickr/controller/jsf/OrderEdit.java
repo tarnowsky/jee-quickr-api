@@ -81,6 +81,15 @@ public class OrderEdit implements Serializable {
         try {
             orderService.update(factory.updateOrderWithModel().apply(orderService.findById(id).get(), order));
             return "order_view?faces-redirect=true&includeViewParams=true";
+        } catch (pg.eti.kask.jee.quickr.exception.OrderOptimisticLockException e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new jakarta.faces.application.FacesMessage(
+                            jakarta.faces.application.FacesMessage.SEVERITY_ERROR,
+                            "Data has been modified by another user.", null));
+
+            // Load current DB state
+            orderService.findById(id).ifPresent(o -> this.dbOrder = factory.orderToEditModel().apply(o));
+            return null; // Stay on page
         } catch (jakarta.persistence.OptimisticLockException | jakarta.ejb.EJBException e) {
             if (e instanceof jakarta.persistence.OptimisticLockException ||
                     (e.getCause() instanceof jakarta.persistence.OptimisticLockException)) {
