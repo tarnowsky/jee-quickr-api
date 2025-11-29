@@ -11,10 +11,12 @@ import lombok.Setter;
 import pg.eti.kask.jee.quickr.component.ModelFunctionFactory;
 import pg.eti.kask.jee.quickr.entity.Order;
 import pg.eti.kask.jee.quickr.entity.Venue;
+import pg.eti.kask.jee.quickr.entity.enums.UserRoles;
 import pg.eti.kask.jee.quickr.model.order.OrderModel;
 import pg.eti.kask.jee.quickr.model.venue.VenueModel;
 import pg.eti.kask.jee.quickr.service.OrderService;
 import pg.eti.kask.jee.quickr.service.VenueService;
+import jakarta.security.enterprise.SecurityContext;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -29,7 +31,8 @@ public class VenueView implements Serializable {
     private VenueService venueService;
     private OrderService orderService;
 
-    private final ModelFunctionFactory factory;
+    private SecurityContext securityContext;
+    private ModelFunctionFactory factory;
 
     @Setter
     @Getter
@@ -49,8 +52,9 @@ public class VenueView implements Serializable {
     }
 
     @Inject
-    public VenueView(ModelFunctionFactory factory) {
+    public VenueView(ModelFunctionFactory factory, SecurityContext securityContext) {
         this.factory = factory;
+        this.securityContext = securityContext;
     }
 
     public void init() throws IOException {
@@ -79,4 +83,11 @@ public class VenueView implements Serializable {
         orderService.delete(orderEntity.getId());
         return "venue_view?faces-redirect=true&includeViewParams=true";
     }
+
+    public String redirectToUserVenueOrders() {
+        if (!securityContext.isCallerInRole(UserRoles.ADMIN)) {
+            return "user_venue_orders?faces-redirect=true&venueId=" + id;
+        }
+        return "";
+    } 
 }
