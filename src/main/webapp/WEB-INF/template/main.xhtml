@@ -14,6 +14,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Quickr API</title>
 
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+
+        <!-- Font Awesome -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+
         <h:outputStylesheet library="webjars" name="mdb-ui-kit/6.4.0/css/mdb.min.css"/>
         <h:outputStylesheet library="default" name="css/main.css"/>
         <h:outputScript library="webjars" name="mdb-ui-kit/6.4.0/js/mdb.min.js"/>
@@ -23,10 +31,12 @@
         <div class="container">
             <div>
                 <header class="main-header">
-                    <h:graphicImage styleClass="logo" name="static/logo_#{facesContext.viewRoot.locale.language}.png" alt="#{msg['header.alt']}"/>
-                    <h1>#{msg['header.title']}</h1>
+                    <div class="d-flex align-items-center gap-4">
+                        <h:graphicImage styleClass="logo" name="static/logo_#{facesContext.viewRoot.locale.language}.png" alt="#{msg['header.alt']}"/>
+                        <h1>#{msg['header.title']}</h1>
+                    </div>
                     <div class="d-flex align-items-center justify-content-end">
-                        <h:form rendered="#{facesContext.externalContext.userPrincipal != null}">
+                        <h:form rendered="#{facesContext.externalContext.userPrincipal != null}" styleClass="d-flex align-items-center gap-2">
                             #{msg['header.logged_in_as']}: <h:outputText value="#{facesContext.externalContext.userPrincipal.name}"/>
                             <h:commandButton styleClass="btn btn-link" value="#{msg['header.logout']}" action="#{userLogout.logoutAction()}"/>
                         </h:form>

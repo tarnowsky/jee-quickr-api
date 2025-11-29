@@ -13,133 +13,139 @@
 
     <ui:define name="content">
         <h:outputStylesheet library="venue" name="css/venue_view.css"/>
-        <article>
-            <header>
-                <h2>
-                    <h:outputText value="#{venueView.venue.name}"/>
-                </h2>
-            </header>
-            <hr/>
-            <div class="item-info-container">
-                <p>ID:</p>
-                <h:outputText value="#{venueView.venue.id}"/>
-            </div>
-            <div class="item-info-container">
-                <p>#{msg['venue.view.label.venue_category']}:</p>
-                <h:outputText value="#{venueView.venue.venueCategory}"/>
-            </div>
-            <div class="item-info-container">
-                <p>#{msg['venue.list.header.created']}:</p>
-                <h:outputText value="#{venueView.venue.creationDateTime}">
-                    <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
-                </h:outputText>
-            </div>
-            <div class="item-info-container">
-                <p>#{msg['venue.list.header.modified']}:</p>
-                <h:outputText value="#{venueView.venue.modificationDateTime}">
-                    <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
-                </h:outputText>
-            </div>
-            <div class="item-info-container">
-                <p>#{msg['venue.list.header.version']}:</p>
-                <h:outputText value="#{venueView.venue.version}"/>
-            </div>
-            <h6>#{msg['venue.view.header.venue_orders']}:</h6>
-            
-            <h:form styleClass="filter-form">
+        <div class="dashboard-grid">
+            <article class="card">
                 <header>
-                    <h3>#{msg['order.filter.header']}</h3>
+                    <h2>
+                        <h:outputText value="#{venueView.venue.name}"/>
+                    </h2>
+                    <span class="badge">#{venueView.venue.venueCategory}</span>
                 </header>
-                <div class="form-outline">
-                    <h:inputText id="name" value="#{venueView.filter.name}" styleClass="form-control"/>
-                    <h:outputLabel for="name" value="#{msg['order.filter.label.name']}" styleClass="form-label"/>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="label">ID</span>
+                        <span class="value"><h:outputText value="#{venueView.venue.id}"/></span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">#{msg['venue.list.header.created']}</span>
+                        <span class="value">
+                            <h:outputText value="#{venueView.venue.creationDateTime}">
+                                <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                            </h:outputText>
+                        </span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">#{msg['venue.list.header.modified']}</span>
+                        <span class="value">
+                            <h:outputText value="#{venueView.venue.modificationDateTime}">
+                                <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                            </h:outputText>
+                        </span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">#{msg['venue.list.header.version']}</span>
+                        <span class="value"><h:outputText value="#{venueView.venue.version}"/></span>
+                    </div>
                 </div>
-                <div class="form-outline">
-                    <h:inputText id="minPrice" value="#{venueView.filter.minPrice}" styleClass="form-control"/>
-                    <h:outputLabel for="minPrice" value="#{msg['order.filter.label.price_min']}" styleClass="form-label"/>
+                <div class="actions">
+                    <h:link rendered="#{facesContext.externalContext.isUserInRole('admin')}"
+                            outcome="/venue/venue_edit.xhtml" value="#{msg['venue.list.edit']}" styleClass="btn btn-secondary">
+                        <f:param name="id" value="#{venueView.venue.id}"/>
+                    </h:link>
                 </div>
-                <div class="form-outline">
-                    <h:inputText id="maxPrice" value="#{venueView.filter.maxPrice}" styleClass="form-control"/>
-                    <h:outputLabel for="maxPrice" value="#{msg['order.filter.label.price_max']}" styleClass="form-label"/>
-                </div>
-                <div class="form-outline">
-                    <h:inputText id="minItemCount" value="#{venueView.filter.minItemCount}" styleClass="form-control"/>
-                    <h:outputLabel for="minItemCount" value="#{msg['order.filter.label.item_count_min']}" styleClass="form-label"/>
-                </div>
-                <div class="form-outline">
-                    <h:inputText id="maxItemCount" value="#{venueView.filter.maxItemCount}" styleClass="form-control"/>
-                    <h:outputLabel for="maxItemCount" value="#{msg['order.filter.label.item_count_max']}" styleClass="form-label"/>
-                </div>
-                <div class="btn-container">
-                    <h:commandButton styleClass="btn btn-primary" value="#{msg['order.filter.button.filter']}"
-                                     action="#{venueView.filterAction()}"/>
-                    <h:commandButton styleClass="btn btn-secondary" value="#{msg['order.filter.button.reset']}"
-                                     action="#{venueView.filterAction()}" type="reset"/>
-                </div>
-            </h:form>
+            </article>
 
-            <h:panelGroup id="order-table-container-venue">
-                <h:dataTable value="#{venueView.venue.orders}" var="order" styleClass="table">
-                    <h:column>
-                        <f:facet name="header">ID</f:facet>
-                        <h:outputText value="#{order.id}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msg['order.name']}</f:facet>
-                        <h:outputText value="#{order.name}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msg['order.item_count']}</f:facet>
-                        <h:outputText value="#{order.itemCount}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msg['order.price']}</f:facet>
-                        <h:outputText value="#{order.price}"/> PLN
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msg['venue.list.header.created']}</f:facet>
-                        <h:outputText value="#{order.creationDateTime}">
-                            <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
-                        </h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msg['venue.list.header.modified']}</f:facet>
-                        <h:outputText value="#{order.modificationDateTime}">
-                            <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
-                        </h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msg['venue.list.header.version']}</f:facet>
-                        <h:outputText value="#{order.version}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msg['order.view']}</f:facet>
-                        <h:link outcome="/order/order_view.xhtml" value="#{msg['order.view']}">
-                            <f:param name="id" value="#{order.id}"/>
-                        </h:link>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msg['order.delete']}</f:facet>
-                        <h:form>
-                            <h:commandButton styleClass="btn" value="#{msg['order.delete']}"
-                                             action="#{venueView.deleteAction(order)}">
-                                <f:ajax execute="@form" render=":order-table-container-venue"/>
-                            </h:commandButton>
-                        </h:form>
-                    </h:column>
-                </h:dataTable>
-            </h:panelGroup>
-            <p>
-                <h:link rendered="#{facesContext.externalContext.isUserInRole('admin')}"
-                                outcome="/venue/venue_edit.xhtml" value="#{msg['venue.list.edit']}">
-                            <f:param name="id" value="#{venueView.venue.id}"/>
-                        </h:link>
-            </p>
-            <p>
-                <h:link outcome="/order/order_create.xhtml" value="#{msg['order.create']}">
-                    <f:param name="id" value="#{venueView.id}"/>
-                </h:link>
-            </p>
-        </article>
+            <article class="card">
+                <header class="flex-header">
+                    <h3>#{msg['venue.view.header.venue_orders']}</h3>
+                    <h:link outcome="/order/order_create.xhtml" value="#{msg['order.create']}" styleClass="btn btn-primary">
+                        <f:param name="id" value="#{venueView.id}"/>
+                    </h:link>
+                </header>
+                
+                <h:form styleClass="filter-form">
+                    <div class="filter-grid">
+                        <div class="form-outline">
+                            <h:inputText id="name" value="#{venueView.filter.name}" styleClass="form-control" label="#{msg['order.filter.label.name']}"/>
+                            <h:outputLabel for="name" value="#{msg['order.filter.label.name']}" styleClass="form-label"/>
+                        </div>
+                        <div class="form-outline">
+                            <h:inputText id="minPrice" value="#{venueView.filter.minPrice}" styleClass="form-control" label="#{msg['order.filter.label.price_min']}"/>
+                            <h:outputLabel for="minPrice" value="#{msg['order.filter.label.price_min']}" styleClass="form-label"/>
+                        </div>
+                        <div class="form-outline">
+                            <h:inputText id="maxPrice" value="#{venueView.filter.maxPrice}" styleClass="form-control" label="#{msg['order.filter.label.price_max']}"/>
+                            <h:outputLabel for="maxPrice" value="#{msg['order.filter.label.price_max']}" styleClass="form-label"/>
+                        </div>
+                        <div class="form-outline">
+                            <h:inputText id="minItemCount" value="#{venueView.filter.minItemCount}" styleClass="form-control" label="#{msg['order.filter.label.item_count_min']}"/>
+                            <h:outputLabel for="minItemCount" value="#{msg['order.filter.label.item_count_min']}" styleClass="form-label"/>
+                        </div>
+                        <div class="form-outline">
+                            <h:inputText id="maxItemCount" value="#{venueView.filter.maxItemCount}" styleClass="form-control" label="#{msg['order.filter.label.item_count_max']}"/>
+                            <h:outputLabel for="maxItemCount" value="#{msg['order.filter.label.item_count_max']}" styleClass="form-label"/>
+                        </div>
+                        <div class="btn-container">
+                            <h:commandButton styleClass="btn btn-primary" value="#{msg['order.filter.button.filter']}"
+                                             action="#{venueView.filterAction()}"/>
+                            <h:commandButton styleClass="btn btn-secondary" value="#{msg['order.filter.button.reset']}"
+                                             action="#{venueView.filterAction()}" type="reset"/>
+                        </div>
+                    </div>
+                </h:form>
+
+                <h:panelGroup id="order-table-container-venue">
+                    <h:dataTable value="#{venueView.venue.orders}" var="order" styleClass="table">
+                        <h:column>
+                            <f:facet name="header">ID</f:facet>
+                            <h:outputText value="#{order.id}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msg['order.name']}</f:facet>
+                            <h:outputText value="#{order.name}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msg['order.item_count']}</f:facet>
+                            <h:outputText value="#{order.itemCount}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msg['order.price']}</f:facet>
+                            <h:outputText value="#{order.price}"/> PLN
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msg['venue.list.header.created']}</f:facet>
+                            <h:outputText value="#{order.creationDateTime}">
+                                <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msg['venue.list.header.modified']}</f:facet>
+                            <h:outputText value="#{order.modificationDateTime}">
+                                <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msg['venue.list.header.version']}</f:facet>
+                            <h:outputText value="#{order.version}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msg['order.view']}</f:facet>
+                            <h:link outcome="/order/order_view.xhtml" value="#{msg['order.view']}" styleClass="btn btn-link">
+                                <f:param name="id" value="#{order.id}"/>
+                            </h:link>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msg['order.delete']}</f:facet>
+                            <h:form>
+                                <h:commandButton styleClass="btn btn-link" value="#{msg['order.delete']}"
+                                                 action="#{venueView.deleteAction(order)}">
+                                    <f:ajax execute="@form" render=":order-table-container-venue"/>
+                                </h:commandButton>
+                            </h:form>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+            </article>
+        </div>
     </ui:define>
 </ui:composition>

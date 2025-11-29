@@ -139,6 +139,6 @@ public class VenueView implements Serializable {
         if (!securityContext.isCallerInRole(UserRoles.ADMIN)) {
             return "user_venue_orders?faces-redirect=true&venueId=" + id;
         }
-        return "";
+        return null;
     }
 }
