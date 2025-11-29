@@ -2,23 +2,29 @@ package pg.eti.kask.jee.quickr.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import pg.eti.kask.jee.quickr.entity.enums.VenueCategory;
 
-import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @Entity
 @Table(name = "venues")
-public class Venue implements Serializable {
-    @Id
-    private UUID id;
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class Venue extends BaseEntity {
+    @jakarta.validation.constraints.NotBlank
+    @jakarta.validation.constraints.Size(min = 3, max = 50)
     private String name;
 
+    @pg.eti.kask.jee.quickr.validator.VenueCapacity
+    @jakarta.validation.constraints.NotNull
+    private Integer capacity;
+
+    @jakarta.validation.constraints.NotNull
     @Enumerated(EnumType.STRING)
     private VenueCategory venueCategory;
 

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 public class OrderEditModel {
     private Double price;
     private LocalDate orderDate;
-//    private UUID userId;
-//    private UUID venueId;
+    private Long version;
+    // private UUID userId;
+    // private UUID venueId;
 }

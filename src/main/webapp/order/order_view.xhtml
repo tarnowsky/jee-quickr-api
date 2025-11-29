@@ -37,6 +37,22 @@
                 <p>#{msg['order.view.label.order_date']}:</p>
                 <h:outputText value="#{orderView.order.orderDate}"/>
             </div>
+            <div class="item-info-container">
+                <p>#{msg['venue.list.header.created']}:</p>
+                <h:outputText value="#{orderView.order.creationDateTime}">
+                    <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                </h:outputText>
+            </div>
+            <div class="item-info-container">
+                <p>#{msg['venue.list.header.modified']}:</p>
+                <h:outputText value="#{orderView.order.modificationDateTime}">
+                    <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                </h:outputText>
+            </div>
+            <div class="item-info-container">
+                <p>#{msg['venue.list.header.version']}:</p>
+                <h:outputText value="#{orderView.order.version}"/>
+            </div>
             <p>
                 <h:link outcome="/order/order_edit.xhtml" value="#{msg['order.view.button.edit']}">
                     <f:param name="id" value="#{orderView.id}"/>

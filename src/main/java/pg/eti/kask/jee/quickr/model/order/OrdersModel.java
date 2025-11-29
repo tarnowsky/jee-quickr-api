@@ -18,6 +18,9 @@ public class OrdersModel {
     public static class Order {
         private UUID id;
         private Double price;
+        private java.time.LocalDateTime creationDateTime;
+        private java.time.LocalDateTime modificationDateTime;
+        private Long version;
     }
 
     @Singular

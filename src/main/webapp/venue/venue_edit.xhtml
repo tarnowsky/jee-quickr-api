@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/template/main.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{venueView.id}" required="true"/>
+        <f:viewAction action="#{venueView.init()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <h:outputStylesheet library="venue" name="css/venue_view.css"/>
+        <article>
+            <header>
+                <h2>#{msg['venue.edit.title']}</h2>
+            </header>
+            
+            <h:messages globalOnly="true" styleClass="error_messages"/>
+
+            <h:form>
+                <h:panelGrid columns="3" styleClass="form-grid">
+                    <h:outputLabel for="name" value="#{msg['venue.view.label.name']}:"/>
+                    <h:inputText id="name" value="#{venueView.venue.name}"/>
+                    <h:message for="name" styleClass="error_message"/>
+
+                    <h:outputLabel for="capacity" value="#{msg['venue.view.label.capacity']}:"/>
+                    <h:inputText id="capacity" value="#{venueView.venue.capacity}"/>
+                    <h:message for="capacity" styleClass="error_message"/>
+
+                    <h:outputLabel for="category" value="#{msg['venue.view.label.venue_category']}:"/>
+                    <h:selectOneMenu id="category" value="#{venueView.venue.venueCategory}">
+                        <f:selectItems value="#{venueView.venueCategories}" var="category" itemValue="#{category}" itemLabel="#{category}"/>
+                    </h:selectOneMenu>
+                    <h:message for="category" styleClass="error_message"/>
+                </h:panelGrid>
+
+                <h:inputHidden value="#{venueView.venue.version}"/>
+
+                <h:commandButton value="#{msg['venue.edit.save']}" action="#{venueView.saveAction}" styleClass="btn"/>
+                <h:button value="#{msg['venue.edit.cancel']}" outcome="venue_list" styleClass="btn"/>
+            </h:form>
+
+            <h:panelGroup rendered="#{venueView.dbVenue != null}" styleClass="collision-info">
+                <h3>#{msg['venue.edit.collision.title']}</h3>
+                <p>#{msg['venue.edit.collision.message']}</p>
+                <h:panelGrid columns="2" styleClass="comparison-grid">
+                    <h:outputText value="#{msg['venue.view.label.name']}:"/>
+                    <h:outputText value="#{venueView.dbVenue.name}"/>
+
+                    <h:outputText value="#{msg['venue.view.label.capacity']}:"/>
+                    <h:outputText value="#{venueView.dbVenue.capacity}"/>
+
+                    <h:outputText value="#{msg['venue.view.label.venue_category']}:"/>
+                    <h:outputText value="#{venueView.dbVenue.venueCategory}"/>
+                </h:panelGrid>
+            </h:panelGroup>
+
+        </article>
+    </ui:define>
+</ui:composition>

@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface VenueRepository extends Repository<Venue, UUID> {
     List<Venue> findAllByUser(User user);
+
+    List<Venue> findAllByFilter(pg.eti.kask.jee.quickr.dto.VenueFilter filter);
 }

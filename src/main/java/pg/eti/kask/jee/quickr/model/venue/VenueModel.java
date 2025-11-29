@@ -14,7 +14,11 @@ import java.util.UUID;
 public class VenueModel {
     private UUID id;
     private String name;
+    private Integer capacity;
     private VenueCategory venueCategory;
+    private java.time.LocalDateTime creationDateTime;
+    private java.time.LocalDateTime modificationDateTime;
+    private Long version;
     @Singular
     private List<OrderModel> orders;
 }

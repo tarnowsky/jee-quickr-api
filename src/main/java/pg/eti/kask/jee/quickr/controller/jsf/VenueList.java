@@ -18,6 +18,8 @@ public class VenueList implements java.io.Serializable {
 
     private final ModelFunctionFactory factory;
 
+    private pg.eti.kask.jee.quickr.dto.VenueFilter filter = new pg.eti.kask.jee.quickr.dto.VenueFilter();
+
     @EJB
     public void setVenueService(VenueService venueService) {
         this.venueService = venueService;
@@ -35,9 +37,17 @@ public class VenueList implements java.io.Serializable {
 
     public VenuesModel getVenues() {
         if (venues == null) {
-            venues = factory.venuesToModel().apply(venueService.findAll());
+            venues = factory.venuesToModel().apply(venueService.findAllByFilter(filter));
         }
         return venues;
+    }
+
+    public pg.eti.kask.jee.quickr.dto.VenueFilter getFilter() {
+        return filter;
+    }
+
+    public void filterAction() {
+        venues = null;
     }
 
     public void deleteAction(VenuesModel.Venue venue) {

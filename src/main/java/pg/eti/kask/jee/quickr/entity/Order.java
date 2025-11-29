@@ -2,21 +2,20 @@ package pg.eti.kask.jee.quickr.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @Entity
 @Table(name = "orders")
-public class Order implements Serializable {
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class Order extends BaseEntity {
 
-    @Id
-    private UUID id;
     private Double price;
 
     @ManyToOne

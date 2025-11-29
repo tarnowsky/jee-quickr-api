@@ -104,13 +104,15 @@ public class InitializedData {
                                         .name("Burgers on Wheels")
                                         .venueCategory(VenueCategory.FOOD_TRUCK)
                                         .user(victor)
+                                        .capacity(4)
                                         .build();
 
                         Venue restaurant = Venue.builder()
                                         .id(UUID.fromString("d59593c0-0b25-48d4-b3fa-5451dd9a4c32"))
                                         .name("Fancy Shmency")
                                         .venueCategory(VenueCategory.RESTAURANT)
-                                        .user(admin)
+                                        .user(victor)
+                                        .capacity(150)
                                         .build();
 
                         Venue fastFood = Venue.builder()
@@ -118,6 +120,7 @@ public class InitializedData {
                                         .name("McDuck")
                                         .venueCategory(VenueCategory.FAST_FOOD)
                                         .user(mike)
+                                        .capacity(100)
                                         .build();
 
                         Venue cafe = Venue.builder()
@@ -125,6 +128,7 @@ public class InitializedData {
                                         .name("Artists and Others")
                                         .venueCategory(VenueCategory.CAFE)
                                         .user(debbie)
+                                        .capacity(30)
                                         .build();
 
                         venueRepository.create(foodTrack);

@@ -64,6 +64,43 @@ public class VenueView implements Serializable {
         } else {
             FacesContext.getCurrentInstance().getExternalContext().responseSendError(
                     HttpServletResponse.SC_NOT_FOUND, "Venue not found");
+            FacesContext.getCurrentInstance().responseComplete();
+        }
+    }
+
+    @Getter
+    private VenueModel dbVenue;
+
+    public List<pg.eti.kask.jee.quickr.entity.enums.VenueCategory> getVenueCategories() {
+        return List.of(pg.eti.kask.jee.quickr.entity.enums.VenueCategory.values());
+    }
+
+    public String saveAction() {
+        try {
+            Venue venueEntity = venueService.findById(venue.getId()).orElseThrow();
+            // Update entity fields from model
+            venueEntity.setName(venue.getName());
+            venueEntity.setCapacity(venue.getCapacity());
+            venueEntity.setVenueCategory(venue.getVenueCategory());
+            venueEntity.setVersion(venue.getVersion()); // Important for optimistic locking
+
+            venueService.update(venueEntity);
+            return "venue_view?faces-redirect=true&includeViewParams=true";
+        } catch (jakarta.persistence.OptimisticLockException | jakarta.ejb.EJBException e) {
+            // Check if cause is OptimisticLockException (EJBException wraps it)
+            if (e instanceof jakarta.persistence.OptimisticLockException ||
+                    (e.getCause() instanceof jakarta.persistence.OptimisticLockException)) {
+
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new jakarta.faces.application.FacesMessage(
+                                jakarta.faces.application.FacesMessage.SEVERITY_ERROR,
+                                "Data has been modified by another user.", null));
+
+                // Load current DB state
+                venueService.findById(venue.getId()).ifPresent(v -> this.dbVenue = factory.venueToModel().apply(v));
+                return null; // Stay on page
+            }
+            throw e;
         }
     }
 
@@ -89,5 +126,5 @@ public class VenueView implements Serializable {
             return "user_venue_orders?faces-redirect=true&venueId=" + id;
         }
         return "";
-    } 
+    }
 }

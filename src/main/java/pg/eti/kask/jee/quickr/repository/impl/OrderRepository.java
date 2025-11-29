@@ -4,6 +4,9 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import pg.eti.kask.jee.quickr.entity.Order;
 import pg.eti.kask.jee.quickr.entity.Venue;
 import pg.eti.kask.jee.quickr.entity.User;
@@ -29,7 +32,11 @@ public class OrderRepository implements pg.eti.kask.jee.quickr.repository.api.Or
 
     @Override
     public List<Order> findAll() {
-        return em.createQuery("select o from Order o", Order.class).getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Order> query = cb.createQuery(Order.class);
+        Root<Order> root = query.from(Order.class);
+        query.select(root);
+        return em.createQuery(query).getResultList();
     }
 
     @Override
@@ -49,25 +56,32 @@ public class OrderRepository implements pg.eti.kask.jee.quickr.repository.api.Or
 
     @Override
     public List<Order> findAllByUser(User user) {
-        return em.createQuery("select o from Order o where o.user = :user", Order.class)
-                .setParameter("user", user)
-                .getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Order> query = cb.createQuery(Order.class);
+        Root<Order> root = query.from(Order.class);
+        query.select(root).where(cb.equal(root.get("user"), user));
+        return em.createQuery(query).getResultList();
     }
 
     @Override
     public List<Order> findAllByVenue(Venue venue) {
-        return em.createQuery("select o from Order o where o.venue = :venue", Order.class)
-                .setParameter("venue", venue)
-                .getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Order> query = cb.createQuery(Order.class);
+        Root<Order> root = query.from(Order.class);
+        query.select(root).where(cb.equal(root.get("venue"), venue));
+        return em.createQuery(query).getResultList();
     }
 
     @Override
     public Optional<Order> findByIdAndUser(UUID id, User user) {
         try {
-            return Optional.of(em.createQuery("select o from Order o where o.id = :id and o.user = :user", Order.class)
-                    .setParameter("user", user)
-                    .setParameter("id", id)
-                    .getSingleResult());
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Order> query = cb.createQuery(Order.class);
+            Root<Order> root = query.from(Order.class);
+            query.select(root).where(cb.and(
+                    cb.equal(root.get("id"), id),
+                    cb.equal(root.get("user"), user)));
+            return Optional.of(em.createQuery(query).getSingleResult());
         } catch (NoResultException ex) {
             return Optional.empty();
         }

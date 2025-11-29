@@ -34,6 +34,11 @@ public class VenueService {
     }
 
     @RolesAllowed(UserRoles.USER)
+    public List<Venue> findAllByFilter(pg.eti.kask.jee.quickr.dto.VenueFilter filter) {
+        return venueRepository.findAllByFilter(filter);
+    }
+
+    @RolesAllowed(UserRoles.USER)
     public Optional<Venue> findById(@NonNull UUID id) {
         if (id == null) {
             throw new IllegalArgumentException("Venue ID cannot be null");

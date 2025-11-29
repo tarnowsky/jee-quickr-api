@@ -28,6 +28,22 @@
                 <p>#{msg['venue.view.label.venue_category']}:</p>
                 <h:outputText value="#{venueView.venue.venueCategory}"/>
             </div>
+            <div class="item-info-container">
+                <p>#{msg['venue.list.header.created']}:</p>
+                <h:outputText value="#{venueView.venue.creationDateTime}">
+                    <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                </h:outputText>
+            </div>
+            <div class="item-info-container">
+                <p>#{msg['venue.list.header.modified']}:</p>
+                <h:outputText value="#{venueView.venue.modificationDateTime}">
+                    <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                </h:outputText>
+            </div>
+            <div class="item-info-container">
+                <p>#{msg['venue.list.header.version']}:</p>
+                <h:outputText value="#{venueView.venue.version}"/>
+            </div>
             <h6>#{msg['venue.view.header.venue_orders']}:</h6>
             <h:panelGroup id="order-table-container-venue">
                 <h:dataTable value="#{venueView.venue.orders}" var="order" styleClass="table">
@@ -38,6 +54,22 @@
                     <h:column>
                         <f:facet name="header">#{msg['order.price']}</f:facet>
                         <h:outputText value="#{order.price}"/> PLN
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.created']}</f:facet>
+                        <h:outputText value="#{order.creationDateTime}">
+                            <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.modified']}</f:facet>
+                        <h:outputText value="#{order.modificationDateTime}">
+                            <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.version']}</f:facet>
+                        <h:outputText value="#{order.version}"/>
                     </h:column>
                     <h:column>
                         <f:facet name="header">#{msg['order.view']}</f:facet>
@@ -56,6 +88,12 @@
                     </h:column>
                 </h:dataTable>
             </h:panelGroup>
+            <p>
+                <h:link rendered="#{facesContext.externalContext.isUserInRole('admin')}"
+                                outcome="/venue/venue_edit.xhtml" value="#{msg['venue.list.edit']}">
+                            <f:param name="id" value="#{venueView.venue.id}"/>
+                        </h:link>
+            </p>
             <p>
                 <h:link outcome="/order/order_create.xhtml" value="#{msg['order.create']}">
                     <f:param name="id" value="#{venueView.id}"/>

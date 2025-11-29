@@ -9,21 +9,28 @@ import java.util.function.Function;
 
 public class VenueToModelFunction implements Function<Venue, VenueModel>, Serializable {
 
-    @Override
-    public VenueModel apply(Venue venue) {
-        return VenueModel.builder()
-                .id(venue.getId())
-                .name(venue.getName())
-                .venueCategory(venue.getVenueCategory())
-                .orders(venue.getOrders().stream()
-                        .map(order -> OrderModel.builder()
-                                .id(order.getId().toString())
-                                .price(order.getPrice())
-                                .venueName(order.getVenue().getName())
-                                .userLogin(order.getUser().getLogin())
-                                .orderDate(order.getOrderDate().toString())
-                                .build()
-                        ).toList())
-                .build();
-    }
+        @Override
+        public VenueModel apply(Venue venue) {
+                return VenueModel.builder()
+                                .id(venue.getId())
+                                .name(venue.getName())
+                                .capacity(venue.getCapacity())
+                                .venueCategory(venue.getVenueCategory())
+                                .creationDateTime(venue.getCreationDateTime())
+                                .modificationDateTime(venue.getModificationDateTime())
+                                .version(venue.getVersion())
+                                .orders(venue.getOrders().stream()
+                                                .map(order -> OrderModel.builder()
+                                                                .id(order.getId().toString())
+                                                                .price(order.getPrice())
+                                                                .venueName(order.getVenue().getName())
+                                                                .userLogin(order.getUser().getLogin())
+                                                                .orderDate(order.getOrderDate().toString())
+                                                                .creationDateTime(order.getCreationDateTime())
+                                                                .modificationDateTime(order.getModificationDateTime())
+                                                                .version(order.getVersion())
+                                                                .build())
+                                                .toList())
+                                .build();
+        }
 }

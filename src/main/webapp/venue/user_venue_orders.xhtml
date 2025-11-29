@@ -27,6 +27,22 @@
                         <h:outputText value="#{order.price}"/> PLN
                     </h:column>
                     <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.created']}</f:facet>
+                        <h:outputText value="#{order.creationDateTime}">
+                            <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.modified']}</f:facet>
+                        <h:outputText value="#{order.modificationDateTime}">
+                            <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.version']}</f:facet>
+                        <h:outputText value="#{order.version}"/>
+                    </h:column>
+                    <h:column>
                         <f:facet name="header">#{msg['order.view']}</f:facet>
                         <h:link outcome="/order/order_view.xhtml" value="#{msg['order.view']}">
                             <f:param name="id" value="#{order.id}"/>

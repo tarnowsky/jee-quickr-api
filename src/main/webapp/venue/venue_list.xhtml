@@ -11,6 +11,28 @@
             <header>
                 <h2>#{msg['venue.list.title']}</h2>
             </header>
+            <h:form styleClass="filter-form">
+                <h:panelGrid columns="4" styleClass="filter-grid">
+                    <h:outputLabel for="name" value="#{msg['venue.list.filter.name']}:"/>
+                    <h:inputText id="name" value="#{venueList.filter.name}"/>
+
+                    <h:outputLabel for="category" value="#{msg['venue.list.filter.category']}:"/>
+                    <h:selectOneMenu id="category" value="#{venueList.filter.venueCategory}">
+                        <f:selectItem itemLabel="#{msg['venue.list.filter.all']}" itemValue="#{null}"/>
+                        <f:selectItems value="#{venueView.venueCategories}" var="category" itemValue="#{category}" itemLabel="#{category}"/>
+                    </h:selectOneMenu>
+
+                    <h:outputLabel for="minCapacity" value="#{msg['venue.list.filter.min_capacity']}:"/>
+                    <h:inputText id="minCapacity" value="#{venueList.filter.minCapacity}"/>
+
+                    <h:outputLabel for="maxCapacity" value="#{msg['venue.list.filter.max_capacity']}:"/>
+                    <h:inputText id="maxCapacity" value="#{venueList.filter.maxCapacity}"/>
+                </h:panelGrid>
+                <h:commandButton value="#{msg['venue.list.filter.submit']}" action="#{venueList.filterAction}">
+                    <f:ajax execute="@form" render=":venue-table-container"/>
+                </h:commandButton>
+            </h:form>
+
             <h:panelGroup id="venue-table-container">
                 <h:dataTable value="#{venueList.venues.venues}" var="venue" styleClass="table">
                     <h:column>
@@ -22,8 +44,28 @@
                         <h:outputText value="#{venue.name}"/>
                     </h:column>
                     <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.capacity']}</f:facet>
+                        <h:outputText value="#{venue.capacity}"/>
+                    </h:column>
+                    <h:column>
                         <f:facet name="header">#{msg['venue.list.header.venue_category']}</f:facet>
                         <h:outputText value="#{venue.venueCategory}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.created']}</f:facet>
+                        <h:outputText value="#{venue.creationDateTime}">
+                            <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.modified']}</f:facet>
+                        <h:outputText value="#{venue.modificationDateTime}">
+                            <f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd HH:mm"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msg['venue.list.header.version']}</f:facet>
+                        <h:outputText value="#{venue.version}"/>
                     </h:column>
                     <h:column>
                         <f:facet name="header">#{msg['venue.list.header.view']}</f:facet>

@@ -2,7 +2,6 @@ package pg.eti.kask.jee.quickr.model.order;
 
 import lombok.*;
 
-
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
@@ -13,4 +12,7 @@ public class OrderModel {
     private String venueName;
     private String userLogin;
     private String orderDate;
+    private java.time.LocalDateTime creationDateTime;
+    private java.time.LocalDateTime modificationDateTime;
+    private Long version;
 }

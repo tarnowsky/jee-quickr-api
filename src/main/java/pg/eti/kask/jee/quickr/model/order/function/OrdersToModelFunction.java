@@ -8,15 +8,18 @@ import java.util.function.Function;
 
 public class OrdersToModelFunction implements Function<List<Order>, OrdersModel> {
 
-    @Override
-    public OrdersModel apply(List<Order> orders) {
-        return OrdersModel.builder()
-                .orders(orders.stream()
-                        .map(order -> OrdersModel.Order.builder()
-                                .id(order.getId())
-                                .price(order.getPrice())
-                                .build())
-                        .toList())
-                .build();
-    }
+	@Override
+	public OrdersModel apply(List<Order> orders) {
+		return OrdersModel.builder()
+				.orders(orders.stream()
+						.map(order -> OrdersModel.Order.builder()
+								.id(order.getId())
+								.price(order.getPrice())
+								.creationDateTime(order.getCreationDateTime())
+								.modificationDateTime(order.getModificationDateTime())
+								.version(order.getVersion())
+								.build())
+						.toList())
+				.build();
+	}
 }

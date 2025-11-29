@@ -18,7 +18,11 @@ public class VenuesModel {
     public static class Venue {
         private UUID id;
         private String name;
+        private Integer capacity;
         private String venueCategory;
+        private java.time.LocalDateTime creationDateTime;
+        private java.time.LocalDateTime modificationDateTime;
+        private Long version;
     }
 
     @Singular

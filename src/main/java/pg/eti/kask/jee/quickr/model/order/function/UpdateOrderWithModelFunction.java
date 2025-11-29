@@ -14,11 +14,15 @@ public class UpdateOrderWithModelFunction implements BiFunction<Order, OrderEdit
                 .id(order.getId())
                 .price(req.getPrice() != null ? req.getPrice() : order.getPrice())
                 .orderDate(req.getOrderDate() != null ? req.getOrderDate() : order.getOrderDate())
-//                .user(req.getUserId() != null ? User.builder().id(req.getUserId()).build() : order.getUser())
-//                .venue(req.getVenueId() != null ? Venue.builder().id(req.getVenueId()).build() : order.getVenue())
-//                .orderDate(order.getOrderDate())
+                // .user(req.getUserId() != null ? User.builder().id(req.getUserId()).build() :
+                // order.getUser())
+                // .venue(req.getVenueId() != null ?
+                // Venue.builder().id(req.getVenueId()).build() : order.getVenue())
+                // .orderDate(order.getOrderDate())
                 .user(order.getUser())
                 .venue(order.getVenue())
+                .creationDateTime(order.getCreationDateTime())
+                .version(req.getVersion())
                 .build();
     }
 }

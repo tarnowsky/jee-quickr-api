@@ -4,10 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -15,9 +13,9 @@ import java.util.UUID;
 @SuperBuilder
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
-    @Id
-    private UUID id;
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class User extends BaseEntity {
 
     private String login;
 
