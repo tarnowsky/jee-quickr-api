@@ -4,11 +4,13 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Builder
-public class OrderEditModel {
+public class OrderEditModel implements Serializable {
     private Double price;
     private LocalDate orderDate;
     private Long version;

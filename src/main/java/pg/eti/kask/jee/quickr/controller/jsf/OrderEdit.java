@@ -44,8 +44,22 @@ public class OrderEdit implements Serializable {
 
     public void init() throws IOException {
         try {
-            Order order = orderService.findById(id).get();
-            this.order = factory.orderToEditModel().apply(order);
+            // Check if we are returning from a failed save (PRG)
+            OrderEditModel failedOrder = (OrderEditModel) FacesContext.getCurrentInstance().getExternalContext()
+                    .getFlash().get("failedOrder");
+
+            Order orderEntity = orderService.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
+            OrderEditModel currentDbState = factory.orderToEditModel().apply(orderEntity);
+
+            if (failedOrder != null) {
+                // Restore user's input
+                this.order = failedOrder;
+                // Set DB state for comparison
+                this.dbOrder = currentDbState;
+            } else {
+                // Normal load
+                this.order = currentDbState;
+            }
         } catch (NotFoundException ex) {
             FacesContext.getCurrentInstance().getExternalContext().responseSendError(
                     HttpServletResponse.SC_NOT_FOUND, "Order not found");
@@ -56,21 +70,7 @@ public class OrderEdit implements Serializable {
     private OrderEditModel dbOrder;
 
     public String reloadData() {
-        try {
-            Order order = orderService.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
-            this.order = factory.orderToEditModel().apply(order);
-            this.dbOrder = null; // Clear collision data
-            return null; // Stay on page
-        } catch (NotFoundException ex) {
-            try {
-                FacesContext.getCurrentInstance().getExternalContext().responseSendError(
-                        HttpServletResponse.SC_NOT_FOUND, "Order not found");
-                FacesContext.getCurrentInstance().responseComplete();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            return null;
-        }
+        return "order_edit?faces-redirect=true&includeViewParams=true";
     }
 
     public String getVenueId() {
@@ -82,26 +82,30 @@ public class OrderEdit implements Serializable {
             orderService.update(factory.updateOrderWithModel().apply(orderService.findById(id).get(), order));
             return "order_view?faces-redirect=true&includeViewParams=true";
         } catch (pg.eti.kask.jee.quickr.exception.OrderOptimisticLockException e) {
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
             FacesContext.getCurrentInstance().addMessage(null,
                     new jakarta.faces.application.FacesMessage(
                             jakarta.faces.application.FacesMessage.SEVERITY_ERROR,
                             "Data has been modified by another user.", null));
 
-            // Load current DB state
-            orderService.findById(id).ifPresent(o -> this.dbOrder = factory.orderToEditModel().apply(o));
-            return null; // Stay on page
+            // Save state to Flash
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().put("failedOrder", order);
+
+            return "order_edit?faces-redirect=true&includeViewParams=true";
         } catch (jakarta.persistence.OptimisticLockException | jakarta.ejb.EJBException e) {
             if (e instanceof jakarta.persistence.OptimisticLockException ||
                     (e.getCause() instanceof jakarta.persistence.OptimisticLockException)) {
 
+                FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
                 FacesContext.getCurrentInstance().addMessage(null,
                         new jakarta.faces.application.FacesMessage(
                                 jakarta.faces.application.FacesMessage.SEVERITY_ERROR,
                                 "Data has been modified by another user.", null));
 
-                // Load current DB state
-                orderService.findById(id).ifPresent(o -> this.dbOrder = factory.orderToEditModel().apply(o));
-                return null; // Stay on page
+                // Save state to Flash
+                FacesContext.getCurrentInstance().getExternalContext().getFlash().put("failedOrder", order);
+
+                return "order_edit?faces-redirect=true&includeViewParams=true";
             }
             throw e;
         }
