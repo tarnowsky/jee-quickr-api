@@ -3,6 +3,9 @@ package pg.eti.kask.jee.quickr.repository.impl;
 import jakarta.enterprise.context.Dependent;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import pg.eti.kask.jee.quickr.entity.User;
 
 import java.util.List;
@@ -21,18 +24,20 @@ public class UserRepository implements pg.eti.kask.jee.quickr.repository.api.Use
 
     @Override
     public Optional<User> findByLogin(String login) {
-        return em.createQuery("select u from User u where u.login = :login", User.class)
-                        .setParameter("login", login)
-                        .getResultStream()
-                        .findFirst();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<User> query = cb.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+        query.select(root).where(cb.equal(root.get("login"), login));
+        return em.createQuery(query).getResultStream().findFirst();
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return em.createQuery("select u from User u where u.email = :email", User.class)
-                        .setParameter("email", email)
-                        .getResultStream()
-                        .findFirst();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<User> query = cb.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+        query.select(root).where(cb.equal(root.get("email"), email));
+        return em.createQuery(query).getResultStream().findFirst();
     }
 
     @Override
@@ -42,17 +47,21 @@ public class UserRepository implements pg.eti.kask.jee.quickr.repository.api.Use
 
     @Override
     public boolean existsByLogin(String login) {
-        Long count =  em.createQuery("select count(u) from User u where u.login = :login", Long.class)
-                .setParameter("login", login)
-                .getSingleResult();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<User> root = query.from(User.class);
+        query.select(cb.count(root)).where(cb.equal(root.get("login"), login));
+        Long count = em.createQuery(query).getSingleResult();
         return count != null && count > 0;
     }
 
     @Override
     public boolean existsByEmail(String email) {
-        Long count =  em.createQuery("select count(u) from User u where u.email = :email", Long.class)
-                .setParameter("email", email)
-                .getSingleResult();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<User> root = query.from(User.class);
+        query.select(cb.count(root)).where(cb.equal(root.get("email"), email));
+        Long count = em.createQuery(query).getSingleResult();
         return count != null && count > 0;
     }
 
@@ -63,10 +72,12 @@ public class UserRepository implements pg.eti.kask.jee.quickr.repository.api.Use
 
     @Override
     public List<User> findAll() {
-        return em.createQuery("select u from User u", User.class).getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<User> query = cb.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+        query.select(root);
+        return em.createQuery(query).getResultList();
     }
-
-
 
     @Override
     public void create(User entity) {
@@ -82,6 +93,5 @@ public class UserRepository implements pg.eti.kask.jee.quickr.repository.api.Use
     public void delete(User user) {
         em.remove(em.find(User.class, user.getId()));
     }
-
 
 }
