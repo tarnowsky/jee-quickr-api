@@ -1,7 +1,7 @@
 package pg.eti.kask.jee.quickr.controller.jsf;
 
 import jakarta.ejb.EJB;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import pg.eti.kask.jee.quickr.component.ModelFunctionFactory;
@@ -9,9 +9,9 @@ import pg.eti.kask.jee.quickr.model.venue.VenuesModel;
 import pg.eti.kask.jee.quickr.service.OrderService;
 import pg.eti.kask.jee.quickr.service.VenueService;
 
-@RequestScoped
+@ViewScoped
 @Named
-public class VenueList {
+public class VenueList implements java.io.Serializable {
     private VenuesModel venues;
     private VenueService venueService;
     private OrderService orderService;
@@ -40,10 +40,11 @@ public class VenueList {
         return venues;
     }
 
-    public String deleteAction(VenuesModel.Venue venue) {
-        venueService.findById(venue.getId()).get().getOrders()
-                .forEach(order -> orderService.delete(order.getId()));
-        venueService.delete(venue.getId());
-        return "venue_list?faces-redirect=true";
+    public void deleteAction(VenuesModel.Venue venue) {
+        venueService.findById(venue.getId()).ifPresent(v -> {
+            v.getOrders().forEach(order -> orderService.delete(order.getId()));
+            venueService.delete(v.getId());
+        });
+        venues = null;
     }
 }
